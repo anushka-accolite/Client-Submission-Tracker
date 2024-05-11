@@ -1,17 +1,17 @@
 import { Button, Nav, NavItem } from "reactstrap";
 import Logo from "./Logo";
 import { Link, useLocation } from "react-router-dom";
+import { useEffect, useState } from "react";
 
-
-const navigation = [
+const adminNavigation = [
   {
     title: "Home",
     href: "/",
     icon: "bi bi-house",
   },
   {
-    title: "Create Project",
-    href: "/createproject",
+    title: "Create Client",
+    href: "/createclient",
     icon: "bi bi-plus",
   },
   {
@@ -34,7 +34,20 @@ const navigation = [
     href: "/listofam",
     icon: "bi bi-list",
   },
- 
+];
+
+const userNavigation = [
+  {
+    title: "List of Candidates",
+    href: "/listofcandidates",
+    icon: "bi bi-house",
+  },
+  {
+    title: "Submitted Profiles",
+    href: "/profile",
+    icon: "bi bi-person",
+  },
+  // Add more user-specific navigation items here
 ];
 
 const Sidebar = () => {
@@ -42,6 +55,9 @@ const Sidebar = () => {
     document.getElementById("sidebarArea").classList.toggle("showSidebar");
   };
   let location = useLocation();
+  
+  // const navigation = role === "admin" ? adminNavigation : userNavigation;
+  const navigation = localStorage.getItem("role") === "admin" ? adminNavigation : userNavigation;
 
   return (
     <div className="p-3">
@@ -81,3 +97,4 @@ const Sidebar = () => {
 };
 
 export default Sidebar;
+

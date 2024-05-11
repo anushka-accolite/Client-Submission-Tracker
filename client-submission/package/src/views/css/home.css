@@ -1,0 +1,57 @@
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+    overflow-x: auto; 
+    margin-top:20px;
+  }
+  
+  th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+    text-align: left;
+    padding: 10px;
+    border: 1px solid #ddd;
+  }
+  
+  td {
+    padding: 10px;
+    border: 1px solid #ddd;
+  }
+  
+  tr:nth-child(even) {
+    background-color: #f9f9f9;
+  }
+
+  button {
+    padding: 5px 10px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 4px;
+  }
+  
+  button:hover {
+    background-color: #0056b3;
+  }
+  
+  button:focus {
+    outline: none;
+  }
+  
+  @media only screen and (max-width: 600px) {
+    table {
+      border-collapse: collapse;
+      overflow-x: auto;
+      display: block;
+      white-space: nowrap; 
+    }
+  
+    th, td {
+      min-width: 100px; 
+      padding: 8px;
+      text-align: left;
+    }
+  }
+  
