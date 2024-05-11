@@ -129,21 +129,22 @@ const columns: Column[] = [
 interface Data {
   id: number;
   name: string;
-  email: string;
+  requirement:number
 }
 
 function createData(
   id: number,
   name: string,
-  email: string,
+  requirement:number
+  
 ): Data {
-  return { id, name, email };
+  return { id, name, req };
 }
 
 const rows: Data[] = [
-  createData(1, 'Client 1', 'Java'),
-  createData(2, 'Client 2', 'Python'),
-  createData(3, 'Client 3', 'ReactJS'),
+  createData(1, 'Client 1', 2),
+  createData(2, 'Client 2', 3),
+  createData(3, 'Client 3', 4),
 ];
 
 export default function ColumnGroupingTable() {

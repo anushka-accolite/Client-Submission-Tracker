@@ -9,8 +9,8 @@ import Paper from '@mui/material/Paper';
 import TextField from '@mui/material/TextField';
 import MenuItem from '@mui/material/MenuItem';
 import Button from '@mui/material/Button';
-import Chart from 'chart.js/auto';
 import '../../css/listofcandidate.css'
+import Chart from 'chart.js/auto';
 
 function createData(id, name, email, experience, skill, status, IsEmployee, LastWorkingDay) {
   return { id, name, email, experience, skill, status, IsEmployee, LastWorkingDay };
@@ -80,6 +80,7 @@ export default function Listofcandidate() {
     });
     setRows(updatedRows);
   };
+  
 
   const getStatusColor = (status) => {
     switch (status) {
@@ -155,11 +156,19 @@ export default function Listofcandidate() {
     };
   }, [rows]);
 
+  // const filteredRows = rows.filter((row) =>
+  //   selectedColumn && searchTerm
+  //     ? row[selectedColumn].toLowerCase().includes(searchTerm.toLowerCase())
+  //     : true
+  // );
+
   const filteredRows = rows.filter((row) =>
-    searchTerm
-      ? row[selectedColumn].toLowerCase().includes(searchTerm.toLowerCase())
+    selectedColumn && searchTerm
+      ? row[selectedColumn].toString().toLowerCase().includes(searchTerm.toLowerCase())
       : true
   );
+  
+  
 
   return (
     <>

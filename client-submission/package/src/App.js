@@ -5,7 +5,7 @@ import { useEffect } from "react";
 const App = () => {
   const routing = useRoutes(Themeroutes);
   useEffect(()=>{
-    localStorage.setItem("role","user");
+    localStorage.setItem("role","admin");
   },[])
 
   return <div className="dark">{routing}</div>;
