@@ -63,7 +63,7 @@ const CreateClient = () => {
           margin="normal"
           name="clientId"
           value={formData.clientId}
-          onChange={handleChange}
+          onChange={handleChange} required
         />
         <TextField
           label="Client Name"
@@ -72,7 +72,7 @@ const CreateClient = () => {
           margin="normal"
           name="clientName"
           value={formData.clientName}
-          onChange={handleChange}
+          onChange={handleChange} required
         />
          <TextField
           label="Client Requirement"
@@ -81,7 +81,7 @@ const CreateClient = () => {
           margin="normal"
           name="clientemail"
           value={formData.clientemail}
-          onChange={handleChange}
+          onChange={handleChange} required
         />
         {/* <TextField
           label="Project Duration"
@@ -141,7 +141,7 @@ const CreateClient = () => {
           margin="normal"
           name="talentAcquisition"
           value={formData.talentAcquisition}
-          onChange={handleChange}
+          onChange={handleChange} required
         />
         {/* Project Manager field */}
         <TextField
@@ -151,7 +151,7 @@ const CreateClient = () => {
           margin="normal"
           name="projectManager"
           value={formData.projectManager}
-          onChange={handleChange}
+          onChange={handleChange} required
         />
         {/* Account Manager field */}
         <TextField
@@ -161,7 +161,7 @@ const CreateClient = () => {
           margin="normal"
           name="accountManager"
           value={formData.accountManager}
-          onChange={handleChange}
+          onChange={handleChange} required
         />
         {/* Response Time field */}
         <TextField
@@ -171,7 +171,7 @@ const CreateClient = () => {
           margin="normal"
           name="responseTime"
           value={formData.responseTime}
-          onChange={handleChange}
+          onChange={handleChange} required
         />
         <Button
           variant="contained"

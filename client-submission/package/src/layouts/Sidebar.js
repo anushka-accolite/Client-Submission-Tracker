@@ -1,7 +1,7 @@
 import { Button, Nav, NavItem } from "reactstrap";
 import Logo from "./Logo";
 import { Link, useLocation } from "react-router-dom";
-import { useEffect, useState } from "react";
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 const adminNavigation = [
   {
@@ -48,6 +48,9 @@ const userNavigation = [
     icon: "bi bi-person",
   },
   // Add more user-specific navigation items here
+  {
+
+  }
 ];
 
 const Sidebar = () => {
@@ -75,13 +78,13 @@ const Sidebar = () => {
       <div className="pt-4 mt-2">
         <Nav vertical className="sidebarNav">
           {navigation.map((navi, index) => (
-            <NavItem key={index} className="sidenav-bg">
+            <NavItem key={index} className="" >
               <Link
                 to={navi.href}
                 className={
                   location.pathname === navi.href
-                    ? "text-primary nav-link py-3"
-                    : "nav-link text-secondary py-3"
+                    ? "text-primary bg-white nav-link py-3"
+                    : "nav-link text-white py-3"
                 }
               >
                 <i className={navi.icon}></i>

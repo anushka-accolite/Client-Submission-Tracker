@@ -172,9 +172,9 @@ export default function Listofcandidate() {
 
   return (
     <>
-    <div>
+    <div id='uppercon'>
       <TextField
-        select
+        select className="search"
         label="Select Column"
         value={selectedColumn}
         onChange={handleColumnChange}
@@ -196,7 +196,7 @@ export default function Listofcandidate() {
         size="small"
         style={{ marginBottom: '10px' }}
       />
-      <TableContainer component={Paper} style={{maxWidth:"50vw !important"
+      <TableContainer component={Paper} style={{maxWidth:"50vw !important",marginTop:"15px"
       }}>
         <Table sx={{maxWidth:"10px"}} aria-label="simple table">
           <TableHead>

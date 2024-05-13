@@ -1,5 +1,6 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, Route } from "react-router-dom";
+import '../views/css/header.css'
 import {
   Navbar,
   Collapse,
@@ -75,7 +76,7 @@ const Header = () => {
           </DropdownToggle>
           <DropdownMenu>
             <DropdownItem>My Account</DropdownItem>
-            <DropdownItem>Edit Profile</DropdownItem>
+            <DropdownItem><Link to="/myprofile" className="myprofile">Edit Profile</Link></DropdownItem>
             <DropdownItem divider />
             <DropdownItem>Logout</DropdownItem>
           </DropdownMenu>

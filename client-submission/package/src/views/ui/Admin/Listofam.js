@@ -63,14 +63,14 @@ export default function Listofam() {
   return (
     <>
       <h1>List of Account Manager</h1>
-      <div className='uppercon'>
-        <FormControl variant="outlined" style={{ marginRight: '16px', minWidth: '120px' }}>
-          <Select
+      <div className='uppercontainer' >
+        <FormControl variant="outlined" >
+          <Select style={{minWidth:'120px',marginRight:'16px'}}
            className='uppercon'
             value={selectedColumn}
             onChange={handleColumnChange}
             displayEmpty
-            sx={{ border: '1px solid #ccc', borderRadius: '4px' }} // Add border style here
+           
           >
             {Object.keys(rows[0]).map((column) => (
               <MenuItem key={column} value={column}>
@@ -86,7 +86,7 @@ export default function Listofam() {
           onChange={handleSearchTermChange}
         />
       </div>
-      <TableContainer component={Paper}>
+      <TableContainer component={Paper} style={{boxShadow:"0px 4px 8px rgba(0, 0, 0, 0.1)"}}>
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
           <TableHead>{renderHeaderCells()}</TableHead>
           <TableBody>{renderBodyRows()}</TableBody>

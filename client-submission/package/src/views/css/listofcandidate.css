@@ -1,25 +1,3 @@
-/* /* .status-dot {
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-  }
-  
-  .status-dot.selected {
-    background-color: green;
-  }
-  
-  .status-dot.rejected {
-    background-color: red;
-  }
-  
-  .status-dot.pending {
-    background-color: yellow;
-  }
-  
-  .status-dot.on-hold {
-    background-color: orange;
-  }
-   */
 
    .status-dot {
     width: 10px;
@@ -84,4 +62,9 @@
     margin: auto; 
     overflow-x: hidden;
   }
+  .search{
+    width:150px;
+
+  }
+ 
  
