@@ -6,11 +6,8 @@
 
 h1 {
     text-align: center;
-    color: #33006F; /* Adjusted text color */
-    /* text-shadow: 2px 2px 2px rgba(0, 0, 0, 0.2); Added text shadow */
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
-    margin-bottom: 20px; /* Increased bottom margin */
-    font-weight: bolder;
+    color: rgb(15, 48, 92); 
+    margin-bottom: 20px; 
   }
   
 tr:hover {

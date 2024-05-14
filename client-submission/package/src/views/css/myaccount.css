@@ -1,0 +1,9 @@
+.user-info{
+    justify-content: center;
+    align-items: center;
+    /* background-color: aqua; */
+    margin: 10px;
+}
+h2{
+    color: rgb(15, 48, 92);
+}

@@ -1,0 +1,85 @@
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background-position: center;
+    background-repeat: space;
+    background-size: calc(150% - 20px);
+    margin: 0; /* Remove default body margin */
+}
+
+/* Center the image horizontally and vertically */
+.logo {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+}
+
+.logo img {
+    max-width: 100%;
+    max-height: 100%;
+}
+
+/* Full-width input fields */
+input[type="text"],
+input[type="password"],
+button {
+    width: 100%;
+    box-sizing: border-box; /* Ensure padding and border are included in the width */
+}
+
+.container {
+    padding: 12px;
+    max-width: 400px; /* Limit the width of the container */
+    margin: 0 auto; /* Center the container horizontally */
+    border: 1px solid black;
+    border-radius: 10px; /* Add border radius */
+    box-shadow: 0 2px 4px rgba(36, 45, 175, 0.1); /* Add shadow */
+}
+
+.auth-footer-text-link {
+    text-align: center;
+}
+
+button {
+    background-color: rgb(25, 76, 187);
+    color: white;
+    padding: 14px 20px;
+    margin: 20px 0 8px; /* Add margin-top to create space above the button */
+    border: none;
+    cursor: pointer;
+    width: 100%;
+}
+
+.btn {
+    /* background-color: #37d1d6; */
+    color: black;
+    padding: 10px 16px;
+    margin: 8px 0;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+    border: 1px solid #37d1d6; /* Add border */
+    border-radius: 5px; /* Optional: Add border radius for rounded corners */
+}
+
+.auth-footer-text-link {
+    text-align: center;
+}
+.v0{
+    text-align: center;
+}
+.center-text {
+    text-align: center;
+  }
+
+.auth-footer-text-link {
+    text-align: center;
+    display: inline-block; /* Display links as block elements */
+    margin-top: 5px; /* Add margin-top for spacing */
+}
+/* Responsive styles */
+@media screen and (max-width: 767px) {
+    .container {
+        padding: 20px;
+    }
+}

@@ -1,15 +1,13 @@
-
-
 import React, { useState } from 'react';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
-import MenuItem from '@mui/material/MenuItem';
-import Select from '@mui/material/Select';
-import '../../css/createproject.css';
-import { FormControl, InputLabel } from '@mui/material';
-import AdapterDateFns from '@mui/lab/AdapterDateFns';
-import LocalizationProvider from '@mui/lab/LocalizationProvider';
-import DatePicker from '@mui/lab/DatePicker';
+// import MenuItem from '@mui/material/MenuItem';
+// import Select from '@mui/material/Select';
+import '../../css/createclient.css';
+// import { FormControl, InputLabel } from '@mui/material';
+// import AdapterDateFns from '@mui/lab/AdapterDateFns';
+// import LocalizationProvider from '@mui/lab/LocalizationProvider';
+// import DatePicker from '@mui/lab/DatePicker';
 const CreateClient = () => {
   const [formData, setFormData] = useState({
     clientId:'',
@@ -21,9 +19,9 @@ const CreateClient = () => {
     // endDate: null,
     // skills: [],
     responseTime: '',
-    talentAcquisition: '', // New field
-    projectManager: '', // New field
-    accountManager: '' // New field
+    talentAcquisition: '', 
+    projectManager: '', 
+    accountManager: ''
   });
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -54,7 +52,7 @@ const CreateClient = () => {
   };
   return (
     <>
-      <h1>Add</h1>
+      <h1>Add Client Details</h1>
       <form onSubmit={handleSubmit}>
       <TextField
           label="Client Id"
@@ -177,8 +175,7 @@ const CreateClient = () => {
           variant="contained"
           color="primary"
           type="submit"
-        >
-          Submit
+        >Submit
         </Button>
       </form>
     </>

@@ -38,11 +38,11 @@ function EditProfile() {
   };
 
   return (
-    <div id="main-container" style={{boxShadow:"1px 1px 1px whitesmoke"}}>
+    <div id="main-container">
       <form className="form" style={{marginTop:"-20px",width:"100%",height:"100%"}} onSubmit={handleSubmit} onReset={handleReset}>
         <h2>Edit Profile</h2>
         <div className="form-group">
-          <label htmlFor="name">User Id:</label>
+          <label htmlFor="name">User Id :</label>
           <div className="relative">
             <input
               className="form-control"
@@ -61,7 +61,7 @@ function EditProfile() {
           </div>
         </div>
         <div className="form-group">
-          <label htmlFor="username">Username:</label>
+          <label htmlFor="username">Username :</label>
           <div className="relative">
             <input
               className="form-control"
@@ -75,13 +75,13 @@ function EditProfile() {
           </div>
         </div>
         <div className="form-group">
-          <label htmlFor="email">Email:</label>
+          <label htmlFor="email">Email :</label>
           <div className="relative">
             <input
               className="form-control"
               type="email"
               required=""
-              placeholder="Type your email address"
+              placeholder="New email address"
               pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -91,12 +91,12 @@ function EditProfile() {
         </div>
 
         <div className="form-group">
-          <label htmlFor="role">Role:</label>
+          <label htmlFor="role">Role :</label>
           <div className="relative">
             <input
               className="form-control"
               type="text"
-              placeholder="Type your Role"
+              placeholder="New Role"
               value={role}
               onChange={(e) => setRole(e.target.value)}
             />
@@ -104,7 +104,7 @@ function EditProfile() {
           </div>
         </div>
         <div className="form-group">
-          <label htmlFor="profile-picture">Profile Picture:</label>
+          <label htmlFor="profile-picture">Profile Picture :</label>
           <div className="relative">
             <div className="input-group">
               <label className="input-group-btn">

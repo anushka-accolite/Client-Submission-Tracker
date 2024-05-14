@@ -75,10 +75,10 @@ const Header = () => {
             ></img>
           </DropdownToggle>
           <DropdownMenu>
-            <DropdownItem>My Account</DropdownItem>
+            <DropdownItem><Link to="/myaccount" className="myaccount">My Account</Link></DropdownItem>
             <DropdownItem><Link to="/myprofile" className="myprofile">Edit Profile</Link></DropdownItem>
             <DropdownItem divider />
-            <DropdownItem>Logout</DropdownItem>
+            <DropdownItem><Link to="/loginform" className="loginform">Logout</Link></DropdownItem>
           </DropdownMenu>
         </Dropdown>
       </Collapse>

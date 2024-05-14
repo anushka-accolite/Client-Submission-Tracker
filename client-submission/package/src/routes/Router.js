@@ -18,6 +18,8 @@ const AM=lazy(() => import("../views/ui/User/AM.js"));
 const Listofcandidates=lazy(() => import("../views/ui/User/Listofcandidate.js"));
 const SubmittedProfile=lazy(()=> import("../views/ui/User/SubmittedProfile.js"));
 const EditProfile=lazy(()=> import("../views/ui/Admin/EditProfile.js"));
+const LoginForm=lazy(()=> import("../views/ui/LoginPage/LoginForm.js"));
+const MyAccount=lazy(()=> import("../views/ui/Admin/MyAccount.js"));
 // Routes
 const ThemeRoutes = [
   {
@@ -34,7 +36,9 @@ const ThemeRoutes = [
       { path: "/AM", exact: true, element: <AM/> },
       {path:"/listofcandidates",exact:true,element:<Listofcandidates/>},
       {path:"/profile",exact:true,element:<SubmittedProfile/>},
-      {path:"/myprofile",exact:true,element:<EditProfile/>}
+      {path:"/myprofile",exact:true,element:<EditProfile/>},
+      {path:"/loginform",exact:true,element:<LoginForm/>},
+      {path:"/myaccount",exact:true,element:<MyAccount/>}
     ],
   },
 ];

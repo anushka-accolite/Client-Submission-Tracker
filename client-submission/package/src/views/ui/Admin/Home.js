@@ -45,10 +45,10 @@ const Starter = () => {
           value={filterColumn}
           onChange={(e) => setFilterColumn(e.target.value)}
         >
-          <option value="cname">CNAME</option>
-          <option value="ta">TA</option>
-          <option value="pm">PM</option>
-          <option value="am">AM</option>
+          <option value="cname">Client Name</option>
+          <option value="ta">Talent Acquisiton</option>
+          <option value="pm">Program Manager</option>
+          <option value="am">Account Manager</option>
         </select>
         <input
           type="text"
@@ -60,10 +60,10 @@ const Starter = () => {
       <table>
         <thead>
           <tr>
-            <th>CNAME</th>
-            <th>TA</th>
-            <th>PM</th>
-            <th>AM</th>
+            <th>Client Name</th>
+            <th>Talent Acquisiton</th>
+            <th>Program Manager</th>
+            <th>Account Manager</th>
             <th
               onClick={() => handleSort('restime')}
               style={{ cursor: 'pointer' }}

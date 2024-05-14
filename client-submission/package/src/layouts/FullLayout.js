@@ -9,7 +9,7 @@ const FullLayout = () => {
       <div className="pageWrapper d-lg-flex">
         {/********Sidebar**********/}
         <aside className="sidebarArea shadow" id="sidebarArea" style={{
-        backgroundColor: "#3F00FF",
+        backgroundColor: "#3800e5",
         textShadow: "0px 0px 1px whitesmoke" ,
         fontFamily: 'Lato, sans-serif',
         boxShadow: "5px 5px 10px rgba(0, 0, 0, 0.2); "

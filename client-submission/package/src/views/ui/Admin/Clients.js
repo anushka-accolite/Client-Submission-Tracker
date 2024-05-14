@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useState } from 'react';
 import Paper from '@mui/material/Paper';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -10,51 +10,35 @@ import TextField from '@mui/material/TextField';
 import MenuItem from '@mui/material/MenuItem';
 import '../../css/clients.css';
 
-interface Column {
-  id: string;
-  label: string;
-  minWidth?: number;
-  align?: 'right';
-  format?: (value: number) => string;
-}
-
-const columns: Column[] = [
+const columns = [
   { id: 'id', label: 'Client ID', minWidth: 170 },
   { id: 'name', label: 'Client Name', minWidth: 100 },
-  { id: 'requirement', label: 'Client Requirement', minWidth: 170 }, // Added client requirement column
+  { id: 'requirement', label: 'Client Requirement', minWidth: 170 },
+  { id: 'skills', label: 'Skills', minWidth: 170 }, 
+  { id: 'responseTime', label: 'Response Time', minWidth: 170 }, 
 ];
 
-interface Data {
-  id: number;
-  name: string;
-  requirement: number;
+function createData(id, name, requirement, skills, responseTime) {
+  return { id, name, requirement, skills, responseTime };
 }
 
-function createData(
-  id: number,
-  name: string,
-  requirement: number
-): Data {
-  return { id, name, requirement };
-}
-
-const rows: Data[] = [
-  createData(1, 'Client 1', 2),
-  createData(2, 'Client 2', 3),
-  createData(3, 'Client 3', 4),
+const rows = [
+  createData(1, 'Client 1', 2, { java: true, python: true }, 20),
+  createData(2, 'Client 2', 3, { mysql: true, java: true }, 30),
+  createData(3, 'Client 3', 4, { cpp: true, python: true }, 40),
 ];
 
 export default function ColumnGroupingTable() {
-  const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(10);
-  const [selectedColumn, setSelectedColumn] = React.useState('name'); // Default selected column
-  const [searchTerm, setSearchTerm] = React.useState('');
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [selectedColumn, setSelectedColumn] = useState('name');
+  const [searchTerm, setSearchTerm] = useState('');
 
-  const handleChangePage = (event: unknown, newPage: number) => {
+  const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
 
-  const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(+event.target.value);
     setPage(0);
   };
@@ -63,7 +47,7 @@ export default function ColumnGroupingTable() {
     setSelectedColumn(event.target.value);
   };
 
-  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleSearchChange = (event) => {
     setSearchTerm(event.target.value);
   };
 
@@ -90,8 +74,8 @@ export default function ColumnGroupingTable() {
           onChange={handleSearchChange}
         />
       </div>
-      <Paper sx={{ width: '100%' }} className='table'>
-        <TableContainer sx={{ maxHeight: 440 }}>
+      <Paper style={{ width: '100%' }} className='table'>
+        <TableContainer style={{ maxHeight: 440 }}>
           <Table stickyHeader aria-label="sticky table">
             <TableHead>
               <TableRow>
@@ -116,8 +100,10 @@ export default function ColumnGroupingTable() {
                       const value = row[column.id];
                       return (
                         <TableCell key={column.id} align={column.align}>
-                          {column.format && typeof value === 'number'
-                            ? column.format(value)
+                          {column.id === 'skills' && typeof value === 'object' ? 
+                            Object.keys(value).map((key, index) => (
+                              <div key={index}>{`${index + 1}. ${key}`}</div>
+                            )) 
                             : value}
                         </TableCell>
                       );
@@ -127,7 +113,6 @@ export default function ColumnGroupingTable() {
             </TableBody>
           </Table>
         </TableContainer>
-        
       </Paper>
     </>
   );
