@@ -8,3 +8,17 @@ h1{
 .dropdown{
    margin-right:10px !important;
 }
+
+.controls-container {
+    display: flex;
+    align-items: center;
+  }
+  
+  .dropdown-container, .searchbar-container {
+    margin-right: 10px;
+  }
+  
+  .edit-button-container {
+    margin-left: auto;
+  }
+  
