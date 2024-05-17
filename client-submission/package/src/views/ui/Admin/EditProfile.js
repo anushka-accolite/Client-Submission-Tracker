@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 // import { useHistory } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 import '../../css/editprofile.css';
 
 function EditProfile({ history }) {
+ const navigate = useNavigate();
   // const history = useHistory(); // Access the history object using useHistory hook
   // State variables to store form data
   const [userId, setUserId] = useState('');
@@ -24,6 +26,7 @@ function EditProfile({ history }) {
     });
     // You can add further logic here, such as sending the data to an API
     // Redirect to MyAccount page after applying changes
+    navigate('/myaccount');
   };
 
   // Event handler for file input change
