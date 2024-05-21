@@ -21,4 +21,14 @@
 }
 .nav-link{
     font-weight: bold;
+} */
+.dropdownbtn{
+    background-color:white;
+    border: none;
+    color:blue;
+    width:100%;
+    padding-right:10px;
+    font-family:Georgia, 'Times New Roman', Times, serif
+
 }
+
