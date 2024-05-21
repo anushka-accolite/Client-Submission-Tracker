@@ -64,7 +64,6 @@ const LoginForm = () => {
     }
   };
 
-function App() {
   return (
     <div className="modal-content animate">
       <div className="container">
@@ -148,7 +147,6 @@ function App() {
       </div>
     </div>
   );
-}
-}
+};
 
 export default LoginForm;
