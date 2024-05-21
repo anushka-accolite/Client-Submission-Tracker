@@ -43,11 +43,19 @@
   background-color: red;
   color:white
  }
- 
-  .top-table{
+
+.dropdown{
+  width:120px;
+  
+}
+.searchip{
+  /* padding-top:10px; */
+  width:180px;
+  
+}
+.top-table{
 
     margin-bottom: 60px;
   }
 
- 
  
