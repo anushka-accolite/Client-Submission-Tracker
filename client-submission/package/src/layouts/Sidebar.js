@@ -213,7 +213,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 const adminNavigation = [
   {
     title: "Home",
-    href: "/",
+    href: "/home",
     icon: "bi bi-house",
   },
   {

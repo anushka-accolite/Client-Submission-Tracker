@@ -1,58 +1,34 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
+// import { useHistory } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 import '../../css/editprofile.css';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
-function EditProfile() {
+function EditProfile({ history }) {
+ const navigate = useNavigate();
+  // const history = useHistory(); // Access the history object using useHistory hook
+  // State variables to store form data
   const [userId, setUserId] = useState('');
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [role, setRole] = useState('');
   const [selectedFile, setSelectedFile] = useState(null);
 
-  useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        const token = localStorage.getItem("token");
-        const headers = { "Authorization": `Bearer ${token}` };
-        const { data } = await axios.get('http://localhost:8092/api/user/users', { headers });
-
-        const userData = data.filter(item => item.userName === localStorage.getItem("username"))[0];
-        setUserId(userData.userId || '');
-        setUsername(userData.userName || ''); // Assuming it's userName, not username
-        setEmail(userData.email || '');
-        setRole(userData.userRole || '');
-        setSelectedFile(userData.profilePicture || null);
-        console.log(userData);
-      } catch (error) {
-        console.error('Error fetching user data:', error);
-      }
-    };
-
-    fetchUserData();
-  }, []);
-const navigate=useNavigate();
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-    try {
-      const token = localStorage.getItem("token");
-      const headers = { "Authorization": `Bearer ${token}` };
-      const { data } = await axios.get('http://localhost:8092/api/user/users', { headers });
-
-      const userData = data.filter(item => item.userName === localStorage.getItem("username"))[0];
-        userData.userName= username;
-        userData.email=email;
-      // console.log(formData)
-      // await axios.put(`http://localhost:8092/api/user/${formData.userId}`, {formData}, { headers });
-      localStorage.setItem("username",username);
-       await axios.put(`http://localhost:8092/api/user/${userId}`, userData, { headers });
-      alert('Profile updated successfully!');
-      navigate('/myprofile');
-      
-    } catch (error) {
-      console.error('Error updating user data:', error);
-      alert('Failed to update profile.');
-    }
+  // Event handler for form submission
+  const handleSubmit = (event) => {
+    event.preventDefault(); // Prevent default form submission behavior
+    // Log form data to the console
+    console.log({
+      userId: userId,
+      username: username,
+      email: email,
+      role: role,
+      selectedFile: selectedFile
+    });
+    // You can add further logic here, such as sending the data to an API
+    // Redirect to MyAccount page after applying changes
+    navigate('/myaccount');
   };
 
   const handleFileChange = (event) => {

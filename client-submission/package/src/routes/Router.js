@@ -30,9 +30,16 @@ const ThemeRoutes = [
     
     
     path: "/",  
-    element: <FullLayout/>,
+    element: <FullLayout showSidebarAndHeader={false} />,
     children: [
-      { path: "/", element: <Navigate to="/home" /> },
+      { path: "/", element: <Navigate to="/loginform" /> },
+      { path: "/loginform", exact: true, element: <LoginForm/> }
+    ],
+  },
+  {
+    path: "/",  
+    element: <FullLayout showSidebarAndHeader={true} />,
+    children: [
       { path: "/home", exact: true, element: <Starter /> },
       { path: "/createclient", exact: true, element: <CreateClient /> },
       { path: "/listofclients", exact: true, element: <Clients /> },
@@ -43,6 +50,7 @@ const ThemeRoutes = [
       {path:"/listofcandidates",exact:true,element:<Listofcandidates/>},
       {path:"/profile",exact:true,element:<SubmittedProfile/>},
       {path:"/myprofile",exact:true,element:<EditProfile/>},
+      // {path:"/loginform",exact:true,element:<LoginForm/>},
       {path:"/myaccount",exact:true,element:<MyAccount/>}
     ],
   },

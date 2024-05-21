@@ -11,12 +11,30 @@ import MenuItem from '@mui/material/MenuItem';
 import Button from '@mui/material/Button';
 import '../../css/listofcandidate.css';
 import Chart from 'chart.js/auto';
-import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+//import { Chart } from 'chart.js';
+
 
 function createData(id, name, email, experience, skill, status, IsEmployee, daysToLWD) {
   return { id, name, email, experience, skill, status, IsEmployee, daysToLWD };
 }
+
+const initialRows = [
+  createData('C101', 'Chirag', 'arorachirag709@gmail.com', 5, 'JAVA', 'Selected', 'Yes', 2),
+  createData('C102', 'Deepak', 'aroradeepak102@gmail.com', 3, 'NA', 'Pending', 'No', 6),
+  createData('C103', 'Ram', 'aroraram102@gmail.com', 2 , 'Python', 'On-Hold', 'No', 4),
+  createData('C104', 'Priya', 'aroraPriya102@gmail.com', 4, 'C++', 'Rejected', 'No', 4),
+];
+
+function createDataInd(status, color) {
+  return { status, color};
+}
+
+const rowsInd = [
+  createDataInd('Selected', 'Green'),
+  createDataInd('Rejected', 'Red'),
+  createDataInd('Pending', 'Yellow'),
+  createDataInd('On-hold', 'Orange'),
+];
 
 const statusOptions = ['Selected', 'Rejected', 'Pending', 'On-Hold'];
 
@@ -173,7 +191,7 @@ export default function Listofcandidate() {
     if (chartInstance.current) {
       chartInstance.current.destroy();
     }
-    chartInstance.current = new Chart(ctx, {
+    chartInstance.current = new Chart(ctx,  {
       type: 'pie',
       data: {
         labels: statusOptions,
@@ -226,34 +244,51 @@ export default function Listofcandidate() {
 
   return (
     <>
-      <div id='uppercon'>
-        <TextField
-          select className="search"
-          label="Select Column"
-          value={selectedColumn}
-          onChange={handleColumnChange}
-          variant="outlined"
-          size="small"
-          
-        >
-          {columns.map((column) => (
-            <MenuItem key={column.id} value={column.id}>
-              {column.label !== 'Days to LWD' && column.label !== 'Delete' ? column.label : ''}
-            </MenuItem>
-          ))}
-        </TextField>
-        <TextField
-          label="Search"
-          value={searchTerm}
-          onChange={handleSearchChange}
-          variant="outlined"
-          size="small"
-          className='searchip'
-        />
-        <TableContainer component={Paper} style={{ maxWidth: "50vw !important", marginTop: "15px" }}>
-          <Table sx={{ maxWidth: "10px" }} aria-label="simple table">
-            <TableHead>
-              <TableRow>
+    <div id='uppercon'>
+      <div className="top-table">
+      <TextField
+        select className="search"
+        label="Select Column"
+        value={selectedColumn}
+        onChange={handleColumnChange}
+        variant="outlined"
+        size="small"
+        style={{ marginRight: '10px' }}
+      >
+        {columns.map((column) => (
+          <MenuItem key={column.id} value={column.id}>
+            {column.label!=='LWD' && column.label!=='Delete'?column.label:''}
+          </MenuItem>
+        ))}
+      </TextField>
+      <TextField
+        label="Search"
+        value={searchTerm}
+        onChange={handleSearchChange}
+        variant="outlined"
+        size="small"
+        style={{ marginBottom: '10px' }}
+      />
+      <TableContainer component={Paper} style={{maxWidth:"50vw !important",marginTop:"15px"
+      }}>
+        <Table sx={{maxWidth:"10px"}} aria-label="simple table">
+          <TableHead>
+            <TableRow>
+              {columns.map((column) => (
+                <TableCell key={column.id}>
+                  <b>{column.label}</b>
+                  {column.id === 'LastWorkingDay' && (
+                    <button onClick={handleSort}>
+                      {sortOrder === 'asc' ? '↓' : '↑'}
+                    </button>
+                  )}
+                </TableCell>
+              ))}
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {filteredRows.map((row) => (
+              <TableRow key={row.id}>
                 {columns.map((column) => (
                   <TableCell key={column.id}>
                     <b>{column.label}</b>
@@ -265,52 +300,51 @@ export default function Listofcandidate() {
                   </TableCell>
                 ))}
               </TableRow>
-            </TableHead>
-            <TableBody>
-              {filteredRows.map((row) => (
-                <TableRow key={row.id} className='tablerow'>
-                  {columns.map((column) => (
-                    <TableCell key={column.id}>
-                      {column.id === 'daysToLWD' ? (
-                        <span>{row[column.id] !== null ? `${row[column.id]} days` : 'N/A'}</span>
-                      ) : column.id === 'status' ? (
-                        <div style={{ display: 'flex', alignItems: 'center' }}>
-                          <TextField className='dropdown'
-                            select
-                            value={row.status}
-                            onChange={(e) => handleStatusChange(row.id, e.target.value)}
-                            variant="outlined"
-                            size="small"
-                            style={{ color: getStatusColor(row.status) }}
-                          >
-                            {statusOptions.map((option) => (
-                              <MenuItem key={option} value={option}>
-                                {option}
-                              </MenuItem>
-                            ))}
-                          </TextField>
-                          <div
-                            className={`status-dot ${row.status.toLowerCase()}`}
-                            style={{ marginLeft: '5px' }}
-                          />
-                        </div>
-                      ) : column.id === 'delete' ? (
-                        <Button id="delbtn" onClick={() => handleDelete(row.id)}>Delete</Button>
-                      ) : (
-                        row[column.id]
-                      )}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
-        <div style={{ marginLeft: "200px", width: "500px", height: "500px" }}>
-          <canvas ref={pieChartRef}></canvas>
-        </div>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
       </div>
+      {/* <div style={{marginLeft:"200px",width:"500px",height:"500px"}}>
+      <canvas ref={pieChartRef}></canvas>
+      </div> */}
+      <div className="bottom-table">
+      <div style={{ display: 'flex' }}>
+      <div style={{ width: '50%' }}>
+      <div style={{ marginLeft: "50px", width: "375px", height: "375px" }}>
+      <canvas ref={pieChartRef}></canvas>
+    
+  </div>
+  </div>
+  <div style={{ width: '50%' }}>
+  <TableContainer component={Paper} style={{ marginTop: "15px" }}>
+    <Table sx={{ maxWidth: '80vw'}} aria-label="simple table">
+      <TableHead>
+        <TableRow>
+          <TableCell><b>Status</b></TableCell>
+          <TableCell><b>Color</b></TableCell>
+        </TableRow>
+      </TableHead>
+      <TableBody>
+        {rowsInd.map((r) => (
+          <TableRow
+            key={r.status}
+            sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+          >
+            <TableCell component="th" scope="row">
+              {r.status}
+            </TableCell>
+            <TableCell align="left"> { r.color }
+            </TableCell>
+          </TableRow>
+        ))}
+      </TableBody>
+    </Table>
+  </TableContainer>
+  </div>
+  </div>
+  </div>
+  </div>
     </>
   );
 }
-
