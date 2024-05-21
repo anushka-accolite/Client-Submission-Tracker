@@ -1,34 +1,5 @@
-
-   .status-dot {
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    margin-right: 5px;
-  }
-  
-  .status-dot.selected {
-    background-color: green;
-  }
-  
-  .status-dot.rejected {
-    background-color: red;
-  }
-  
-  .status-dot.pending {
-    background-color: yellow;
-  }
-  
-  .status-dot.on-hold {
-    background-color: orange;
-  }
-  .pie-chart {
-    width: 100%; 
-    height: auto; 
-    max-width: 300px; 
-  }
-  
-   */
-   .status-dot {
+ 
+  .status-dot {
   width: 10px;
   height: 10px;
   border-radius: 50%;
@@ -57,14 +28,26 @@
   max-width: 300px;
 }
 
-.container {
-    max-width: 800px; 
-    margin: auto; 
-    overflow-x: hidden;
+#uppercon {
+    max-width: 1020px; 
+    /* margin-left: 30px;  */
+    overflow:hidden;
   }
   .search{
     width:150px;
-
   }
+  .tablerow:hover{
+    background-color: lightgray;
+  }
+ #delbtn:hover{
+  background-color: red;
+  color:white
+ }
+ 
+  .top-table{
+
+    margin-bottom: 60px;
+  }
+
  
  

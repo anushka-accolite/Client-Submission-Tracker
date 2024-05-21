@@ -1,4 +1,4 @@
-.myprofile{
+/* .myprofile{
     text-decoration: none;
     color:black;
 }
@@ -6,4 +6,19 @@
     font-weight: bold;
     color: white;
 }
-
+ */
+ .myaccount{
+    text-decoration: none;
+    color:blue;
+}
+.myprofile{
+    text-decoration: none;
+    color:blue;
+}
+.loginform{
+    text-decoration: none;
+    color:blue;
+}
+.nav-link{
+    font-weight: bold;
+}

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -10,21 +10,43 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import TextField from '@mui/material/TextField';
-import IconButton from '@mui/material/IconButton';
-import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
-import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import '../../css/listofta.css';
-
-const rows = [
-  { Id: 1, Name: 'John Doe', Experience: 3, Project: 'Project A', Email: 'john.doe@example.com' },
-  { Id: 2, Name: 'Jane Smith', Experience: 5, Project: 'Project B', Email: 'jane.smith@example.com' },
-  { Id: 3, Name: 'Alice Johnson', Experience: 2, Project: 'Project C', Email: 'alice.johnson@example.com' },
-];
+import axios from 'axios';
 
 export default function Listofta() {
+  const [rows, setRows] = useState([]);
   const [selectedColumn, setSelectedColumn] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
   const [sortOrder, setSortOrder] = useState('asc');
+
+  
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const headers = { "Authorization": "Bearer " + token };
+        const response = await axios.get('http://localhost:8092/api/user/users', { headers });
+        let details = response.data;
+        console.log('Fetched Details:', details);
+        const toBeSearched = 'TalentAcquistion'.replace(/\s+/g, '').toLowerCase();
+        details = details.filter(item => {
+          return item.userRole.replace(/\s+/g, '').toLowerCase() === toBeSearched;
+        });
+        console.log('Filtered Details:', details);
+        const mappedDetails = details.map(item => ({
+          Id: item.userId,
+          Name: item.userName,
+          Email: item.email
+        }));
+
+        setRows(mappedDetails);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   const handleColumnChange = (event) => {
     setSelectedColumn(event.target.value);
@@ -39,8 +61,8 @@ export default function Listofta() {
   };
 
   const filteredRows = rows.filter((row) => {
-    if (selectedColumn === 'Id') {
-      return row[selectedColumn] === parseInt(searchTerm);
+    if (selectedColumn) {
+      return row[selectedColumn]?.toString().toLowerCase().includes(searchTerm.toLowerCase());
     } else {
       return Object.values(row).some((value) =>
         value.toString().toLowerCase().includes(searchTerm.toLowerCase())
@@ -50,30 +72,19 @@ export default function Listofta() {
 
   const sortedRows = [...filteredRows].sort((a, b) => {
     if (sortOrder === 'asc') {
-      return a.Experience - b.Experience;
+      return a.Name.localeCompare(b.Name);
     } else {
-      return b.Experience - a.Experience;
+      return b.Name.localeCompare(a.Name);
     }
   });
 
-
   const renderHeaderCells = () => {
+    const columns = ['Id', 'Username', 'Email'];
     return (
       <TableRow>
-        {Object.keys(rows[0]).map((column) => (
-          <TableCell key={column}>
-            {column === 'Experience' ? (
-              <>
-                <b>{column}</b>
-                <IconButton 
-                onClick={handleSortOrderChange}
-                >
-                  {sortOrder === 'asc' ? <ArrowUpwardIcon /> : <ArrowDownwardIcon />}
-                </IconButton>
-              </>
-            ) : (
+        {columns.map((column) => (
+          <TableCell key={column}>  
               <b>{column}</b>
-            )}
           </TableCell>
         ))}
       </TableRow>
@@ -82,17 +93,17 @@ export default function Listofta() {
 
   const renderBodyRows = () => {
     return sortedRows.map((row) => (
-      <TableRow key={row.Id}>
-        {Object.values(row).map((value, index) => (
-          <TableCell key={index}>{value}</TableCell>
-        ))}
+      <TableRow className='tr' key={row.Id}>
+        <TableCell>{row.Id}</TableCell>
+        <TableCell>{row.Name}</TableCell>
+        <TableCell>{row.Email}</TableCell>
       </TableRow>
     ));
   };
 
   return (
     <>
-      <h1>List of Talent Acquisition</h1>
+      <h1 id="hd">List of Talent Acquisition</h1>
       <div className='uppercon'>
         <FormControl variant="outlined">
           <Select
@@ -101,11 +112,9 @@ export default function Listofta() {
             onChange={handleColumnChange}
             displayEmpty
           >
-            {Object.keys(rows[0]).map((column) => (
-              <MenuItem key={column} value={column}>
-                {column}
-              </MenuItem>
-            ))}
+            <MenuItem value="Id">Id</MenuItem>
+            <MenuItem value="Name">Username</MenuItem>
+            <MenuItem value="Email">Email</MenuItem>
           </Select>
         </FormControl>
         <TextField
@@ -115,7 +124,7 @@ export default function Listofta() {
           onChange={handleSearchTermChange}
         />
       </div>
-      <TableContainer component={Paper} className='table' style={{boxShadow:"0px 4px 8px rgba(0, 0, 0, 0.1)"}}>
+      <TableContainer component={Paper} className='table'>
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
           <TableHead>{renderHeaderCells()}</TableHead>
           <TableBody>{renderBodyRows()}</TableBody>
