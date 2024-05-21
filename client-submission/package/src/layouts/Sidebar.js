@@ -292,8 +292,8 @@ const Sidebar = () => {
                 to={navi.href}
                 className={
                   location.pathname === navi.href
-                    ? 'text-primary bg-white nav-link py-3'
-                    : 'nav-link text-white py-3'
+                    ? 'text-primary bg-white  nav-link py-3'
+                    : 'nav-link text-white  py-3'
                 }
               >
                 <i className={navi.icon}></i>

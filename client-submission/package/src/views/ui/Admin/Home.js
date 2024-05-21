@@ -157,7 +157,7 @@ const Starter = () => {
               return typeof columnValue === 'string' && columnValue.toLowerCase().includes(searchTerm.toLowerCase());
             })
             .map((item, index) => (
-              <tr className='tr' key={index}>
+              <tr className='trow' key={index}>
                 <td className="td">{item.cname}</td>
                 <td className="td">{item.ta}</td>
                 <td className="td">{item.pm}</td>

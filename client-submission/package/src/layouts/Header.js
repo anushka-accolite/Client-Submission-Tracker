@@ -19,7 +19,7 @@ import user1 from "../assets/images/users/user1.jpg";
 const Header = () => {
   const [isOpen, setIsOpen] = React.useState(false);
   const [dropdownOpen, setDropdownOpen] = React.useState(false);
-
+  const navigate=useNavigate();
   const toggle = () => setDropdownOpen((prevState) => !prevState);
   const Handletoggle = () => {
     setIsOpen(!isOpen);
@@ -73,11 +73,11 @@ const Header = () => {
               width="30"
             ></img>
           </DropdownToggle>
-          <DropdownMenu>
-            <DropdownItem><Link to="/myaccount" className="myaccount">My Account</Link></DropdownItem>
-            <DropdownItem><Link to="/myprofile" className="myprofile">Edit Profile</Link></DropdownItem>
+          <DropdownMenu style={{background:"white"}}>
+            <DropdownItem><button className="dropdownbtn" onClick={()=>navigate('/myaccount')}>My Account</button></DropdownItem>
+            <DropdownItem><button className="dropdownbtn" onClick={()=>navigate('/myprofile')}>Edit Profile</button></DropdownItem>
             <DropdownItem divider />
-            <DropdownItem onClick={()=>localStorage.setItem("userRole","")} ><Link style={{textDecoration:'none',fontSize:"20px"}} to="/loginform" className="loginform">Logout</Link></DropdownItem>
+            <DropdownItem><button className="dropdownbtn" onClick={()=>{localStorage.setItem("userRole","");navigate('/loginform')}}>Logout</button></DropdownItem>
           </DropdownMenu>
         </Dropdown>
       </Collapse>
