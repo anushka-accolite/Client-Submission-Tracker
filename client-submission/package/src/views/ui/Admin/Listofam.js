@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -11,16 +11,41 @@ import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import TextField from '@mui/material/TextField';
 import '../../css/listofam.css';
-
-const rows = [
-  { Id: 1, Name: 'John Doe', Client: 'ABC Corp', Project: 'Project X', Email: 'john.doe@example.com' },
-  { Id: 2, Name: 'Jane Smith', Client: 'XYZ Inc', Project: 'Project Y', Email: 'jane.smith@example.com' },
-  { Id: 3, Name: 'Alice Johnson', Client: 'DEF Ltd', Project: 'Project Z', Email: 'alice.johnson@example.com' },
-];
+import axios from 'axios';
 
 export default function Listofam() {
+  const [rows, setRows] = useState([]);
   const [selectedColumn, setSelectedColumn] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
+  // var details="";
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const headers = { "Authorization": "Bearer " + token };
+
+        let response = await axios.get('http://localhost:8092/api/user/users', { headers });
+        let details = response.data;
+
+        const toBeSearched = 'Account Manager'.replace(/\s+/g, '').toLowerCase();
+        details = details.filter(item => {
+          return item.userRole.replace(/\s+/g, '').toLowerCase() === toBeSearched;
+        });
+
+        const mappedDetails = details.map(item => ({
+          Id: item.userId,
+          Username: item.userName,
+          Email: item.email
+        }));
+
+        setRows(mappedDetails);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   const handleColumnChange = (event) => {
     setSelectedColumn(event.target.value);
@@ -32,13 +57,14 @@ export default function Listofam() {
 
   const filteredRows = rows.filter((row) => {
     if (selectedColumn === '') {
-      return true; 
+      return true;
     } else {
       return row[selectedColumn].toString().toLowerCase().includes(searchTerm.toLowerCase());
     }
   });
 
   const renderHeaderCells = () => {
+    if (rows.length === 0) return null;
     return (
       <TableRow>
         {Object.keys(rows[0]).map((column) => (
@@ -52,7 +78,7 @@ export default function Listofam() {
 
   const renderBodyRows = () => {
     return filteredRows.map((row) => (
-      <TableRow key={row.id}>
+      <TableRow key={row.Id} className='tr'>
         {Object.values(row).map((value, index) => (
           <TableCell key={index}>{value}</TableCell>
         ))}
@@ -62,17 +88,17 @@ export default function Listofam() {
 
   return (
     <>
-      <h1>List of Account Manager</h1>
-      <div className='uppercontainer' >
-        <FormControl variant="outlined" >
-          <Select style={{minWidth:'120px',marginRight:'16px'}}
-           className='uppercon'
+      <h1 id='hd'>List of Account Manager</h1>
+      <div className='uppercontainer'>
+        <FormControl variant="outlined">
+          <Select
+            className='filter-select'
             value={selectedColumn}
             onChange={handleColumnChange}
             displayEmpty
            
           >
-            {Object.keys(rows[0]).map((column) => (
+            {rows.length > 0 && Object.keys(rows[0]).map((column) => (
               <MenuItem key={column} value={column}>
                 {column}
               </MenuItem>
@@ -86,7 +112,7 @@ export default function Listofam() {
           onChange={handleSearchTermChange}
         />
       </div>
-      <TableContainer component={Paper} style={{boxShadow:"0px 4px 8px rgba(0, 0, 0, 0.1)"}}>
+      <TableContainer component={Paper} className="table-container">
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
           <TableHead>{renderHeaderCells()}</TableHead>
           <TableBody>{renderBodyRows()}</TableBody>

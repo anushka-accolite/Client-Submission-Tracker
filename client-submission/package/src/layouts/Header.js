@@ -1,5 +1,5 @@
 import React from "react";
-import { Link, Route } from "react-router-dom";
+import { Link} from "react-router-dom";
 import '../views/css/header.css'
 import {
   Navbar,
@@ -7,7 +7,6 @@ import {
   Nav,
   NavItem,
   NavbarBrand,
-  UncontrolledDropdown,
   DropdownToggle,
   DropdownMenu,
   DropdownItem,
@@ -78,7 +77,7 @@ const Header = () => {
             <DropdownItem><Link to="/myaccount" className="myaccount">My Account</Link></DropdownItem>
             <DropdownItem><Link to="/myprofile" className="myprofile">Edit Profile</Link></DropdownItem>
             <DropdownItem divider />
-            <DropdownItem><Link to="/loginform" className="loginform">Logout</Link></DropdownItem>
+            <DropdownItem onClick={()=>localStorage.setItem("userRole","")} ><Link style={{textDecoration:'none',fontSize:"20px"}} to="/loginform" className="loginform">Logout</Link></DropdownItem>
           </DropdownMenu>
         </Dropdown>
       </Collapse>

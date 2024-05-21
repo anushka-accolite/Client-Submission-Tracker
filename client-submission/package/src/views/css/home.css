@@ -1,57 +1,100 @@
-table {
+
+
+.search-container {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.filter-select, .search-input {
+  /* height: 30px;
+  margin-right: 10px;
+  padding: 5px;
+  flex: 1;
+  min-width: 120px; */
+}
+.filter-select1,.search-input1{
+  min-height:30px !important;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+.tr {
+  background-color: #f2f2f2;
+}
+
+.th, .td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
+}
+
+.th {
+  background-color: #4CAF50;
+  color: white;
+  position: sticky;
+  top: 0;
+
+}
+
+.sortable-header {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+
+.sortable-header::after {
+  content: ' ';
+  display: inline-block;
+  margin-left: 5px;
+  border-width: 4px;
+  border-style: solid;
+  border-color: transparent;
+  border-top-color: white;
+}
+
+.sortable-header.sort-asc::after {
+  border-bottom-color: white;
+  border-top-color: transparent;
+}
+
+.delbtn {
+  background-color: #f44336;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+  border-radius: 3px;
+}
+
+.delbtn:hover {
+  background-color: #d32f2f;
+}
+
+@media (max-width: 600px) {
+  .filter-select, .search-input {
     width: 100%;
-    border-collapse: collapse;
-    margin-bottom: 20px;
-    overflow-x: auto; 
-    margin-top:20px;
-  }
-  
-  th {
-    background-color: #f2f2f2;
-    font-weight: bold;
-    text-align: left;
-    padding: 10px;
-    border: 1px solid #ddd;
-  }
-  
-  td {
-    padding: 10px;
-    border: 1px solid #ddd;
-  }
-  
-  tr:nth-child(even) {
-    background-color: #f9f9f9;
+    margin-bottom: 10px;
+    
   }
 
-  button {
-    padding: 5px 10px;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    cursor: pointer;
-    border-radius: 4px;
+  .search-container {
+    flex-direction: column;
+    align-items: flex-start;
+    height:200px;
+   
   }
-  
-  button:hover {
-    background-color: #0056b3;
+
+  .table {
+    overflow-x: auto;
   }
-  
-  button:focus {
-    outline: none;
+  .tr{
+    z-index:-1;
   }
-  
-  @media only screen and (max-width: 600px) {
-    table {
-      border-collapse: collapse;
-      overflow-x: auto;
-      display: block;
-      white-space: nowrap; 
-    }
-  
-    th, td {
-      min-width: 100px; 
-      padding: 8px;
-      text-align: left;
-    }
-  }
-  
+}
+

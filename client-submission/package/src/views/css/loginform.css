@@ -1,12 +1,4 @@
-body {
-    font-family: Arial, Helvetica, sans-serif;
-    background-position: center;
-    background-repeat: space;
-    background-size: calc(150% - 20px);
-    margin: 0; /* Remove default body margin */
-}
 
-/* Center the image horizontally and vertically */
 .logo {
     display: flex;
     justify-content: center;
@@ -19,47 +11,47 @@ body {
     max-height: 100%;
 }
 
-/* Full-width input fields */
-input[type="text"],
-input[type="password"],
-button {
+
+.ip[type="text"],
+.ip[type="password"],
+.btn {
     width: 100%;
-    box-sizing: border-box; /* Ensure padding and border are included in the width */
+    box-sizing: border-box; 
 }
 
 .container {
     padding: 12px;
-    max-width: 400px; /* Limit the width of the container */
-    margin: 0 auto; /* Center the container horizontally */
+    max-width: 400px; 
+    margin: 0 auto; 
     border: 1px solid black;
-    border-radius: 10px; /* Add border radius */
-    box-shadow: 0 2px 4px rgba(36, 45, 175, 0.1); /* Add shadow */
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(36, 45, 175, 0.1); 
 }
 
 .auth-footer-text-link {
     text-align: center;
 }
 
-button {
+.btn {
     background-color: rgb(25, 76, 187);
     color: white;
     padding: 14px 20px;
-    margin: 20px 0 8px; /* Add margin-top to create space above the button */
+    margin: 20px 0 8px; 
     border: none;
     cursor: pointer;
     width: 100%;
 }
 
 .btn {
-    /* background-color: #37d1d6; */
+    
     color: black;
     padding: 10px 16px;
     margin: 8px 0;
     border: none;
     cursor: pointer;
     width: 100%;
-    border: 1px solid #37d1d6; /* Add border */
-    border-radius: 5px; /* Optional: Add border radius for rounded corners */
+    border: 1px solid #37d1d6; 
+    border-radius: 5px; 
 }
 
 .auth-footer-text-link {
@@ -74,12 +66,13 @@ button {
 
 .auth-footer-text-link {
     text-align: center;
-    display: inline-block; /* Display links as block elements */
-    margin-top: 5px; /* Add margin-top for spacing */
+    display: inline-block; 
+    margin-top: 5px; 
 }
-/* Responsive styles */
+
 @media screen and (max-width: 767px) {
     .container {
         padding: 20px;
     }
 }
+

@@ -66,6 +66,7 @@ public class Users {
 	private Client client;
 	
 	@OneToMany(mappedBy="users",fetch=FetchType.EAGER)
+	@JsonBackReference
 	private List<SubmissionToClient> submissions;
 
 //	public List<SubmissionToClient> getSubmissions() {
