@@ -6,7 +6,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 const adminNavigation = [
   {
     title: "Home",
-    href: "/",
+    href: "/home",
     icon: "bi bi-house",
   },
   {
@@ -60,7 +60,7 @@ const Sidebar = () => {
   let location = useLocation();
   
   // const navigation = role === "admin" ? adminNavigation : userNavigation;
-  const navigation = localStorage.getItem("role") === "user" ? adminNavigation : userNavigation;
+  const navigation = localStorage.getItem("role") === "admin" ? adminNavigation : userNavigation;
 
   return (
     <div className="p-3">
