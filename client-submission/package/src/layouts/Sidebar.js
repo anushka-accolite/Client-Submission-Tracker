@@ -49,7 +49,9 @@ const userNavigation = [
   },
   // Add more user-specific navigation items here
   {
-
+    title: "Audit Log",
+    href: "/audit",
+    icon: "bi bi-activity",
   }
 ];
 
@@ -60,7 +62,7 @@ const Sidebar = () => {
   let location = useLocation();
   
   // const navigation = role === "admin" ? adminNavigation : userNavigation;
-  const navigation = localStorage.getItem("role") === "admin" ? adminNavigation : userNavigation;
+  const navigation = localStorage.getItem("role") === "user" ? adminNavigation : userNavigation;
 
   return (
     <div className="p-3">
