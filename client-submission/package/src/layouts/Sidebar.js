@@ -255,6 +255,14 @@ const userNavigation = [
     icon: "bi bi-person",
   },
   // Add more user-specific navigation items here
+
+  {
+    title: "Audit Log",
+    href: "/audit",
+    icon: "bi bi-activity",
+  }
+=======
+
 ];
 
 const Sidebar = () => {
@@ -263,7 +271,12 @@ const Sidebar = () => {
   };
   let location = useLocation();
   
+
+  // const navigation = role === "admin" ? adminNavigation : userNavigation;
+  const navigation = localStorage.getItem("role") === "user" ? adminNavigation : userNavigation;
+=======
   const navigation = localStorage.getItem("role") === "admin" ? adminNavigation : userNavigation;
+
 
   return (
     <div id="sidebarArea" className="sidebarArea">
