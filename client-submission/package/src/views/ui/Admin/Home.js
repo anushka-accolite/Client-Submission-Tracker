@@ -20,17 +20,7 @@ const Starter = () => {
   }, [token]);
 
   const fetchToken = async () => {
-    try {
-      const loginResponse = await axios.post('http://localhost:8092/auth/login', {
-        username: 'abc123',
-        password: 'xyz'
-      });
-      const token = loginResponse.data.token;
-      setToken(token);
-      localStorage.setItem('token', token); // Save token to local storage
-    } catch (error) {
-      console.error('Error fetching token:', error);
-    }
+    setToken(localStorage.getItem("token"));
   };
 
   const fetchData = async () => {

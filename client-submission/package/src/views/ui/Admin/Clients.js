@@ -12,6 +12,7 @@ import MenuItem from '@mui/material/MenuItem';
 import IconButton from '@mui/material/IconButton';
 import SortIcon from '@mui/icons-material/Sort';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 const columns = [
   { id: 'clientId', label: 'Client ID', minWidth: 170 },
@@ -27,7 +28,7 @@ export default function Clients() {
   const [clients, setClients] = useState([]);
   const [filteredClients, setFilteredClients] = useState([]);
   const [sortOrder, setSortOrder] = useState('asc');
-
+  let response="";
   useEffect(() => {
     const fetchClients = async () => {
       try {
@@ -35,7 +36,7 @@ export default function Clients() {
         const headers = {
           'Authorization': `Bearer ${token}`
         };
-        const response = await axios.get('http://localhost:8092/api/admin/clients', { headers });
+        response = await axios.get('http://localhost:8092/api/admin/clients', { headers });
         const clientsData = response.data;
         setClients(clientsData);
         setFilteredClients(clientsData);
@@ -46,7 +47,7 @@ export default function Clients() {
     };
 
     fetchClients();
-  }, []);
+  }, [response]);
 
   const handleColumnChange = (event) => {
     const { value } = event.target;
