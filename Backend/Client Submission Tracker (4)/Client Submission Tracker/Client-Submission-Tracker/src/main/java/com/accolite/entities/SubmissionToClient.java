@@ -2,6 +2,7 @@ package com.accolite.entities;
 
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -56,6 +57,7 @@ public class SubmissionToClient {
 	
 	@ManyToOne(fetch=FetchType.EAGER)
 	@JoinColumn(name="user_id",referencedColumnName = "user_id")
+	@JsonBackReference
 	private Users users;
 	
 	@OneToOne(mappedBy="submission",fetch=FetchType.EAGER)

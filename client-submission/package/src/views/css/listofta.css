@@ -1,4 +1,4 @@
-h1{
+#hd{
     text-align: center;
     color: rgb(15, 48, 92);
 }
@@ -10,3 +10,7 @@ h1{
 .table{
     margin-top:10px;
 }
+.tr:hover{
+    background-color: lightgray;
+}
+

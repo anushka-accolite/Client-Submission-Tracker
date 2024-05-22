@@ -9,32 +9,14 @@ import Paper from '@mui/material/Paper';
 import TextField from '@mui/material/TextField';
 import MenuItem from '@mui/material/MenuItem';
 import Button from '@mui/material/Button';
-import '../../css/listofcandidate.css'
+import '../../css/listofcandidate.css';
 import Chart from 'chart.js/auto';
-//import { Chart } from 'chart.js';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
-
-function createData(id, name, email, experience, skill, status, IsEmployee, LastWorkingDay) {
-  return { id, name, email, experience, skill, status, IsEmployee, LastWorkingDay };
+function createData(id, name, email, experience, skill, status, IsEmployee, daysToLWD) {
+  return { id, name, email, experience, skill, status, IsEmployee, daysToLWD };
 }
-
-const initialRows = [
-  createData('C101', 'Chirag', 'arorachirag709@gmail.com', 5, 'JAVA', 'Selected', 'Yes', 2),
-  createData('C102', 'Deepak', 'aroradeepak102@gmail.com', 3, 'NA', 'Pending', 'No', 6),
-  createData('C103', 'Ram', 'aroraram102@gmail.com', 2 , 'Python', 'On-Hold', 'No', 4),
-  createData('C104', 'Priya', 'aroraPriya102@gmail.com', 4, 'C++', 'Rejected', 'No', 4),
-];
-
-function createDataInd(status, color) {
-  return { status, color};
-}
-
-const rowsInd = [
-  createDataInd('Selected', 'Green'),
-  createDataInd('Rejected', 'Red'),
-  createDataInd('Pending', 'Yellow'),
-  createDataInd('On-hold', 'Orange'),
-];
 
 const statusOptions = ['Selected', 'Rejected', 'Pending', 'On-Hold'];
 
@@ -46,25 +28,71 @@ const columns = [
   { id: 'skill', label: 'Skill' },
   { id: 'status', label: 'Status' },
   { id: 'IsEmployee', label: 'IsEmployee' },
-  { id: 'LastWorkingDay', label: 'LWD' },
+  { id: 'daysToLWD', label: 'Days to LWD' },
   { id: 'delete', label: 'Delete' },
 ];
 
 export default function Listofcandidate() {
-  const [rows, setRows] = useState(initialRows);
+  const [rows, setRows] = useState([]);
   const [sortOrder, setSortOrder] = useState('asc');
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedColumn, setSelectedColumn] = useState('');
   const pieChartRef = useRef(null);
   const chartInstance = useRef(null);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchCandidates = async () => {
+      try {
+        let token = localStorage.getItem("token");
+        let headers = { "Authorization": `Bearer ${token}` };
+        let response = await axios.get('http://localhost:8092/api/candidates/getAll', { headers });
+
+        console.log('Candidates API Response:', response.data); // Log the response to check its structure
+
+        if (!Array.isArray(response.data)) {
+          throw new Error('API response is not an array');
+        }
+
+        const candidateData = response.data;
+        console.log("look->", candidateData)
+        const candidatesWithSkills = await Promise.all(
+          candidateData
+            .filter(data => data.isDeleted === false)
+            .map(async (item) => {
+              const skillsResponse = await axios.get(`http://localhost:8092/api/candidates/${item.candidateId}/skills`, { headers });
+
+              console.log(`Skills API Response for candidate ${item.candidateId}:`, skillsResponse.data); // Log the skills response
+              const daysToLWD = item.last_working_day ? Math.ceil((new Date(item.last_working_day) - new Date()) / (1000 * 60 * 60 * 24)) : null;
+              return createData(
+                item.candidateId,
+                item.candidateName,
+                item.candidateEmail,
+                item.experience,
+                skillsResponse.data + " ",
+                item.candidateStatus,
+                item.isAccoliteEmployee,
+                daysToLWD
+              );
+            })
+        );
+
+        setRows(candidatesWithSkills);
+      } catch (error) {
+        console.error('Error fetching candidates or skills:', error);
+      }
+    };
+
+    fetchCandidates();
+  }, []);
 
   const handleSort = () => {
     const newRows = [...rows];
     newRows.sort((a, b) => {
       if (sortOrder === 'asc') {
-        return a.LastWorkingDay - b.LastWorkingDay;
+        return a.daysToLWD - b.daysToLWD;
       } else {
-        return b.LastWorkingDay - a.LastWorkingDay;
+        return b.daysToLWD - a.daysToLWD;
       }
     });
     setRows(newRows);
@@ -79,21 +107,42 @@ export default function Listofcandidate() {
     setSelectedColumn(e.target.value);
   };
 
-  const handleDelete = (id) => {
-    const updatedRows = rows.filter(row => row.id !== id);
-    setRows(updatedRows);
+  const handleDelete = async (id) => {
+    try {
+      let token = localStorage.getItem("token");
+      let headers = { "Authorization": `Bearer ${token}`, };
+      let x = await axios.get(`http://localhost:8092/api/candidates/${id}`, { headers });
+      console.log("Deleted id",x.data);
+      x.data.isDeleted = true;
+      const val = x.data;
+
+      await axios.put(`http://localhost:8092/api/candidates/${id}`, val, { headers });
+
+       navigate(0);
+    } catch (error) {
+      console.error('Error deleting candidate:', error);
+    }
   };
 
-  const handleStatusChange = (id, status) => {
-    const updatedRows = rows.map(row => {
-      if (row.id === id) {
-        return { ...row, status };
-      }
-      return row;
-    });
-    setRows(updatedRows);
+  const handleStatusChange = async (id, status) => {
+    try {
+      let token = localStorage.getItem("token");
+      let headers = { "Authorization": `Bearer ${token}`, 'Content-Type': 'application/json' };
+      let response = await axios.get(`http://localhost:8092/api/candidates/${id}`, { headers });
+      let updatedCandidate = response.data;
+      updatedCandidate.candidateStatus = status;
+      await axios.put(`http://localhost:8092/api/candidates/${id}`, updatedCandidate, { headers });
+      const updatedRows = rows.map(row => {
+        if (row.id === id) {
+          return { ...row, status };
+        }
+        return row;
+      });
+      setRows(updatedRows);
+    } catch (error) {
+      console.error('Error updating candidate status:', error);
+    }
   };
-  
 
   const getStatusColor = (status) => {
     switch (status) {
@@ -169,143 +218,99 @@ export default function Listofcandidate() {
     };
   }, [rows]);
 
-  // const filteredRows = rows.filter((row) =>
-  //   selectedColumn && searchTerm
-  //     ? row[selectedColumn].toLowerCase().includes(searchTerm.toLowerCase())
-  //     : true
-  // );
-
   const filteredRows = rows.filter((row) =>
     selectedColumn && searchTerm
-      ? row[selectedColumn].toString().toLowerCase().includes(searchTerm.toLowerCase())
-      : true
+      ? row[selectedColumn] && row[selectedColumn].toString().toLowerCase().includes(searchTerm.toLowerCase())
+      : !row.isDeleted
   );
-  
-  
 
   return (
     <>
-    <div id='uppercon'>
-      <div className="top-table">
-      <TextField
-        select className="search"
-        label="Select Column"
-        value={selectedColumn}
-        onChange={handleColumnChange}
-        variant="outlined"
-        size="small"
-        style={{ marginRight: '10px' }}
-      >
-        {columns.map((column) => (
-          <MenuItem key={column.id} value={column.id}>
-            {column.label!=='LWD' && column.label!=='Delete'?column.label:''}
-          </MenuItem>
-        ))}
-      </TextField>
-      <TextField
-        label="Search"
-        value={searchTerm}
-        onChange={handleSearchChange}
-        variant="outlined"
-        size="small"
-        style={{ marginBottom: '10px' }}
-      />
-      <TableContainer component={Paper} style={{maxWidth:"50vw !important",marginTop:"15px"
-      }}>
-        <Table sx={{maxWidth:"10px"}} aria-label="simple table">
-          <TableHead>
-            <TableRow>
-              {columns.map((column) => (
-                <TableCell key={column.id}>
-                  <b>{column.label}</b>
-                  {column.id === 'LastWorkingDay' && (
-                    <button onClick={handleSort}>
-                      {sortOrder === 'asc' ? '↓' : '↑'}
-                    </button>
-                  )}
-                </TableCell>
-              ))}
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {filteredRows.map((row) => (
-              <TableRow key={row.id}>
+      <div id='uppercon'>
+        <TextField
+          select className="search"
+          label="Select Column"
+          value={selectedColumn}
+          onChange={handleColumnChange}
+          variant="outlined"
+          size="small"
+          
+        >
+          {columns.map((column) => (
+            <MenuItem key={column.id} value={column.id}>
+              {column.label !== 'Days to LWD' && column.label !== 'Delete' ? column.label : ''}
+            </MenuItem>
+          ))}
+        </TextField>
+        <TextField
+          label="Search"
+          value={searchTerm}
+          onChange={handleSearchChange}
+          variant="outlined"
+          size="small"
+          className='searchip'
+        />
+        <TableContainer component={Paper} style={{ maxWidth: "50vw !important", marginTop: "15px" }}>
+          <Table sx={{ maxWidth: "10px" }} aria-label="simple table">
+            <TableHead>
+              <TableRow>
                 {columns.map((column) => (
                   <TableCell key={column.id}>
-                    {column.id === 'status' ? (
-                      <div style={{ display: 'flex', alignItems: 'center' }}>
-                        <TextField
-                          select
-                          value={row.status}
-                          onChange={(e) => handleStatusChange(row.id, e.target.value)}
-                          variant="outlined"
-                          size="small"
-                          style={{ color: getStatusColor(row.status) }}
-                        >
-                          {statusOptions.map((option) => (
-                            <MenuItem key={option} value={option}>
-                              {option}
-                            </MenuItem>
-                          ))}
-                        </TextField>
-                        <div
-                          className={`status-dot ${row.status.toLowerCase()}`}
-                          style={{ marginLeft: '5px' }}
-                        />
-                      </div>
-                    ) : column.id === 'delete' ? (
-                      <Button onClick={() => handleDelete(row.id)}>Delete</Button>
-                    ) : (
-                      row[column.id]
+                    <b>{column.label}</b>
+                    {column.id === 'daysToLWD' && (
+                      <button onClick={handleSort} className='bg-primary text-white'>
+                        {sortOrder === 'asc' ? '↓' : '↑'}
+                      </button>
                     )}
                   </TableCell>
                 ))}
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+            </TableHead>
+            <TableBody>
+              {filteredRows.map((row) => (
+                <TableRow key={row.id} className='tablerow'>
+                  {columns.map((column) => (
+                    <TableCell key={column.id}>
+                      {column.id === 'daysToLWD' ? (
+                        <span>{row[column.id] !== null ? `${row[column.id]} days` : 'N/A'}</span>
+                      ) : column.id === 'status' ? (
+                        <div style={{ display: 'flex', alignItems: 'center' }}>
+                          <TextField className='dropdown'
+                            select
+                            value={row.status}
+                            onChange={(e) => handleStatusChange(row.id, e.target.value)}
+                            variant="outlined"
+                            size="small"
+                            style={{ color: getStatusColor(row.status) }}
+                          >
+                            {statusOptions.map((option) => (
+                              <MenuItem key={option} value={option}>
+                                {option}
+                              </MenuItem>
+                            ))}
+                          </TextField>
+                          <div
+                            className={`status-dot ${row.status.toLowerCase()}`}
+                            style={{ marginLeft: '5px' }}
+                          />
+                        </div>
+                      ) : column.id === 'delete' ? (
+                        <Button id="delbtn" onClick={() => handleDelete(row.id)}>Delete</Button>
+                      ) : (
+                        row[column.id]
+                      )}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+        <div style={{ marginLeft: "200px", width: "500px", height: "500px" }}>
+          <canvas ref={pieChartRef}></canvas>
+        </div>
       </div>
-      {/* <div style={{marginLeft:"200px",width:"500px",height:"500px"}}>
-      <canvas ref={pieChartRef}></canvas>
-      </div> */}
-      <div className="bottom-table">
-      <div style={{ display: 'flex' }}>
-      <div style={{ width: '50%' }}>
-      <div style={{ marginLeft: "50px", width: "375px", height: "375px" }}>
-      <canvas ref={pieChartRef}></canvas>
-    
-  </div>
-  </div>
-  <div style={{ width: '50%' }}>
-  <TableContainer component={Paper} style={{ marginTop: "15px" }}>
-    <Table sx={{ maxWidth: '80vw'}} aria-label="simple table">
-      <TableHead>
-        <TableRow>
-          <TableCell><b>Status</b></TableCell>
-          <TableCell><b>Color</b></TableCell>
-        </TableRow>
-      </TableHead>
-      <TableBody>
-        {rowsInd.map((r) => (
-          <TableRow
-            key={r.status}
-            sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-          >
-            <TableCell component="th" scope="row">
-              {r.status}
-            </TableCell>
-            <TableCell align="left"> { r.color }
-            </TableCell>
-          </TableRow>
-        ))}
-      </TableBody>
-    </Table>
-  </TableContainer>
-  </div>
-  </div>
-  </div>
-  </div>
     </>
   );
 }
+

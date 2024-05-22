@@ -24,6 +24,12 @@ const MyAccount=lazy(()=> import("../views/ui/Admin/MyAccount.js"));
 // Routes
 const ThemeRoutes = [
   {
+    path:"/loginform",
+    element:<LoginForm/>
+  },
+  {
+    
+    
     path: "/",  
     element: <FullLayout showSidebarAndHeader={false} />,
     children: [
@@ -50,5 +56,6 @@ const ThemeRoutes = [
       {path:"/myaccount",exact:true,element:<MyAccount/>}
     ],
   },
+  
 ];
 export default ThemeRoutes;

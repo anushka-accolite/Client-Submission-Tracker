@@ -11,19 +11,85 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import InputLabel from '@mui/material/InputLabel';
 import TextField from '@mui/material/TextField';
+import axios from 'axios';
 
-function createData(id, name, experience, skill, status, clientname) {
-  return { id, name, experience, skill, status, clientname };
+function createData(id, name, experience, skill, status, clientname, remark) {
+  return { id, name, experience, skill, status, clientname, remark };
 }
 
-export default function () {
+export default function MyComponent() {
   const [selectedColumn, setSelectedColumn] = React.useState('Name');
   const [searchTerm, setSearchTerm] = React.useState('');
   const [sortOrder, setSortOrder] = React.useState('asc');
-  const [rows, setRows] = React.useState([
-    createData(101, 'chirag', 1, 'java', 'selected', 'GS'),
-  ]);
+  const [rows, setRows] = React.useState([]);
 
+  // React.useEffect(() => {
+  //   const fetchData = async () => {
+  //     try {
+  //       let token = localStorage.getItem("token");
+  //       let headers = { "Authorization": `Bearer ${token}` };
+  //       let response = await axios.get('http://localhost:8092/api/submissions/getAll', { headers });
+  //       let val = response.data;
+  //       console.log(val);
+
+  //       const candidates = val.map(item =>{ 
+  //         // let skill = item.candidate && item.candidate.skills ? item.candidate.skills.join(', ') : 'N/A';
+  //         let skill=item.candidate.skills[0].skill;
+  //         for(let i=0;i<item.candidate.skills.length;i++){
+  //             skill+=item.candidate.skills[i].skill;
+  //         }
+  //         createData(
+  //           item.candidate.candidateId,
+  //           item.candidate.candidateName,
+  //           item.candidate.experience,
+  //           skill,
+  //           item.status,
+  //           item.client ? item.client.clientName : 'N/A',
+  //           item.remark || 'N/A' // Add remark column, default to 'N/A' if not present
+  //         )
+  //           } 
+  //       );
+
+  //       setRows(candidates);
+  //     } catch (error) {
+  //       console.error('Error fetching data:', error);
+  //     }
+  //   };
+
+  //   fetchData();
+  // }, []);
+  React.useEffect(() => {
+    const fetchData = async () => {
+      try {
+        let token = localStorage.getItem("token");
+        let headers = { "Authorization": `Bearer ${token}` };
+        let response = await axios.get('http://localhost:8092/api/submissions/getAll', { headers });
+        let val = response.data;
+        console.log(val);
+  
+        const candidates = val.map(item => {
+          let skill = item.candidate.skills && Array.isArray(item.candidate.skills) ? item.candidate.skills.map(skill => skill.skill).join(', ') : 'N/A';
+          let clients=item.candidate.clients && Array.isArray(item.candidate.clients) ? item.candidate.clients.map(client => client.clientName).join(', ') : 'N/A';
+          return createData(
+            item.candidate.candidateId,
+            item.candidate.candidateName,
+            item.candidate.experience,
+            skill,
+            item.status,
+            clients,
+            item.remark || 'N/A'
+          );
+        });
+  
+        setRows(candidates);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+  
+    fetchData();
+  }, []);
+  
   const handleColumnChange = (event) => {
     const selectedValue = event.target.value;
     setSelectedColumn(selectedValue);
@@ -41,7 +107,7 @@ export default function () {
 
   return (
     <div>
-      <FormControl sx={{ m: 1, minWidth: 120 }} style={{marginTop:"0.2px"}}>
+      <FormControl sx={{ m: 1, minWidth: 120 }} style={{ marginTop: "0.2px" }}>
         <InputLabel id="column-label">Column</InputLabel>
         <Select
           labelId="column-label"
@@ -50,12 +116,12 @@ export default function () {
           label="Column"
           onChange={handleColumnChange}
         >
-          {/* <MenuItem value="Candidate Id">Candidate Id</MenuItem> */}
           <MenuItem value="Name">Name</MenuItem>
           <MenuItem value="Experience">Experience</MenuItem>
           <MenuItem value="Skill">Skill</MenuItem>
           <MenuItem value="Status">Status</MenuItem>
           <MenuItem value="ClientName">ClientName</MenuItem>
+          <MenuItem value="Remark">Remark</MenuItem> {/* Add Remark as a column option */}
         </Select>
       </FormControl>
       <TextField
@@ -75,6 +141,7 @@ export default function () {
               <TableCell align="right"><b>Skill</b></TableCell>
               <TableCell align="right"><b>Status</b></TableCell>
               <TableCell align="right"><b>ClientName</b></TableCell>
+              <TableCell align="right"><b>Remark</b></TableCell> {/* Add Remark column */}
             </TableRow>
           </TableHead>
           <TableBody>
@@ -93,6 +160,7 @@ export default function () {
                   <TableCell align="right">{row.skill}</TableCell>
                   <TableCell align="right">{row.status}</TableCell>
                   <TableCell align="right">{row.clientname}</TableCell>
+                  <TableCell align="right">{row.remark}</TableCell> {/* Render Remark */}
                 </TableRow>
               ))}
           </TableBody>

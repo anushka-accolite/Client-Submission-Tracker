@@ -1,5 +1,78 @@
-body {
-    background-color: #9A616D;
+
+.logo {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+}
+
+.logo img {
+    max-width: 100%;
+    max-height: 100%;
+}
+
+
+.ip[type="text"],
+.ip[type="password"],
+.btn {
+    width: 100%;
+    box-sizing: border-box; 
+}
+
+.container {
+    padding: 12px;
+    max-width: 400px; 
+    margin: 0 auto; 
+    border: 1px solid black;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(36, 45, 175, 0.1); 
+}
+
+.auth-footer-text-link {
+    text-align: center;
+}
+
+.btn {
+    background-color: rgb(25, 76, 187);
+    color: white;
+    padding: 14px 20px;
+    margin: 20px 0 8px; 
+    border: none;
+    cursor: pointer;
+    width: 100%;
+}
+
+.btn {
+    
+    color: black;
+    padding: 10px 16px;
+    margin: 8px 0;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+    border: 1px solid #37d1d6; 
+    border-radius: 5px; 
+}
+
+.auth-footer-text-link {
+    text-align: center;
+}
+.v0{
+    text-align: center;
+}
+.center-text {
+    text-align: center;
   }
 
- 
+.auth-footer-text-link {
+    text-align: center;
+    display: inline-block; 
+    margin-top: 5px; 
+}
+
+@media screen and (max-width: 767px) {
+    .container {
+        padding: 20px;
+    }
+}
+

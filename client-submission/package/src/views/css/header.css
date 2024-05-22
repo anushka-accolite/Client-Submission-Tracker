@@ -1,9 +1,34 @@
-.myprofile{
+/* .myprofile{
     text-decoration: none;
     color:black;
 }
 .nav-link{
     font-weight: bold;
     color: white;
+}
+ */
+ /* .myaccount{
+    text-decoration: none;
+    color:blue;
+}
+.myprofile{
+    text-decoration: none;
+    color:blue;
+}
+.loginform{
+    text-decoration: none;
+    color:blue;
+}
+.nav-link{
+    font-weight: bold;
+} */
+.dropdownbtn{
+    background-color:white;
+    border: none;
+    color:blue;
+    width:100%;
+    padding-right:10px;
+    font-family:Georgia, 'Times New Roman', Times, serif
+
 }
 

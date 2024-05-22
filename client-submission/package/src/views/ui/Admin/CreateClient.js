@@ -1,67 +1,82 @@
 import React, { useState } from 'react';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
-// import MenuItem from '@mui/material/MenuItem';
-// import Select from '@mui/material/Select';
+import Autocomplete from '@mui/material/Autocomplete';
+import axios from 'axios';
+import Chip from '@mui/material/Chip';
 import '../../css/createclient.css';
-// import { FormControl, InputLabel } from '@mui/material';
-// import AdapterDateFns from '@mui/lab/AdapterDateFns';
-// import LocalizationProvider from '@mui/lab/LocalizationProvider';
-// import DatePicker from '@mui/lab/DatePicker';
+
+const skillsOptions = ['Java', 'Python', 'JavaScript', 'C#', 'Ruby'];
+
 const CreateClient = () => {
   const [formData, setFormData] = useState({
-    clientId:'',
+    clientId: '',
     clientName: '',
-    clientemail:'',
-    // projectName: '',
-    // projectDuration: '',
-    // startDate: null,
-    // endDate: null,
-    // skills: [],
-    responseTime: '',
-    talentAcquisition: '', 
-    projectManager: '', 
-    accountManager: ''
+    clientRequirement: '',
+    clientResponseTimeinDays: '',
+    talentAcquisition: '',
+    projectManager: '',
+    accountManager: '',
+    skills: []
   });
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
-  // const handleSkillsChange = (e) => {
-  //   const { value } = e.target;
-  //   setFormData({ ...formData, skills: value });
-  // };
-  // const handleStartDateChange = (date) => {
-  //   setFormData({ ...formData, startDate: date });
-  // };
-  // const handleEndDateChange = (date) => {
-  //   setFormData({ ...formData, endDate: date });
-  // };
+
+  const handleSkillChange = (event, value) => {
+    setFormData({ ...formData, skills: value });
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
+    const token = localStorage.getItem('token');
+    const headers = {
+      'Authorization': `Bearer ${token}`
+    };
+
+    const skillsString = formData.skills.join(', ');
+    const formDataWithSkillsString = {
+      ...formData,
+      skills: skillsString
+    };
+
+    axios.post('http://localhost:8092/api/admin', formDataWithSkillsString, { headers })
+      .then(response => {
+        console.log('Data posted successfully:', response.data);
+      })
+      .catch(error => {
+        console.error('Error posting data:', error);
+      });
+
     console.log(formData);
     setFormData({
-      clientId:'',
+      clientId: '',
       clientName: '',
-      clientemail:'',
-      responseTime: '',
+      clientRequirement: '',
+      clientResponseTimeinDays: '',
       talentAcquisition: '',
       projectManager: '',
-      accountManager: ''
+      accountManager: '',
+      skills: []
     });
   };
+
   return (
     <>
-      <h1>Add Client Details</h1>
-      <form onSubmit={handleSubmit}>
-      <TextField
+      <h1 className="header">Add Client Details</h1>
+      <form onSubmit={handleSubmit} className="form-container">
+        <TextField
           label="Client Id"
           variant="outlined"
           fullWidth
           margin="normal"
           name="clientId"
           value={formData.clientId}
-          onChange={handleChange} required
+          onChange={handleChange}
+          required
+          className="text-field"
         />
         <TextField
           label="Client Name"
@@ -70,68 +85,46 @@ const CreateClient = () => {
           margin="normal"
           name="clientName"
           value={formData.clientName}
-          onChange={handleChange} required
+          onChange={handleChange}
+          required
+          className="text-field"
         />
-         <TextField
+        <TextField
           label="Client Requirement"
           variant="outlined"
           fullWidth
           margin="normal"
-          name="clientemail"
-          value={formData.clientemail}
-          onChange={handleChange} required
+          name="clientRequirement"
+          value={formData.clientRequirement}
+          onChange={handleChange}
+          required
+          className="text-field"
         />
-        {/* <TextField
-          label="Project Duration"
-          variant="outlined"
-          fullWidth
-          margin="normal"
-          name="projectDuration"
-          value={formData.projectDuration}
-          onChange={handleChange}
-        /> */}
-        {/* Start Date Datepicker */}
-        
-        {/* <TextField
-          label="Start Date"
-          variant="outlined"
-          fullWidth
-          margin="normal"
-          name="startDate"
-          value={formData.startDate}
-          onChange={handleChange}
+        <Autocomplete
+          multiple
+          id="skills-autocomplete"
+          options={skillsOptions}
+          getOptionLabel={(option) => option}
+          value={formData.skills}
+          onChange={handleSkillChange}
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              variant="outlined"
+              label="Skills"
+              placeholder="Select skills"
+              fullWidth
+              margin="normal"
+              className="text-field"
+            />
+          )}
+          renderTags={(value, getTagProps) =>
+            value.map((option, index) => (
+              <Chip label={option} {...getTagProps({ index })} />
+            ))
+          }
+          className="chip-container"
         />
-        <TextField
-          label="End Date"
-          variant="outlined"
-          fullWidth
-          margin="normal"
-          name="endDate"
-          value={formData.endDate}
-          onChange={handleChange}
-        />  */}
-        {/* Skills Select */}
-        {/* <FormControl fullWidth variant="outlined" margin="normal">
-          <InputLabel id="skills-label">Skills</InputLabel> */}
-          {/* <Select
-            labelId="skills-label"
-            id="skills"
-            multiple
-            value={formData.skills}
-            onChange={handleSkillsChange}
-            renderValue={(selected) => selected.join(', ')}
-            fullWidth
-          > */}
-            {/* <MenuItem value="Java">Java</MenuItem>
-            <MenuItem value="SQL">SQL</MenuItem>
-            <MenuItem value="Unix">Unix</MenuItem>
-            <MenuItem value="Spring">Spring</MenuItem>
-            <MenuItem value="ReactJS">ReactJS</MenuItem>
-            <MenuItem value="Angular">Angular</MenuItem>
-            <MenuItem value="Python">Python</MenuItem>
-          </Select> */}
-        {/* </FormControl> */}
-        {/* Talent Acquisition field */}
         <TextField
           label="Talent Acquisition"
           variant="outlined"
@@ -139,9 +132,10 @@ const CreateClient = () => {
           margin="normal"
           name="talentAcquisition"
           value={formData.talentAcquisition}
-          onChange={handleChange} required
+          onChange={handleChange}
+          required
+          className="text-field"
         />
-        {/* Project Manager field */}
         <TextField
           label="Project Manager"
           variant="outlined"
@@ -149,9 +143,10 @@ const CreateClient = () => {
           margin="normal"
           name="projectManager"
           value={formData.projectManager}
-          onChange={handleChange} required
+          onChange={handleChange}
+          required
+          className="text-field"
         />
-        {/* Account Manager field */}
         <TextField
           label="Account Manager"
           variant="outlined"
@@ -159,31 +154,32 @@ const CreateClient = () => {
           margin="normal"
           name="accountManager"
           value={formData.accountManager}
-          onChange={handleChange} required
+          onChange={handleChange}
+          required
+          className="text-field"
         />
-        {/* Response Time field */}
         <TextField
           label="Response Time"
           variant="outlined"
           fullWidth
           margin="normal"
-          name="responseTime"
-          value={formData.responseTime}
-          onChange={handleChange} required
+          name="clientResponseTimeinDays"
+          value={formData.clientResponseTimeinDays}
+          onChange={handleChange}
+          required
+          className="text-field"
         />
         <Button
           variant="contained"
           color="primary"
           type="submit"
-        >Submit
+          className="submit-button"
+        >
+          Submit
         </Button>
       </form>
     </>
   );
 };
+
 export default CreateClient;
-
-
-
-
-
