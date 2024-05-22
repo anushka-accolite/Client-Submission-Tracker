@@ -164,12 +164,13 @@ const Starter = () => {
                 <td className="td">{item.am}</td>
                 <td className="td">{item.restime}</td>
                 <td className="td">
-                  <button onClick={() => removeData(index)} className="delbtn">Delete</button>
+                  <button onClick={() => removeData(item.clientId)} className="delbtn">Delete</button>
                 </td>
               </tr>
             ))}
         </tbody>
       </table>
+      <ToastContainer />
     </>
   );
 };
