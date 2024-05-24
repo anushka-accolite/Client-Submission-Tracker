@@ -12,7 +12,6 @@ import MenuItem from '@mui/material/MenuItem';
 import IconButton from '@mui/material/IconButton';
 import SortIcon from '@mui/icons-material/Sort';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
 
 const columns = [
   { id: 'clientId', label: 'Client ID', minWidth: 170 },
@@ -38,6 +37,7 @@ export default function Clients() {
         };
         response = await axios.get('http://localhost:8092/api/admin/clients', { headers });
         const clientsData = response.data;
+        console.log(clientsData)
         setClients(clientsData);
         setFilteredClients(clientsData);
         console.log(clientsData);
@@ -75,15 +75,15 @@ export default function Clients() {
     setFilteredClients(filteredResult);
   };
 
-  const getResponseTimeStyle = (responseTime) => {
-    let backgroundColor = {};
-    if (responseTime === 0) {
-      backgroundColor = { backgroundColor: 'red' };
-    } else if (responseTime >= 1 && responseTime <= 3) {
-      backgroundColor = { backgroundColor: 'yellow' };
-    }
-    return { ...backgroundColor, borderRadius: '10px' }; // Apply rounded corners
-  };
+  // const getResponseTimeStyle = (responseTime) => {
+  //   let backgroundColor = {};
+  //   if (responseTime === 0) {
+  //     backgroundColor = { backgroundColor: 'red' };
+  //   } else if (responseTime >= 1 && responseTime <= 3) {
+  //     backgroundColor = { backgroundColor: 'yellow' };
+  //   }
+  //   return { ...backgroundColor, borderRadius: '10px' }; // Apply rounded corners
+  // };
 
   const handleSortToggle = () => {
     const order = sortOrder === 'asc' ? 'desc' : 'asc';
@@ -124,11 +124,11 @@ export default function Clients() {
             onChange={handleSearchChange}
           />
         </div>
-        <div className="response-time-container">
+        {/* <div className="response-time-container">
           <span className="response-time-indicator">Response Time</span>
           <span className="response-time-red">0 Days = Red</span>
           <span className="response-time-yellow">1-3 Days = Yellow</span>
-        </div>
+        </div> */}
       </div>
       <Paper className='table'>
         <TableContainer className='tableContainer'>
@@ -158,7 +158,7 @@ export default function Clients() {
                   <TableCell className='tableCell'>{client.clientName}</TableCell>
                   <TableCell className='tableCell'>{client.clientRequirement}</TableCell>
                   <TableCell className='tableCell'>{client.skills}</TableCell>
-                  <TableCell id='responsecol' className='tableCell' style={getResponseTimeStyle(client.clientResponseTimeinDays)}>
+                  <TableCell id='responsecol' className='tableCell'>
                     {client.clientResponseTimeinDays}
                   </TableCell>
                 </TableRow>

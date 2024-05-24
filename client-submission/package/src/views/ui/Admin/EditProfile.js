@@ -3,11 +3,10 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from "react-router-dom";
 import '../../css/editprofile.css';
 import axios from 'axios';
-
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function EditProfile({ history }) {
-  // const history = useHistory(); // Access the history object using useHistory hook
-  // State variables to store form data
   const [userId, setUserId] = useState('');
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
@@ -46,8 +45,6 @@ const navigate=useNavigate();
       const userData = data.filter(item => item.userName === localStorage.getItem("username"))[0];
         userData.userName= username;
         userData.email=email;
-      // console.log(formData)
-      // await axios.put(`http://localhost:8092/api/user/${formData.userId}`, {formData}, { headers });
       localStorage.setItem("username",username);
        await axios.put(`http://localhost:8092/api/user/${userId}`, userData, { headers });
       alert('Profile updated successfully!');
@@ -59,10 +56,6 @@ const navigate=useNavigate();
     }
   };
 
-  const handleFileChange = (event) => {
-    setSelectedFile(event.target.files[0]);
-  };
-
   const handleReset = () => {
     setUserId('');
     setUsername('');
@@ -72,6 +65,8 @@ const navigate=useNavigate();
   };
 
   return (
+    <>
+    <ToastContainer/>
     <div id="main-container">
       <form className="form" onSubmit={handleSubmit} onReset={handleReset}>
         <h2>Edit Profile</h2>
@@ -139,7 +134,7 @@ const navigate=useNavigate();
             <i className="fa fa-building"></i>
           </div>
         </div>
-        <div className="form-group">
+        {/* <div className="form-group">
           <label id='label' htmlFor="profile-picture">Profile Picture :</label>
           <div className="relative">
             <div className="input-group">
@@ -152,13 +147,14 @@ const navigate=useNavigate();
               <i className="fa fa-link"></i>
             </div>
           </div>
-        </div>
+        </div> */}
         <div className="tright">
           <button className="movebtn movebtnre" type="reset"><i id='fa1' className="fa fa-fw fa-refresh"></i> Reset </button>
           <button className="movebtn movebtnsu" type="submit" id='fa2'>Apply <i id='fa2'  className="fa fa-fw fa-paper-plane"></i></button>
         </div>
       </form>
     </div>
+    </>
   );
 }
 

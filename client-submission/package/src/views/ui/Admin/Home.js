@@ -23,6 +23,7 @@ const Starter = () => {
     setToken(localStorage.getItem("token"));
   };
 
+
   const fetchData = async () => {
     try {
       const adminClientsResponse = await axios.get('http://localhost:8092/api/admin/clients', {
@@ -30,23 +31,44 @@ const Starter = () => {
           Authorization: `Bearer ${token}`
         }
       });
-
-      // Log the response data to inspect its structure
-      console.log('Response data:', adminClientsResponse.data);
-
-      // Check if the response data is an array
+      console.log(adminClientsResponse.data);
+  
+      // if (Array.isArray(adminClientsResponse.data)) {
+      //   const mappedData = adminClientsResponse.data
+      //     .filter(client => !client.isDeleted)
+      //     .map(client => {
+      //       const taUser = client.users.find(user => user.userRole === 'TalentAcquistion');
+      //       const pmUser = client.users.find(user => user.userRole === 'ProjectManager');
+      //       const amUser = client.users.find(user => user.userRole === 'AccountManager');
+      //       return {
+      //         clientId: client.clientId,
+      //         cname: client.clientName,
+      //         ta: taUser ? taUser.userName : '', // Check if taUser exists
+      //         pm: pmUser ? pmUser.userName : '', // Check if pmUser exists
+      //         am: amUser ? amUser.userName : '', // Check if amUser exists
+      //         restime: client.clientResponseTimeinDays
+      //       };
+      //     });
+      //   setData(mappedData);
+      
       if (Array.isArray(adminClientsResponse.data)) {
         const mappedData = adminClientsResponse.data
-          .filter(client => !client.isDeleted) // Filter out deleted clients
-          .map(client => ({
-            clientId: client.clientId,
-            cname: client.clientName,
-            ta: client.users.find(user => user.userRole === 'TalentAcquistion')?.userName || '',
-            pm: client.users.find(user => user.userRole === 'ProjectManager')?.userName || '',
-            am: client.users.find(user => user.userRole === 'AccountManager')?.userName || '',
-            restime: client.clientResponseTimeinDays
-          }));
+          .filter(client => !client.isDeleted)
+          .map(client => {
+            const taUser = client.users  ? client.users.find(user => user.userRole === 'TalentAcquistion') : null;
+            const pmUser = client.users  ? client.users.find(user => user.userRole === 'ProjectManager') : null;
+            const amUser = client.users  ? client.users.find(user => user.userRole === 'AccountManager') : null;
+            return {
+              clientId: client.clientId,
+              cname: client.clientName,
+              ta: taUser ? taUser.userName : '',
+              pm: pmUser ? pmUser.userName : '',
+              am: amUser ? amUser.userName : '',
+              restime: client.clientResponseTimeinDays
+            };
+          });
         setData(mappedData);
+        console.log(mappedData);
       } else {
         console.error('Error: Response data structure is not as expected');
       }
@@ -54,29 +76,42 @@ const Starter = () => {
       console.error('Error fetching data:', error);
     }
   };
-
+  
+  
   const removeData = async (clientIdToRemove) => {
+   
     try {
       if (!clientIdToRemove) {
         console.error('Error: clientIdToRemove is undefined');
         return;
       }
 
-      const token = localStorage.getItem('token');
+      let token = localStorage.getItem('token');
       if (!token) {
         console.error('Error: No token available');
         return;
       }
-
+      let headers={"Authorization":`Bearer ${token}`}
+      let clientData=await axios.get(`http://localhost:8092/api/admin/${clientIdToRemove}`,{headers});
+      clientData=clientData.data;
+      clientData.isDeleted=true;
       const adminClientsResponse = await axios.put(
         `http://localhost:8092/api/admin/${clientIdToRemove}`,
-        { isDeleted: true },
+        { 
+          clientId:clientData.clientId,
+          clientName:clientData.clientName,
+          clientRequirement:clientData.clientRequirement,
+          clientResponseTimeinDays:clientData.clientResponseTimeinDays,
+          skills:clientData.skills,
+          isDeleted:clientData.isDeleted
+        },
         {
           headers: {
             Authorization: `Bearer ${token}`
           }
         }
       );
+      console.log(clientData);
 
       if (adminClientsResponse.status === 200) {
         const newData = data.filter(item => item.clientId !== clientIdToRemove);
@@ -85,7 +120,8 @@ const Starter = () => {
       } else {
         console.error('Error updating data:', adminClientsResponse.statusText);
       }
-    } catch (error) {
+    } 
+    catch (error) {
       console.error('Error updating data:', error);
       toast.error('Error updating data.');
     }

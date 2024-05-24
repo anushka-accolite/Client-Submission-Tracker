@@ -11,7 +11,7 @@ const FullLayout = ({ showSidebarAndHeader }) => {
         {/* Sidebar */}
         {showSidebarAndHeader && (
           <aside className="sidebarArea shadow" id="sidebarArea" style={{
-            backgroundColor: "#3800e5",
+            backgroundColor: "#052c4f",
             textShadow: "0px 0px 1px whitesmoke",
             fontFamily: 'Lato, sans-serif',
             boxShadow: "5px 5px 10px rgba(0, 0, 0, 0.2)"

@@ -18,7 +18,7 @@
   background-color: yellow;
 }
 
-.status-dot.on-hold {
+.status-dot.onhold{
   background-color: orange;
 }
 
@@ -32,6 +32,7 @@
     max-width: 1020px; 
     /* margin-left: 30px;  */
     overflow:hidden;
+    padding-top:10px;
   }
   .search{
     width:150px;
@@ -40,7 +41,7 @@
     background-color: lightgray;
   }
  #delbtn:hover{
-  background-color: red;
+  background-color: #E62020;
   color:white
  }
 
@@ -56,6 +57,10 @@
 .top-table{
 
     margin-bottom: 60px;
+  }
+  #addbtn:hover{
+    background:green;
+    color:white
   }
 
  

@@ -24,11 +24,18 @@ const Header = () => {
   const Handletoggle = () => {
     setIsOpen(!isOpen);
   };
+  let role=localStorage.getItem("userRole");
+  if(role!=='admin'){
+    role="user";
+  }
+  else{
+    role="admin";
+  }
   const showMobilemenu = () => {
     document.getElementById("sidebarArea").classList.toggle("showSidebar");
   };
   return (
-    <Navbar color="primary" dark expand="md">
+    <Navbar className="navbar" dark expand="md">
       <div className="d-flex align-items-center">
         <NavbarBrand href="/" className="d-lg-none">
           <LogoWhite />
@@ -59,13 +66,13 @@ const Header = () => {
       <Collapse navbar isOpen={isOpen}>
         <Nav className="me-auto" navbar>
           <NavItem>
-            <Link to="/home" className="nav-link">
-              DASHBOARD
+            <Link to={role==='admin'?'/home':'/listofcandidates'} className="nav-link">
+             {role==='admin'?"ADMIN'S DASHBOARD":"USER'S DASHBOARD"}
             </Link>
           </NavItem>
         </Nav>
         <Dropdown isOpen={dropdownOpen} toggle={toggle}>
-          <DropdownToggle color="primary">
+          <DropdownToggle className="icon">
             <img
               src={user1}
               alt="profile"
