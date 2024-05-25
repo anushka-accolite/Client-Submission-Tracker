@@ -11,7 +11,6 @@ const Clients = lazy(() => import("../views/ui/Admin/Clients.js"));
 const Listofta = lazy(() => import("../views/ui/Admin/Listofta.js"));
 const Listofpm = lazy(() => import("../views/ui/Admin/Listofpm.js"));
 const Listofam = lazy(() => import("../views/ui/Admin/Listofam.js"));
-const AM=lazy(() => import("../views/ui/User/AM.js"));
 const Listofcandidates=lazy(() => import("../views/ui/User/Listofcandidate.js"));
 const AuditLog=lazy(() => import("../views/ui/User/AuditLog.js"));
 const SubmittedProfile=lazy(()=> import("../views/ui/User/SubmittedProfile.js"));
@@ -44,7 +43,6 @@ const ThemeRoutes = [
       { path: "/listofta", exact: true, element: <Listofta /> },
       { path: "/listofpm", exact: true, element: <Listofpm /> },
       { path: "/listofam", exact: true, element: <Listofam /> },
-      { path: "/AM", exact: true, element: <AM/> },
       {path:"/listofcandidates",exact:true,element:<Listofcandidates/>},
       {path:"/profile",exact:true,element:<SubmittedProfile/>},
       {path:"/myprofile",exact:true,element:<EditProfile/>},
