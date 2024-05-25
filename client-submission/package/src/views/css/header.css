@@ -1,9 +1,17 @@
-.myprofile{
-    text-decoration: none;
-    color:black;
+
+.dropdownbtn{
+background-color:white;
+border: none;
+color:blue;
+width:100%;
+padding-right:10px;
+font-family:Georgia, 'Times New Roman', Times, serif
+
 }
-.nav-link{
-    font-weight: bold;
-    color: white;
+.navbar{
+background-color: #073763;
+}
+.icon{
+background-color:#4d759a;
 }
 

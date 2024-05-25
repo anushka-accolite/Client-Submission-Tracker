@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 // import React, { useState } from 'react';
 // import '../../css/loginform.css'; // Import your CSS file
 // import logo from '../../../assets/images/logos/logo.png';
@@ -420,6 +421,9 @@
 // export default LoginForm;
 
 import React, { useState, useEffect } from 'react';
+=======
+import React, { useState } from 'react';
+>>>>>>> e6a59da572eea0d77748591d993ddcecdf4bb2b3
 import '../../css/loginform.css'; // Import your CSS file
 import logo from '../../../assets/images/logos/logo.png';
 import OneLogin from '../../../assets/images/logos/onelogin.png';
@@ -445,7 +449,8 @@ const LoginForm = () => {
         console.log("Login Successful");
         localStorage.setItem('token', token);
         localStorage.setItem('username', username);
-        fetchUserData(token);
+        await fetchUserData(token, username);
+        window.location.reload();
       }
     } catch (error) {
       console.error('Login failed:', error);
@@ -453,25 +458,32 @@ const LoginForm = () => {
     }
   };
 
-  const fetchUserData = async (token) => {
+  const fetchUserData = async (token, username) => {
     try {
       const headers = {
         'Authorization': `Bearer ${token}`
       };
-      const datadb = await axios.get('http://localhost:8092/api/user/users', { headers });
-      const user = datadb.data.find(user => user.userName === username);
+      const response = await axios.get('http://localhost:8092/api/user/users', { headers });
+      console.log('Response data:', response.data); // Log the entire response to see its structure
 
-      if (user) {
-        const userRole = user.userRole;
-        console.log('User Role:', userRole);
-        localStorage.setItem('userRole', userRole); // Store the user role in localStorage
-        if(userRole==='admin'){
-          navigate('/');
+      if (Array.isArray(response.data)) {
+        const user = response.data.find(user => user.userName === username);
+        
+        if (user) {
+          const userRole = user.userRole;
+          console.log('User Role:', userRole);
+          localStorage.setItem('userRole', userRole); // Store the user role in localStorage
+          if (userRole === 'admin') {
+            navigate('/home');
+          } else {
+            navigate('/listofcandidates');
+          }
         } else {
-          navigate('/listofcandidates');
+          console.error('User not found in response data');
         }
+      } else {
+        console.error('Response data is not an array');
       }
-      window.location.reload();
     } catch (error) {
       console.error('Failed to fetch user data:', error);
     }

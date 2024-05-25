@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 // import React, { useEffect, useState } from 'react';
 // import Table from '@mui/material/Table';
 // import TableBody from '@mui/material/TableBody';
@@ -132,6 +133,8 @@
 //   );
 // }
 
+=======
+>>>>>>> e6a59da572eea0d77748591d993ddcecdf4bb2b3
 import React, { useEffect, useState } from 'react';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -144,26 +147,30 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import TextField from '@mui/material/TextField';
-import '../../css/listofam.css';
+import '../../css/listofam.css';  
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 export default function Listofam() {
   const [rows, setRows] = useState([]);
   const [selectedColumn, setSelectedColumn] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
-  var details;
+  const navigate=useNavigate();
   useEffect(() => {
+    if(localStorage.role!=='admin'){
+      navigate('/loginform');
+    }
     const fetchData = async () => {
       try {
         const token = localStorage.getItem("token");
         const headers = { "Authorization": "Bearer " + token };
 
-        const response = await axios.get('http://localhost:8092/api/user/users', { headers });
-        details = response.data;
+        let response = await axios.get('http://localhost:8092/api/user/users', { headers }); //fetched all user details
+        let details = response.data;
 
-        const toBeSearched = 'Account Manager'.replace(/\s+/g, '').toLowerCase();
+        const toBeSearched = 'Account Manager'.replace(/\s+/g, '').toLowerCase(); // searching account manager by replacing trimming spaces and changing to lower case
         details = details.filter(item => {
-          return item.userRole.replace(/\s+/g, '').toLowerCase() === toBeSearched;
+          return item.userRole.replace(/\s+/g, '').toLowerCase() === toBeSearched;  
         });
 
         const mappedDetails = details.map(item => ({
@@ -179,7 +186,7 @@ export default function Listofam() {
     };
 
     fetchData();
-  }, [details]);
+  }, []);
 
   const handleColumnChange = (event) => {
     setSelectedColumn(event.target.value);
@@ -212,7 +219,7 @@ export default function Listofam() {
 
   const renderBodyRows = () => {
     return filteredRows.map((row) => (
-      <TableRow key={row.Id}>
+      <TableRow key={row.Id} className='tr'>
         {Object.values(row).map((value, index) => (
           <TableCell key={index}>{value}</TableCell>
         ))}

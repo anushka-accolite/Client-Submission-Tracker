@@ -7,25 +7,16 @@
   flex-wrap: wrap;
 }
 
-.filter-select, .search-input {
-  /* height: 30px;
-  margin-right: 10px;
-  padding: 5px;
-  flex: 1;
-  min-width: 120px; */
-}
+
 .filter-select1,.search-input1{
   min-height:30px !important;
+  margin-right:10px;
 }
 
 .table {
   width: 100%;
   border-collapse: collapse;
   margin-top: 20px;
-}
-
-.tr {
-  background-color: #f2f2f2;
 }
 
 .th, .td {

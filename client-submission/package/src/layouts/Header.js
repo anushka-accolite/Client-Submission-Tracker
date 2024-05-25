@@ -1,5 +1,5 @@
 import React from "react";
-import { Link} from "react-router-dom";
+import { Link, useNavigate} from "react-router-dom";
 import '../views/css/header.css'
 import {
   Navbar,
@@ -19,16 +19,23 @@ import user1 from "../assets/images/users/user1.jpg";
 const Header = () => {
   const [isOpen, setIsOpen] = React.useState(false);
   const [dropdownOpen, setDropdownOpen] = React.useState(false);
-
+  const navigate=useNavigate();
   const toggle = () => setDropdownOpen((prevState) => !prevState);
   const Handletoggle = () => {
     setIsOpen(!isOpen);
   };
+  let role=localStorage.getItem("userRole");
+  if(role!=='admin'){
+    role="user";
+  }
+  else{
+    role="admin";
+  }
   const showMobilemenu = () => {
     document.getElementById("sidebarArea").classList.toggle("showSidebar");
   };
   return (
-    <Navbar color="primary" dark expand="md">
+    <Navbar className="navbar" dark expand="md">
       <div className="d-flex align-items-center">
         <NavbarBrand href="/" className="d-lg-none">
           <LogoWhite />
@@ -59,13 +66,13 @@ const Header = () => {
       <Collapse navbar isOpen={isOpen}>
         <Nav className="me-auto" navbar>
           <NavItem>
-            <Link to="/home" className="nav-link">
-              DASHBOARD
+            <Link to={role==='admin'?'/home':'/listofcandidates'} className="nav-link">
+             {role==='admin'?"ADMIN'S DASHBOARD":"USER'S DASHBOARD"}
             </Link>
           </NavItem>
         </Nav>
         <Dropdown isOpen={dropdownOpen} toggle={toggle}>
-          <DropdownToggle color="primary">
+          <DropdownToggle className="icon">
             <img
               src={user1}
               alt="profile"
@@ -73,11 +80,11 @@ const Header = () => {
               width="30"
             ></img>
           </DropdownToggle>
-          <DropdownMenu>
-            <DropdownItem><Link to="/myaccount" className="myaccount">My Account</Link></DropdownItem>
-            <DropdownItem><Link to="/myprofile" className="myprofile">Edit Profile</Link></DropdownItem>
+          <DropdownMenu style={{background:"white"}}>
+            <DropdownItem><button className="dropdownbtn" onClick={()=>navigate('/myaccount')}>My Account</button></DropdownItem>
+            <DropdownItem><button className="dropdownbtn" onClick={()=>navigate('/myprofile')}>Edit Profile</button></DropdownItem>
             <DropdownItem divider />
-            <DropdownItem onClick={()=>localStorage.setItem("userRole","")} className="bg-white"><Button className="bg-white border-0"><Link style={{textDecoration:'none',fontSize:"20px"}} to="/loginform" className="loginform">Logout</Link></Button></DropdownItem>
+            <DropdownItem><button className="dropdownbtn" onClick={()=>{localStorage.setItem("userRole","");navigate('/loginform')}}>Logout</button></DropdownItem>
           </DropdownMenu>
         </Dropdown>
       </Collapse>

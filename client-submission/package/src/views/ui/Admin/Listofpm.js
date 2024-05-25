@@ -12,14 +12,18 @@ import Select from '@mui/material/Select';
 import TextField from '@mui/material/TextField';
 import '../../css/listofta.css';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 export default function Listofpm() {
   const [rows, setRows] = useState([]);
   const [selectedColumn, setSelectedColumn] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
   const [sortOrder, setSortOrder] = useState('asc');
-  var details="";
+ const navigate=useNavigate();
   useEffect(() => {
+    if(localStorage.role!=='admin'){
+      navigate('/loginform');
+    }
     const fetchData = async () => {
       try {
         
@@ -27,13 +31,14 @@ export default function Listofpm() {
         const headers = { "Authorization": "Bearer " + token };
 
         const response = await axios.get('http://localhost:8092/api/user/users', { headers });
-        details = response.data;
+        //get all the users
+        let details = response.data;
 
         console.log('Fetched Details:', details);
 
-        const toBeSearched = 'Project Manager'.replace(/\s+/g, '').toLowerCase();
+        const toBeSearched = 'Project Manager'.replace(/\s+/g, '').toLowerCase(); // filtering project manager from user 
 
-        details = details.filter(item => {
+        details = details.filter(item => { 
           return item.userRole.replace(/\s+/g, '').toLowerCase() === toBeSearched;
         });
 
@@ -52,7 +57,7 @@ export default function Listofpm() {
     };
 
     fetchData();
-  }, [details]);
+  }, []);
 
   const handleColumnChange = (event) => {
     setSelectedColumn(event.target.value);
@@ -62,9 +67,6 @@ export default function Listofpm() {
     setSearchTerm(event.target.value);
   };
 
-  const handleSortOrderChange = () => {
-    setSortOrder((prevSortOrder) => (prevSortOrder === 'asc' ? 'desc' : 'asc'));
-  };
 
   const filteredRows = rows.filter((row) => {
     if (selectedColumn) {
@@ -76,7 +78,7 @@ export default function Listofpm() {
     }
   });
 
-  const sortedRows = [...filteredRows].sort((a, b) => {
+  const sortedRows = [...filteredRows].sort((a, b) => { 
     if (sortOrder === 'asc') {
       return a.Name.localeCompare(b.Name);
     } else {
@@ -101,7 +103,7 @@ export default function Listofpm() {
 
   const renderBodyRows = () => {
     return sortedRows.map((row) => (
-      <TableRow key={row.Id}>
+      <TableRow key={row.Id} className="tr">
         <TableCell>{row.Id}</TableCell>
         <TableCell>{row.Name}</TableCell>
         <TableCell>{row.Email}</TableCell>
