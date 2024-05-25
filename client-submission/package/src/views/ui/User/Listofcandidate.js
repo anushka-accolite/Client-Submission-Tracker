@@ -55,12 +55,18 @@ export default function Listofcandidate() {
   const chartInstance = useRef(null);
   const navigate = useNavigate();
   const [selectedRow,setSelectedRow]=useState();
+  let response="";
   useEffect(() => {
+    const role=localStorage.getItem("role")
+    if(role!=="user"){
+      navigate("/loginform");
+    }
+
     const fetchCandidates = async () => {
       try {
         let token = localStorage.getItem("token");
         let headers = { "Authorization": `Bearer ${token}` };
-        let response = await axios.get('http://localhost:8092/api/candidates/getAll', { headers });
+        response = await axios.get('http://localhost:8092/api/candidates/getAll', { headers });
 
         console.log('Candidates API Response:', response.data);
 
@@ -245,65 +251,7 @@ export default function Listofcandidate() {
   );
 
 
-//   const handleAdd = async (id) => {
-//     try {
-//         let token = localStorage.getItem("token");
-//         let headers = { "Authorization": `Bearer ${token}` };
-//         let response= await axios.get(`http://localhost:8092/api/candidates/${id}`, { headers });
-//         let candidateToAdd = response.data;
-//         candidateToAdd.isDeleted = false;
-//         console.log("add ", response.data);
-//         let userObj=await axios.get(`http://localhost:8092/api/user/users`,{headers});
-//         let username=localStorage.getItem("username");
-//         let userId=userObj.data.find((item)=>item.userName===username).userId;
-//         let userObj1=userObj.data.find((item)=>item.userId===userId);
-//         console.log(userObj1);
-//         let clientObj=candidateToAdd.clients;
-//         console.log(clientObj);
-//         let clientObj1=clientObj[0];
-//         const submissionData = {
-//           users: userObj1?{
-//               userId: userObj1.userId,
-//               userName: userObj1.userName,
-//               userRole: userObj1.userRole,
-//               email: userObj1.email,
-//               loginUserPassword: userObj1.loginUserPassword,
-//               isDeleted: userObj1.isDeleted
-//           }:null,
-//           client: clientObj1?  {
-//               clientId: clientObj1.clientId,
-//               clientName: clientObj1.clientName,
-//               clientResponseTimeinDays: clientObj1.clientResponseTimeinDays,
-//               clientRequirement: clientObj1.clientRequirement,
-//               skills: clientObj1.skills,
-//               isDeleted: clientObj1.isDeleted
-//           }:null,
-//           candidate: candidateToAdd? {
-//               candidateId: candidateToAdd.candidateId,
-//               candidateName: candidateToAdd.candidateName,
-//               candidateEmail: candidateToAdd.candidateEmail,
-//               candidateStatus: candidateToAdd.candidateStatus,
-//               last_working_day: candidateToAdd.last_working_day,
-//               isAccoliteEmployee: candidateToAdd.isAccoliteEmployee,
-//               experience: candidateToAdd.experience,
-//               isDeleted: candidateToAdd.isDeleted,
-//               skills:candidateToAdd.skills||[]
-//           }:null,
-//           submissionDate: new Date().getTime(), // Submission date in milliseconds
-//           status: candidateToAdd.candidateStatus,
-//           remark: 'Good Understanding', // Assuming 'Good Understanding' as default remark
-//           isDeleted: false
-//       };
-//       console.log(submissionData);
-//         let submission=await axios.post('http://localhost:8092/api/submissions',
-//             submissionData
-//         ,{headers});
-//         setSelectedRow(id);
-        
-//     } catch (error) {
-//         console.error('Error adding candidate:', error);
-//     }
-// };
+
 
 const handleAdd = async (id) => {
   try {
@@ -318,7 +266,7 @@ const handleAdd = async (id) => {
     let response = await axios.get(`http://localhost:8092/api/candidates/${id}`, { headers });
     let candidateToAdd = response.data;
     candidateToAdd.isDeleted = false;
-
+    console.log(candidateToAdd);
     // Fetch user data
     let userObj = await axios.get(`http://localhost:8092/api/user/users`, { headers });
     let username = localStorage.getItem("username");
@@ -327,31 +275,48 @@ const handleAdd = async (id) => {
       throw new Error("User not found");
     }
 
-    let clientObj1=await axios.get('http://localhost:8092/api/admin/clients',{headers});
-    //console.log(clientObj1.data);
-    let clientData=null;
+   
+    let clientObj1 = await axios.get('http://localhost:8092/api/admin/clients', { headers });
+    let clientData="";
+    clientObj1.data.forEach(client => {
+      client.users.forEach(item => {
+        if (item.userId === user.userId) {
+          clientData = client;
+        }
+      });
+    });
+    if (!clientData) {
+      console.error('No matching client found for the user');
+      return;
+    }
 
-    const clients=clientObj1.data.map(client=>{
-      const user1=client.users;
-      const userArray=user1.map((item)=>{
-        //console.log(item.userId);
-        //console.log(user.userId);
-         if(item.userId===user.userId){
-          clientData=client;
-         }
-      })
-    })
-    console.log(clientData);
+
+    console.log(clientObj1.data);
     console.log(headers);
-    let client_candidate=await axios.post(`http://localhost:8092/api/candidate-client/link?candidateId=${candidateToAdd?.candidateId}&clientId=${clientData?.clientId}`,{},{headers});
-    console.log(client_candidate);
+     if(!(candidateToAdd.clients.some(candidateClient => candidateClient.clientId === clientData.clientId))){
+    let client_candidate=await axios.post(`http://localhost:8092/api/candidate-client/link?candidateId=${candidateToAdd.candidateId}&clientId=${clientData.clientId}`,{},{headers});
+    console.log("client_candidate",client_candidate);
+    }
 
-    // Fetch client data from the candidate object
-    // let clientObj = candidateToAdd.clients;
-    // if (!clientObj || clientObj.length === 0) {
-    //   throw new Error("Client data not found");
-    // }
-    // let client = clientObj[0];
+   
+    
+    try {
+      var existingSubmissionResponse = await axios.get(`http://localhost:8092/api/submissions/candidate/${candidateToAdd.candidateId}`, { headers });
+      
+      // Submission found, parse the response data
+      var existingSubmission = existingSubmissionResponse.data;
+      console.log(existingSubmission);
+    } catch (error) {
+      if (error.response && error.response.status === 404) {
+        // No submission found for the candidate
+        var existingSubmission = false;
+        console.log(existingSubmission);
+      } else {
+        // Other errors
+        console.error('Error:', error);
+      }
+    }
+    
 
     // Prepare submission data
     const submissionData ={
@@ -380,21 +345,43 @@ const handleAdd = async (id) => {
         isAccoliteEmployee: candidateToAdd.isAccoliteEmployee,
         experience: candidateToAdd.experience,
         isDeleted: candidateToAdd.isDeleted,
-        skills: candidateToAdd.skills || [],
+        skills: candidateToAdd.skills? candidateToAdd.skills || []:null,
       }:null,
       submissionDate: new Date().getTime(),
-      //status: candidateToAdd.candidateStatus,
+      status: candidateToAdd.candidateStatus,
       remark: 'Good Understanding',
       isDeleted: false,
     };
 
     console.log(submissionData);
-
-    // Submit the submission data
-    await axios.post('http://localhost:8092/api/submissions', submissionData, { headers });
+    console.log("existingSubmission",existingSubmission);
+    if (existingSubmission) {
+      // Update existing submission
+      console.log("bas update")
+      submissionData.status=candidateToAdd.candidateStatus;
+      let response =await axios.put(`http://localhost:8092/api/candidates/${candidateToAdd.candidateId}`,{
+        candidateId: candidateToAdd.candidateId,
+        candidateName: candidateToAdd.candidateName,
+        candidateEmail: candidateToAdd.candidateEmail,
+        candidateStatus: candidateToAdd.candidateStatus,
+        last_working_day: candidateToAdd.last_working_day,
+        isAccoliteEmployee: candidateToAdd.isAccoliteEmployee,
+        experience: candidateToAdd.experience,
+        isDeleted: candidateToAdd.isDeleted,
+        skills: candidateToAdd.skills? candidateToAdd.skills || []:null,
+      },{headers});
+      console.log(response.data);
+      //await axios.put(`http://localhost:8092/api/submissions/${}`, submissionData, { headers });
+      toast.success("Candidate submission updated successfully!");
+    } else {
+      console.log("first time")
+      //Create new submission
+      await axios.post('http://localhost:8092/api/submissions', submissionData, { headers });
+      toast.success("Candidate added successfully!");
+    }
 
     setSelectedRow(id);
-    toast.success("Candidate added successfully!");
+    // toast.success("Candidate added successfully!");
 
   } catch (error) {
     console.error('Error adding candidate:', error);

@@ -1,18 +1,15 @@
 import React, { useEffect, useState } from 'react';
-// import { useHistory } from 'react-router-dom';
 import { useNavigate } from "react-router-dom";
 import '../../css/editprofile.css';
 import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-function EditProfile({ history }) {
+function EditProfile() {
   const [userId, setUserId] = useState('');
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [role, setRole] = useState('');
-  const [selectedFile, setSelectedFile] = useState(null);
-
   useEffect(() => {
     const fetchUserData = async () => {
       try {
@@ -25,7 +22,6 @@ function EditProfile({ history }) {
         setUsername(userData.userName || ''); // Assuming it's userName, not username
         setEmail(userData.email || '');
         setRole(userData.userRole || '');
-        setSelectedFile(userData.profilePicture || null);
         console.log(userData);
       } catch (error) {
         console.error('Error fetching user data:', error);
@@ -40,7 +36,7 @@ const navigate=useNavigate();
     try {
       const token = localStorage.getItem("token");
       const headers = { "Authorization": `Bearer ${token}` };
-      const { data } = await axios.get('http://localhost:8092/api/user/users', { headers });
+      const { data } = await axios.get('http://localhost:8092/api/user/users', { headers }); //getting all user details
 
       const userData = data.filter(item => item.userName === localStorage.getItem("username"))[0];
         userData.userName= username;
@@ -48,7 +44,7 @@ const navigate=useNavigate();
       localStorage.setItem("username",username);
        await axios.put(`http://localhost:8092/api/user/${userId}`, userData, { headers });
       alert('Profile updated successfully!');
-      navigate('/myprofile');
+      navigate('/profile');   // if profile is updated successfully then it will ridirect to myaccount page
       
     } catch (error) {
       console.error('Error updating user data:', error);
@@ -61,7 +57,6 @@ const navigate=useNavigate();
     setUsername('');
     setEmail('');
     setRole('');
-    setSelectedFile(null);
   };
 
   return (
@@ -134,20 +129,6 @@ const navigate=useNavigate();
             <i className="fa fa-building"></i>
           </div>
         </div>
-        {/* <div className="form-group">
-          <label id='label' htmlFor="profile-picture">Profile Picture :</label>
-          <div className="relative">
-            <div className="input-group">
-              <label id='label' className="input-group-btn">
-                <span className="btn btn-default">
-                  Browse&hellip; <input type="file" style={{display: 'none'}} onChange={handleFileChange} />
-                </span>
-              </label>
-              <input  type="text" id='lastip'  placeholder="Attachment..." value={selectedFile ? selectedFile.name : ''} readOnly />
-              <i className="fa fa-link"></i>
-            </div>
-          </div>
-        </div> */}
         <div className="tright">
           <button className="movebtn movebtnre" type="reset"><i id='fa1' className="fa fa-fw fa-refresh"></i> Reset </button>
           <button className="movebtn movebtnsu" type="submit" id='fa2'>Apply <i id='fa2'  className="fa fa-fw fa-paper-plane"></i></button>

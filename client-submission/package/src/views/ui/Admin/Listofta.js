@@ -12,15 +12,18 @@ import Select from '@mui/material/Select';
 import TextField from '@mui/material/TextField';
 import '../../css/listofta.css';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 export default function Listofta() {
   const [rows, setRows] = useState([]);
   const [selectedColumn, setSelectedColumn] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
   const [sortOrder, setSortOrder] = useState('asc');
-
-  
+  const navigate=useNavigate();  
   useEffect(() => {
+    if(localStorage.role!=='admin'){
+      navigate('/loginform');
+    }
     const fetchData = async () => {
       try {
         const token = localStorage.getItem("token");
@@ -56,9 +59,7 @@ export default function Listofta() {
     setSearchTerm(event.target.value);
   };
 
-  const handleSortOrderChange = () => {
-    setSortOrder((prevSortOrder) => (prevSortOrder === 'asc' ? 'desc' : 'asc'));
-  };
+ 
 
   const filteredRows = rows.filter((row) => {
     if (selectedColumn) {

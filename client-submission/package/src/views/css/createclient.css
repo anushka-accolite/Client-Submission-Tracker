@@ -1,8 +1,4 @@
-/* #hd{
-    text-align: center;
-    color: rgb(15, 48, 92);
-} */
-/* CreateClient.css */
+
 .header {
     text-align: center;
     margin-bottom: 20px;
@@ -10,7 +6,6 @@
   }
   
   .form-container {
-    /* max-width: 600px; */
     width:100%;
     margin: 0 auto;
     padding: 20px;

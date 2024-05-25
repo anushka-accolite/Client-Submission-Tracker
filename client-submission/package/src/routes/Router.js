@@ -2,9 +2,6 @@ import { element } from "prop-types";
 import { lazy } from "react";
 import { Navigate } from "react-router-dom";
 ;
-// Import components from the appropriate paths
-
-// Import other components as needed
 // Layout
 const FullLayout = lazy(() => import("../layouts/FullLayout.js"));
 // Pages
@@ -52,7 +49,6 @@ const ThemeRoutes = [
       {path:"/profile",exact:true,element:<SubmittedProfile/>},
       {path:"/myprofile",exact:true,element:<EditProfile/>},
       {path:"/audit",exact:true,element:<AuditLog/>},
-      // {path:"/loginform",exact:true,element:<LoginForm/>},
       {path:"/myaccount",exact:true,element:<MyAccount/>}
     ],
   },

@@ -2,9 +2,6 @@
     text-align: center;
     text-shadow:2px 2px cornflowerblue 
 }
-/* .pmtable{
-    margin-top:10px !important;    
-} */
 .tr:hover{
     background-color: lightgray;
 }

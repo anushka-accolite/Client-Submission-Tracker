@@ -1,4 +1,3 @@
-import { ReactComponent as LogoDark } from "../assets/images/logos/ba.png";
 import { Link } from "react-router-dom";
 
 const Logo = () => {

@@ -12,24 +12,28 @@ import Select from '@mui/material/Select';
 import TextField from '@mui/material/TextField';
 import '../../css/listofam.css';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 export default function Listofam() {
   const [rows, setRows] = useState([]);
   const [selectedColumn, setSelectedColumn] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
-  // var details="";
+  const navigate=useNavigate();
   useEffect(() => {
+    if(localStorage.role!=='admin'){
+      navigate('/loginform');
+    }
     const fetchData = async () => {
       try {
         const token = localStorage.getItem("token");
         const headers = { "Authorization": "Bearer " + token };
 
-        let response = await axios.get('http://localhost:8092/api/user/users', { headers });
+        let response = await axios.get('http://localhost:8092/api/user/users', { headers }); //fetched all user details
         let details = response.data;
 
-        const toBeSearched = 'Account Manager'.replace(/\s+/g, '').toLowerCase();
+        const toBeSearched = 'Account Manager'.replace(/\s+/g, '').toLowerCase(); // searching account manager by replacing trimming spaces and changing to lower case
         details = details.filter(item => {
-          return item.userRole.replace(/\s+/g, '').toLowerCase() === toBeSearched;
+          return item.userRole.replace(/\s+/g, '').toLowerCase() === toBeSearched;  
         });
 
         const mappedDetails = details.map(item => ({

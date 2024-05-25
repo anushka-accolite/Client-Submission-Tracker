@@ -3,6 +3,7 @@ import '../../css/home.css'
 import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { useNavigate } from 'react-router-dom';
 
 const Starter = () => {
   const [data, setData] = useState([]);
@@ -10,8 +11,12 @@ const Starter = () => {
   const [sortOrder, setSortOrder] = useState('asc');
   const [filterColumn, setFilterColumn] = useState('cname');
   const [token, setToken] = useState(localStorage.getItem('token')); // Get token from local storage
+  const navigate=useNavigate();
 
   useEffect(() => {
+    if(localStorage.role!=='admin'){
+      navigate('/loginform');
+    }
     if (!token) {
       fetchToken(); // Fetch JWT token when component mounts if not available in local storage
     } else {
@@ -26,35 +31,17 @@ const Starter = () => {
 
   const fetchData = async () => {
     try {
-      const adminClientsResponse = await axios.get('http://localhost:8092/api/admin/clients', {
+      const adminClientsResponse = await axios.get('http://localhost:8092/api/admin/clients', { //fetching all the clients details
         headers: {
           Authorization: `Bearer ${token}`
         }
       });
       console.log(adminClientsResponse.data);
-  
-      // if (Array.isArray(adminClientsResponse.data)) {
-      //   const mappedData = adminClientsResponse.data
-      //     .filter(client => !client.isDeleted)
-      //     .map(client => {
-      //       const taUser = client.users.find(user => user.userRole === 'TalentAcquistion');
-      //       const pmUser = client.users.find(user => user.userRole === 'ProjectManager');
-      //       const amUser = client.users.find(user => user.userRole === 'AccountManager');
-      //       return {
-      //         clientId: client.clientId,
-      //         cname: client.clientName,
-      //         ta: taUser ? taUser.userName : '', // Check if taUser exists
-      //         pm: pmUser ? pmUser.userName : '', // Check if pmUser exists
-      //         am: amUser ? amUser.userName : '', // Check if amUser exists
-      //         restime: client.clientResponseTimeinDays
-      //       };
-      //     });
-      //   setData(mappedData);
       
       if (Array.isArray(adminClientsResponse.data)) {
         const mappedData = adminClientsResponse.data
           .filter(client => !client.isDeleted)
-          .map(client => {
+          .map(client => {   // searching ta,pm,am associated with client
             const taUser = client.users  ? client.users.find(user => user.userRole === 'TalentAcquistion') : null;
             const pmUser = client.users  ? client.users.find(user => user.userRole === 'ProjectManager') : null;
             const amUser = client.users  ? client.users.find(user => user.userRole === 'AccountManager') : null;
@@ -92,11 +79,11 @@ const Starter = () => {
         return;
       }
       let headers={"Authorization":`Bearer ${token}`}
-      let clientData=await axios.get(`http://localhost:8092/api/admin/${clientIdToRemove}`,{headers});
+      let clientData=await axios.get(`http://localhost:8092/api/admin/${clientIdToRemove}`,{headers});  // removing the client by getting client by id and using put method to update isDeleted 
       clientData=clientData.data;
       clientData.isDeleted=true;
       const adminClientsResponse = await axios.put(
-        `http://localhost:8092/api/admin/${clientIdToRemove}`,
+        `http://localhost:8092/api/admin/${clientIdToRemove}`, 
         { 
           clientId:clientData.clientId,
           clientName:clientData.clientName,
@@ -113,7 +100,7 @@ const Starter = () => {
       );
       console.log(clientData);
 
-      if (adminClientsResponse.status === 200) {
+      if (adminClientsResponse.status === 200) {  // if status is success then removing from frontend using filter
         const newData = data.filter(item => item.clientId !== clientIdToRemove);
         setData(newData);
         toast.success('Data deleted successfully!');
@@ -127,7 +114,7 @@ const Starter = () => {
     }
   };
 
-  const handleSort = (key) => {
+  const handleSort = (key) => {  //sorting according to response time asc,desc
     const newData = [...data];
     newData.sort((a, b) => {
       if (key === 'restime') {
