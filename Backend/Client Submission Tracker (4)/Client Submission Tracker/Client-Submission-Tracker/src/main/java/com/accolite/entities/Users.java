@@ -3,6 +3,7 @@ package com.accolite.entities;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -66,6 +67,7 @@ public class Users {
 	private Client client;
 	
 	@OneToMany(mappedBy="users",fetch=FetchType.EAGER)
+	@JsonIgnore
 	private List<SubmissionToClient> submissions;
 
 //	public List<SubmissionToClient> getSubmissions() {

@@ -27,6 +27,7 @@ public class CandidateSkillService {
 	        if (skill == null) {
 	            skill = new CandidateSkill();
 	            skill.setSkill(skillName);
+				skill.setIsDeleted(false);
 	            skill = candidateSkillRepository.save(skill);
 	        }
 	        if (!candidate.getSkills().contains(skill)) {

@@ -5,14 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.accolite.entities.Client;
 import com.accolite.entities.SubmissionToClient;
@@ -20,6 +13,7 @@ import com.accolite.service.SubmissionService;
 
 @RestController
 @RequestMapping("/api/submissions")
+@CrossOrigin(origins = "http://localhost:3000")
 public class SubmissionController {
 	
 	@Autowired
@@ -66,6 +60,24 @@ public class SubmissionController {
 	    }
 	}
 
+	@GetMapping("/{submissionId}/history")
+	public ResponseEntity<List<Object[]>> getSubmissionAuditHistory(
+			@PathVariable int submissionId) {
+		List<Object[]> auditHistory = submissionService.getSubmissionAuditHistory(submissionId);
+		if (auditHistory.isEmpty()) {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+		return new ResponseEntity<>(auditHistory, HttpStatus.OK);
+	}
+
+	@GetMapping("/candidate/{candidateId}")
+	public ResponseEntity<List<Integer>> checkCandidateAssociation(@PathVariable int candidateId) {
+		List<Integer> submissionIds = submissionService.getSubmissionIdsByCandidateId(candidateId);
+		if (submissionIds.isEmpty()) {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+		return new ResponseEntity<>(submissionIds, HttpStatus.OK);
+	}
 
 
 

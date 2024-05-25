@@ -1,5 +1,7 @@
 package com.accolite.entities;
 import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -58,13 +60,15 @@ public class Client {
 					@JoinColumn(name="candidate_id")
 			}
 			)
+	@JsonIgnore
 	private List<Candidate> candidates;
 	
 	@OneToMany(mappedBy="client",fetch=FetchType.EAGER)
-	@JsonManagedReference
+	//@JsonIgnore
 	private List<Users> users;
 	
 	@OneToMany(mappedBy="client",fetch=FetchType.EAGER)
+	@JsonIgnore
 	private List<SubmissionToClient> submissions;
 
 

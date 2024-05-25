@@ -23,8 +23,14 @@ const MyAccount=lazy(()=> import("../views/ui/Admin/MyAccount.js"));
 // Routes
 const ThemeRoutes = [
   {
+    path:"/loginform",
+    element:<LoginForm/>
+  },
+  {
+    
+    
     path: "/",  
-    element: <FullLayout />,
+    element: <FullLayout/>,
     children: [
       { path: "/", element: <Navigate to="/home" /> },
       { path: "/home", exact: true, element: <Starter /> },
@@ -37,9 +43,9 @@ const ThemeRoutes = [
       {path:"/listofcandidates",exact:true,element:<Listofcandidates/>},
       {path:"/profile",exact:true,element:<SubmittedProfile/>},
       {path:"/myprofile",exact:true,element:<EditProfile/>},
-      {path:"/loginform",exact:true,element:<LoginForm/>},
       {path:"/myaccount",exact:true,element:<MyAccount/>}
     ],
   },
+  
 ];
 export default ThemeRoutes;

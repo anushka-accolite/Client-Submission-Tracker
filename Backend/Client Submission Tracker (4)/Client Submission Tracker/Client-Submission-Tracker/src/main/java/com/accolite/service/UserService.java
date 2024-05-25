@@ -42,11 +42,14 @@ public class UserService {
 	            existingUsers.setLoginUserPassword(updatedUsers.getLoginUserPassword());
 	            existingUsers.setIsDeleted(updatedUsers.getIsDeleted());
 	            existingUsers.setUserId(updatedUsers.getUserId());
+				existingUsers.setClient(updatedUsers.getClient());
 	            return userRepository.save(existingUsers);
 	        }
 	        return null;
 	    }
-	 
+	public void saveUser(Users user) {
+		userRepository.save(user);
+	}
 	 public void deleteUser(Integer userId)
 	 {
 		 userRepository.deleteById(userId);

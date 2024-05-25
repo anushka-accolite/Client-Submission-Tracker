@@ -1,6 +1,7 @@
 package com.accolite.controller;
 
 
+import com.accolite.entities.Users;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +19,7 @@ import com.accolite.service.ClientService;
 import com.accolite.service.UserService;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/admin")
@@ -25,7 +27,8 @@ public class AdminController {
 	    
 	    @Autowired
 	    private ClientService clientService;
-	
+
+		@Autowired
 	    private UserService userService;
         @PostMapping
 	    public ResponseEntity<Client> createClient(@RequestBody Client client) {
@@ -64,6 +67,24 @@ public class AdminController {
 	    	clientService.deleteClient(clientId);
 	    }
 
+	@PutMapping("/{clientId}/users")
+	public ResponseEntity<String> linkUserToClient(@PathVariable Integer clientId, @RequestBody Map<String, Integer> requestBody) {
+		Integer userId = requestBody.get("userId");
+		if (userId == null) {
+			return ResponseEntity.badRequest().body("User ID is required");
+		}
+		Client client = clientService.getClientById(clientId);
+		if (client == null) {
+			return ResponseEntity.notFound().build();
+		}
+		Users user = userService.getUserById(userId);
+		if (user == null) {
+			return ResponseEntity.notFound().build();
+		}
+		user.setClient(client);
+		userService.saveUser(user);
+		return ResponseEntity.ok("User linked to client successfully");
+	}
 
 
 }

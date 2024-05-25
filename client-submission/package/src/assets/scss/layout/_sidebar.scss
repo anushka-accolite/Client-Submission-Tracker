@@ -1,11 +1,22 @@
 .sidebarArea {
-  flex-shrink: 0;
-  width: $sidebarWidth;
-  background-color: $sidebarColor;
+   flex-shrink: 0;
+   width: $sidebarWidth;
+
+  // background-color: $sidebarColor;
+  // max-height:100%;
+  background-size: cover;
+ 
+  text-shadow: "0px 0px 1px whitesmoke" ;
+  // margin-left: -$sidebarWidth;
+  font-family: 'Lato, sans-serif';
+  // box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.2);
   .sidenav-bg:hover {
-    background-color: $gray-100;
+    // background-color: $gray-100;
     border-radius: $border-radius;
   }
+}
+#sidebarArea{
+  // background-color: "#3800e5";
 }
 
 @include media-breakpoint-down(lg) {
@@ -13,11 +24,77 @@
     position: fixed;
     height: 100%;
     overflow: auto;
-    z-index: 1;
-    margin-left: -$sidebarWidth;
+    z-index: 5;
     transition: 0.2s ease-in;
     &.showSidebar {
       margin-left: 0px;
     }
   }
 }
+// .sidebarArea shadow{
+//       background-color: "#3800e5";
+//         text-shadow: "0px 0px 1px whitesmoke" ;
+//         font-family: 'Lato, sans-serif';
+//         box-shadow: "5px 5px 10px rgba(0, 0, 0, 0.2) ";
+// }
+// .sidebarArea {
+//   flex-shrink: 0;
+//   width: $sidebarWidth;
+//   background-size: cover;
+//   text-shadow: 0px 0px 1px whitesmoke;
+//   font-family: 'Lato, sans-serif';
+//   box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.2);
+  
+//   .sidenav-bg:hover {
+//     border-radius: $border-radius;
+//   }
+// }
+
+// @include media-breakpoint-down(lg) {
+//   .sidebarArea {
+//     position: fixed;
+//     top: 0;
+//     left: 0;
+//     width: $sidebarWidth;
+//     height: 100%;
+//     overflow-y: auto;
+//     z-index: 1050;
+//     background-color: $sidebarColor;
+//     transition: transform 0.3s ease-in-out;
+//     transform: translateX(-100%);
+
+//     &.showSidebar {
+//       transform: translateX(0);
+//     }
+//   }
+
+//   .btn-close {
+//     background: none;
+//     border: none;
+//     font-size: 1.5rem;
+//     color: white;
+//     position: absolute;
+//     top: 10px;
+//     right: 10px;
+//     cursor: pointer;
+//   }
+
+//   .toggle-sidebar-btn {
+//     display: block;
+//     background: none;
+//     border: none;
+//     font-size: 1.5rem;
+//     color: white;
+//     cursor: pointer;
+
+//     &:focus {
+//       outline: none;
+//     }
+//   }
+// }
+
+// @include media-breakpoint-up(lg) {
+//   .toggle-sidebar-btn {
+//     display: none;
+//   }
+// }

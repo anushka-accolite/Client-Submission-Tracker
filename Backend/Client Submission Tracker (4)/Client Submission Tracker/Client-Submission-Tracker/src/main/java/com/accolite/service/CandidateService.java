@@ -39,6 +39,7 @@ public class CandidateService {
 	            existingCandidate.setCandidateStatus(updatedCandidate.getCandidateStatus());
 	            existingCandidate.setLast_working_day(updatedCandidate.getLast_working_day());
 	            existingCandidate.setExperience(updatedCandidate.getExperience());
+				existingCandidate.setIsDeleted(updatedCandidate.getIsDeleted());
 	            return candidateRepository.save(existingCandidate);
 	        }
 	        return null;

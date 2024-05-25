@@ -3,6 +3,7 @@ package com.accolite.entities;
 import java.util.Date;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -76,15 +77,10 @@ public class Candidate {
 	private List<CandidateSkill> skills;
 	
 	@OneToMany(mappedBy="candidate",fetch=FetchType.EAGER)
+	@JsonIgnore
 	private List<SubmissionToClient> submissions;
 
-//	public List<Client> getClients() {
-//		return clients;
-//	}
-//
-//	public void setClients(List<Client> clients) {
-//		this.clients = clients;
-//	}
+
 
 	public List<CandidateSkill> getSkills() {
 		return skills;

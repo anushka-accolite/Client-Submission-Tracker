@@ -1,4 +1,5 @@
-import * as React from 'react';
+// 
+import React from 'react';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -11,17 +12,21 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import InputLabel from '@mui/material/InputLabel';
 import TextField from '@mui/material/TextField';
+import axios from 'axios';
 
 function createData(id, name, experience, skill, status, clientname) {
   return { id, name, experience, skill, status, clientname };
 }
 
 export default function () {
+
+   
+
   const [selectedColumn, setSelectedColumn] = React.useState('Name');
   const [searchTerm, setSearchTerm] = React.useState('');
   const [sortOrder, setSortOrder] = React.useState('asc');
   const [rows, setRows] = React.useState([
-    createData(101, 'chirag', 1, 'java', 'selected', 'GS'),
+    createData(101, 'chirag', 1, 'selected', 'GS','good understanding of concepts'),
   ]);
 
   const handleColumnChange = (event) => {
@@ -38,7 +43,21 @@ export default function () {
   const handleSearchTermChange = (event) => {
     setSearchTerm(event.target.value);
   };
-
+  React.useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const headers = { "Authorization": `Bearer ${token}` };
+        const response = await axios.get('http://localhost:8092/api/submissions/getAll', { headers });
+        console.log(response.data);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+  
+    fetchData();
+  }, []);
+  
   return (
     <div>
       <FormControl sx={{ m: 1, minWidth: 120 }} style={{marginTop:"0.2px"}}>
@@ -53,9 +72,10 @@ export default function () {
           {/* <MenuItem value="Candidate Id">Candidate Id</MenuItem> */}
           <MenuItem value="Name">Name</MenuItem>
           <MenuItem value="Experience">Experience</MenuItem>
-          <MenuItem value="Skill">Skill</MenuItem>
+          {/* <MenuItem value="Skill">Skill</MenuItem> */}
           <MenuItem value="Status">Status</MenuItem>
           <MenuItem value="ClientName">ClientName</MenuItem>
+          
         </Select>
       </FormControl>
       <TextField
@@ -72,9 +92,10 @@ export default function () {
               <TableCell><b>Candidate Id</b></TableCell>
               <TableCell align="right"><b>Name</b></TableCell>
               <TableCell align="right"><b>Experience</b></TableCell>
-              <TableCell align="right"><b>Skill</b></TableCell>
+              {/* <TableCell align="right"><b>Skill</b></TableCell> */}
               <TableCell align="right"><b>Status</b></TableCell>
               <TableCell align="right"><b>ClientName</b></TableCell>
+              <TableCell align="right"><b>Remark</b></TableCell>
             </TableRow>
           </TableHead>
           <TableBody>

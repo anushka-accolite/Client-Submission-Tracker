@@ -29,7 +29,6 @@ public class MySecurityConfig {
     public UserDetailsService userDetailsService() {
         List<Users> loginDetailsList = (List<Users>) userRepository.findAll();
         List<UserDetails> users = new ArrayList<>();
-
         for (Users userEntity : loginDetailsList) {
             UserDetails user = User.builder()
                     .username(userEntity.getUserName())
