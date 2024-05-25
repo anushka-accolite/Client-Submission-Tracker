@@ -22,7 +22,7 @@ public class SubmissionService {
 	public List<SubmissionToClient> getAllSubmissions(){
 		return (List<SubmissionToClient>) submissionRepository.findAll();
 	}
-	
+
 	 public SubmissionToClient submitCandidateToClient(SubmissionToClient submission) {
 	        return submissionRepository.save(submission);
 	 }
@@ -76,6 +76,10 @@ public class SubmissionService {
 	}
 
 
+	public List<Integer> isCandidateAssociatedWithSubmission(Integer candidateId) {
+		//return submissionRepository.existsByCandidate_CandidateId(candidateId);
+		return submissionRepository.findSubmissionIdsByCandidateId(candidateId);
+	}
 
 	public List<Integer> getSubmissionIdsByCandidateId(int candidateId) {
 		return submissionRepository.findSubmissionIdsByCandidateId(candidateId);
