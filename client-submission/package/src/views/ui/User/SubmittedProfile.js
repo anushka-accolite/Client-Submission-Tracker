@@ -131,7 +131,7 @@ export default function MyComponent() {
               <TableCell><b>Candidate Id</b></TableCell>
               <TableCell align="right"><b>Name</b></TableCell>
               <TableCell align="right"><b>Experience</b></TableCell>
-              {/* <TableCell align="right"><b>Skill</b></TableCell> */}
+              <TableCell align="right"><b>Skill</b></TableCell>
               <TableCell align="right"><b>Status</b></TableCell>
               <TableCell align="right"><b>ClientName</b></TableCell>
               <TableCell align="right" style={{width:"100px"}}>
