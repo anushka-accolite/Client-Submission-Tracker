@@ -1,5 +1,5 @@
  
-  .status-dot {
+.status-dot {
   width: 10px;
   height: 10px;
   border-radius: 50%;
@@ -52,6 +52,14 @@
 .searchip{
   width:180px;
   
+}
+
+.clear-search-btn{
+  padding: 6px;
+  margin-left: 10px;
+  border-radius: 10%;
+  background-color: white;
+  border-color: rgb(29, 29, 241);
 }
 .top-table{
 

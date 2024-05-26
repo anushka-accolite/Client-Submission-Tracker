@@ -1,17 +1,27 @@
+
+
 #hd{
-    text-align: center;
+    /* text-align: center; */
     color: rgb(15, 48, 92);
+    margin-bottom: 1.5em;
 }
 
 .dropdown{
     width:120px !important;
     margin-right:20px;
-    
 }
 .table{
     margin-top:10px;
 }
 .tr:hover{
     background-color: lightgray;
+}
+
+.clear-search-btn{
+    padding: 13px;
+    margin-left: 10px;
+    border-radius: 10%;
+    background-color: white;
+    border-color: rgb(29, 29, 241);
 }
 

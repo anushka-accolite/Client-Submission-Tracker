@@ -1,7 +1,23 @@
+
+
+
+
 #hd{
-    text-align: center;
-    text-shadow:2px 2px cornflowerblue 
+    /* text-align: center; */
+    text-shadow:rgb(15, 48, 92);
+    margin-bottom: 1.5em;
 }
 .tr:hover{
     background-color: lightgray;
+}
+.table{
+    margin-top:10px;
+}
+
+.clear-search-btn{
+    padding: 13px;
+    margin-left: 10px;
+    border-radius: 10%;
+    background-color: white;
+    border-color: rgb(29, 29, 241);
 }

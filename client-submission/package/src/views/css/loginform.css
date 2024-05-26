@@ -1,4 +1,8 @@
-
+body{
+    background-image: url(../../assets/images/bg.jpg);
+    background-repeat: no-repeat;
+    background-size: cover;
+}
 .logo {
     display: flex;
     justify-content: center;
@@ -20,9 +24,10 @@
 }
 
 .container {
+    background-color: white;
     padding: 12px;
     max-width: 400px; 
-    margin: 0 auto; 
+    margin-top: 5em; 
     border: 1px solid black;
     border-radius: 10px;
     box-shadow: 0 2px 4px rgba(36, 45, 175, 0.1); 
