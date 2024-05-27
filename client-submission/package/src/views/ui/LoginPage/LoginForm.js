@@ -71,8 +71,6 @@ const LoginForm = () => {
           <img
             alt="Accolite"
             loading="lazy"
-            width="165"
-            height="60"
             decoding="async"
             src={logo}
           />

@@ -24,8 +24,6 @@ const ThemeRoutes = [
     element:<LoginForm/>
   },
   {
-    
-    
     path: "/",  
     element: <FullLayout showSidebarAndHeader={false} />,
     children: [

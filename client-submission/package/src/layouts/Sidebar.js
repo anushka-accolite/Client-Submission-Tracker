@@ -40,12 +40,12 @@ const userNavigation = [
   {
     title: "List of Candidates",
     href: "/listofcandidates",
-    icon: "bi bi-house",
+    icon: "bi bi-list",
   },
   {
     title: "Submitted Profiles",
     href: "/profile",
-    icon: "bi bi-person",
+    icon: "bi bi-list",
   },
   // Add more user-specific navigation items here
   {
