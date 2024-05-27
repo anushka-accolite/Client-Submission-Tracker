@@ -537,6 +537,10 @@ const handleAdd = async (id) => {
       let candidateSkill= await axios.post(`http://localhost:8092/api/candidates/${createCandidate.data.candidateId}/skills`,skills,{headers});
       console.log(candidateSkill);
       console.log(skills);
+      setTimeout(()=>{
+        window.location.reload();
+      },3000);
+
      })
     //  let candidateSkill= await axios.post(`http://localhost:8092/api/candidates/${candidateId}/skills`)
     }

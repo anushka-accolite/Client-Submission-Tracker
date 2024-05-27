@@ -2,13 +2,12 @@
 .uppercontainer {
   display: flex;
   align-items: center;
-  margin-bottom: 10px;
 }
 
 .filter-select {
   width: 120px;
   margin-right: 16px;
-  min-height:58px !important;
+  max-height:55px 
 }
 
 #hd1 {

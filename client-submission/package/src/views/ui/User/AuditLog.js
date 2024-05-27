@@ -47,8 +47,8 @@ try {
         let historyData = historyResponse.data.map(history => ({
             s_id: history[0],
             c_id: history[7],
-            name: history[12],
-            status: history[13],
+            name: history[9],
+            status: history[4],
             remark: history[3],
             revtype: history[2],
             rev: new Date(history[6]).toLocaleString()
@@ -137,7 +137,7 @@ return (
                         return value && value.toString().toLowerCase().includes(searchTerm.toLowerCase());
                     })
                     .map((row, index) => (
-                        <TableRow
+                        <TableRow className='trow'
                             key={index}
                             sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                         >

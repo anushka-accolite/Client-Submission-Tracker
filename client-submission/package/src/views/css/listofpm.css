@@ -6,3 +6,7 @@
 .tr:hover{
     background-color: lightgray;
 }
+#dropdown{
+    width:60px;
+    margin-right:20px;
+}

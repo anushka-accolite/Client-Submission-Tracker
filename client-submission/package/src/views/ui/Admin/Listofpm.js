@@ -118,7 +118,7 @@ export default function Listofpm() {
         <div className="filter-container">
           <FormControl variant="outlined">
             <Select
-              className="dropdown"
+              id="dropdown"
               value={selectedColumn}
               onChange={handleColumnChange}
               displayEmpty
@@ -133,6 +133,8 @@ export default function Listofpm() {
             variant="outlined"
             value={searchTerm}
             onChange={handleSearchTermChange}
+            className='searchip'
+            style={{marginLeft:"20px"}}
           />
           {searchTerm && (
             <button onClick={handleClearSearch} className="clear-search-btn">Clear</button>

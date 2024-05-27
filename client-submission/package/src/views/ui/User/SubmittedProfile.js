@@ -13,6 +13,8 @@ import InputLabel from '@mui/material/InputLabel';
 import TextField from '@mui/material/TextField';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import '../../css/submittedprofile.css';
+
 
 function createData(sid, cid, name, experience, skill, status, clientname, remark, responseTime) {
   return { sid, cid, name, experience, skill, status, clientname, remark, responseTime };
@@ -142,7 +144,7 @@ export default function MyComponent() {
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
           <TableHead>
-            <TableRow>
+            <TableRow >
               <TableCell align='right'><b>Submission Id</b></TableCell>
               <TableCell><b>Candidate Id</b></TableCell>
               <TableCell align="right"><b>Name</b></TableCell>
@@ -167,7 +169,7 @@ export default function MyComponent() {
             {filteredAndHighlightedRows
               .filter(row => row[selectedColumn] && row[selectedColumn].toString().toLowerCase().includes(searchTerm.toLowerCase()))
               .map((row) => (
-                <TableRow
+                <TableRow className='trow'
                   key={row.sid}
                   sx={{ '&:last-child td, &:last-child th': { border: 0 }, backgroundColor: row.highlight ? 'yellow' : 'inherit' }}
                 >
