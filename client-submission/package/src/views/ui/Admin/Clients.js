@@ -44,7 +44,11 @@ export default function Clients() {
         const clientsData = response.data;
         console.log(clientsData)
         setClients(clientsData);
-        setFilteredClients(clientsData);
+        // setFilteredClients(clientsData);
+        const data=clientsData.filter(client => client.isDeleted !== true);
+    
+        setFilteredClients(clientsData.filter(client => client.isDeleted !== true));
+
         console.log(clientsData);
       } catch (error) {
         console.error('Error fetching clients:', error);

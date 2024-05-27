@@ -74,6 +74,7 @@ public class Candidate {
 			inverseJoinColumns = {
 					@JoinColumn(name="skill_id")
 			})
+	@JsonIgnore
 	private List<CandidateSkill> skills;
 	
 	@OneToMany(mappedBy="candidate",fetch=FetchType.EAGER)

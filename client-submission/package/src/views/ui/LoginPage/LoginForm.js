@@ -25,7 +25,7 @@ const LoginForm = () => {
         localStorage.setItem('token', token);
         localStorage.setItem('username', username);
         await fetchUserData(token, username);
-        window.location.reload();
+         window.location.reload();
       }
     } catch (error) {
       console.error('Login failed:', error);

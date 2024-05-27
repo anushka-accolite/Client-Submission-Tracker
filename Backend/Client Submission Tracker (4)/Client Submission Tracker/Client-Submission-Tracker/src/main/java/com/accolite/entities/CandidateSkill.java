@@ -45,8 +45,11 @@ public class CandidateSkill {
 	@JsonIgnore
 	private List<Candidate> candidates;
 
+    public CandidateSkill(Integer candidateId, String skill) {
+    }
 
-	public String getSkill() {
+
+    public String getSkill() {
 		return skill;
 	}
 

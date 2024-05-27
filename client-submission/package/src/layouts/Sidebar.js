@@ -3,8 +3,6 @@ import { Button, Nav, NavItem } from 'reactstrap';
 import Logo from './Logo';
 import { Link, useLocation } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
-// import '../../css/sidebar.css'; // Assuming you have a separate CSS file for custom styles
-
 const adminNavigation = [
   {
     title: "Home",

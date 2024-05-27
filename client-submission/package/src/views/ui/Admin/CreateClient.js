@@ -8,7 +8,7 @@ import '../../css/createclient.css';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate } from 'react-router-dom';
-const skillsOptions = ['Java', 'Python', 'JavaScript', 'C#', 'Ruby'];
+const skillsOptions = ['Angular', 'React', 'Java', 'Python' , 'Spring','JavaScript'];
 
 const CreateClient = () => {
   const [formData, setFormData] = useState({
