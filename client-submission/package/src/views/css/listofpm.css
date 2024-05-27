@@ -1,23 +1,8 @@
-
-
-
-
-#hd{
-    /* text-align: center; */
-    text-shadow:rgb(15, 48, 92);
-    margin-bottom: 1.5em;
+#hd1{
+    color: rgb(15, 48, 92);
+    font-size:40px;
+    text-align: center;
 }
 .tr:hover{
     background-color: lightgray;
-}
-.table{
-    margin-top:10px;
-}
-
-.clear-search-btn{
-    padding: 13px;
-    margin-left: 10px;
-    border-radius: 10%;
-    background-color: white;
-    border-color: rgb(29, 29, 241);
 }

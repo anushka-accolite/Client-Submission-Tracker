@@ -65,6 +65,7 @@ const LoginForm = () => {
   };
 
   return (
+    <div className='logincon'>
     <div className="modal-content animate">
       <div className="container">
         <div className="logo">
@@ -143,6 +144,7 @@ const LoginForm = () => {
           </span>
         </div>
       </div>
+    </div>
     </div>
   );
 };

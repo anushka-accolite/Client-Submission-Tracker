@@ -1,7 +1,7 @@
-
+/* 
 #hd{
-/* text-align: center; */
 color: rgb(15, 48, 92);
+text-align: center;
 }
 #container {
 display: flex;
@@ -75,7 +75,7 @@ max-height: 440px;
   .tableCell:hover{
     background-color: lightgray;
   }
-  
+   */
 
 
   /* mine */
@@ -195,7 +195,9 @@ max-height: 440px;
    #hd{
     /* text-align: center; */
     color: rgb(15, 48, 92);
-    margin-bottom: 1.5em;
+    font-size:40px;
+    margin-bottom:10px;
+    text-align: center;
    }
    #container {
     display: flex;

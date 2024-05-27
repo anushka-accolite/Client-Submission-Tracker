@@ -1,45 +1,9 @@
-/* 
-.header {
-    text-align: center;
-    margin-bottom: 20px;
-    color: rgb(15, 48, 92);
-  }
-  
-  .form-container {
-    width:100%;
-    margin: 0 auto;
-    padding: 20px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    background-color: #f9f9f9;
-  }
-  
-  .text-field {
-    margin-bottom: 20px;
-  }
-  
-  .submit-button {
-    display: block;
-    width: 100%;
-  }
-  
-  .chip-container .MuiChip-root {
-    margin: 5px;
-  }
-   */
-
-
-   /* mine */
-
-   /* #hd{
-    text-align: center;
-    color: rgb(15, 48, 92);
-} */
-/* CreateClient.css */
 .header {
   /* text-align: center; */
-  margin-bottom: 1em;
   color: rgb(15, 48, 92);
+  font-size:40px;
+  text-align: center;
+  margin-bottom:10px;
 }
 
 .form-container {
