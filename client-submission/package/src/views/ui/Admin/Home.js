@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import '../../css/home.css'
 import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
-// import 'react-toastify/dist/ReactToastify.css';
+import 'react-toastify/dist/ReactToastify.css';
+import { useNavigate } from 'react-router-dom';
 
 const Starter = () => {
   const [data, setData] = useState([]);
@@ -10,8 +11,12 @@ const Starter = () => {
   const [sortOrder, setSortOrder] = useState('asc');
   const [filterColumn, setFilterColumn] = useState('cname');
   const [token, setToken] = useState(localStorage.getItem('token')); // Get token from local storage
+  const navigate=useNavigate();
 
   useEffect(() => {
+    if(localStorage.role!=='admin'){
+      navigate('/loginform');
+    }
     if (!token) {
       fetchToken(); // Fetch JWT token when component mounts if not available in local storage
     } else {
@@ -23,30 +28,34 @@ const Starter = () => {
     setToken(localStorage.getItem("token"));
   };
 
+
   const fetchData = async () => {
     try {
-      const adminClientsResponse = await axios.get('http://localhost:8092/api/admin/clients', {
+      const adminClientsResponse = await axios.get('http://localhost:8092/api/admin/clients', { //fetching all the clients details
         headers: {
           Authorization: `Bearer ${token}`
         }
       });
-
-      // Log the response data to inspect its structure
-      console.log('Response data:', adminClientsResponse.data);
-
-      // Check if the response data is an array
+      console.log(adminClientsResponse.data);
+      
       if (Array.isArray(adminClientsResponse.data)) {
         const mappedData = adminClientsResponse.data
-          .filter(client => !client.isDeleted) // Filter out deleted clients
-          .map(client => ({
-            clientId: client.clientId,
-            cname: client.clientName,
-            ta: client.users.find(user => user.userRole === 'TalentAcquistion')?.userName || '',
-            pm: client.users.find(user => user.userRole === 'ProjectManager')?.userName || '',
-            am: client.users.find(user => user.userRole === 'AccountManager')?.userName || '',
-            restime: client.clientResponseTimeinDays
-          }));
+          .filter(client => !client.isDeleted)
+          .map(client => {   // searching ta,pm,am associated with client
+            const taUser = client.users  ? client.users.find(user => user.userRole === 'TalentAcquistion') : null;
+            const pmUser = client.users  ? client.users.find(user => user.userRole === 'ProjectManager') : null;
+            const amUser = client.users  ? client.users.find(user => user.userRole === 'AccountManager') : null;
+            return {
+              clientId: client.clientId,
+              cname: client.clientName,
+              ta: taUser ? taUser.userName : '',
+              pm: pmUser ? pmUser.userName : '',
+              am: amUser ? amUser.userName : '',
+              restime: client.clientResponseTimeinDays
+            };
+          });
         setData(mappedData);
+        console.log(mappedData);
       } else {
         console.error('Error: Response data structure is not as expected');
       }
@@ -54,44 +63,58 @@ const Starter = () => {
       console.error('Error fetching data:', error);
     }
   };
-
+  
+  
   const removeData = async (clientIdToRemove) => {
+   
     try {
       if (!clientIdToRemove) {
         console.error('Error: clientIdToRemove is undefined');
         return;
       }
 
-      const token = localStorage.getItem('token');
+      let token = localStorage.getItem('token');
       if (!token) {
         console.error('Error: No token available');
         return;
       }
-
+      let headers={"Authorization":`Bearer ${token}`}
+      let clientData=await axios.get(`http://localhost:8092/api/admin/${clientIdToRemove}`,{headers});  // removing the client by getting client by id and using put method to update isDeleted 
+      clientData=clientData.data;
+      clientData.isDeleted=true;
       const adminClientsResponse = await axios.put(
-        `http://localhost:8092/api/admin/${clientIdToRemove}`,
-        { isDeleted: true },
+        `http://localhost:8092/api/admin/${clientIdToRemove}`, 
+        { 
+          clientId:clientData.clientId,
+          clientName:clientData.clientName,
+          clientRequirement:clientData.clientRequirement,
+          clientResponseTimeinDays:clientData.clientResponseTimeinDays,
+          skills:clientData.skills,
+          isDeleted:clientData.isDeleted
+        },
         {
           headers: {
             Authorization: `Bearer ${token}`
           }
         }
       );
+      console.log(clientData);
 
-      if (adminClientsResponse.status === 200) {
+      if (adminClientsResponse.status === 200) {  // if status is success then removing from frontend using filter
         const newData = data.filter(item => item.clientId !== clientIdToRemove);
         setData(newData);
         toast.success('Data deleted successfully!');
       } else {
         console.error('Error updating data:', adminClientsResponse.statusText);
       }
-    } catch (error) {
+    } 
+    catch (error) {
       console.error('Error updating data:', error);
       toast.error('Error updating data.');
     }
   };
 
-  const handleSort = (key) => {
+  const handleSort = (key) => {  //sorting according to response time asc,desc
     const newData = [...data];
     newData.sort((a, b) => {
       if (key === 'restime') {
@@ -103,11 +126,6 @@ const Starter = () => {
     setData(newData);
     setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
   };
-
-  const handleClearSearch = () => {
-    setSearchTerm('');
-  };
-
   return (
     <>
       <div className="search-container">
@@ -128,9 +146,6 @@ const Starter = () => {
           onChange={(e) => setSearchTerm(e.target.value)}
           className="search-input1"
         />
-        {searchTerm && (
-          <button onClick={handleClearSearch} className="clear-search-btn">Clear</button>
-        )}
       </div>
       <table className="table">
         <thead>
