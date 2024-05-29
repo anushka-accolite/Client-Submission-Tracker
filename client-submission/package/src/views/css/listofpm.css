@@ -1,12 +1,12 @@
 #hd1{
     color: rgb(15, 48, 92);
     font-size:40px;
-    text-align: center;
+    /* text-align: center; */
 }
 .tr:hover{
     background-color: lightgray;
 }
 #dropdown{
     width:60px;
-    margin-right:20px;
+    /* margin-right:20px; */
 }

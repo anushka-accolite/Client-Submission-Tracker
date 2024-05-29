@@ -88,7 +88,9 @@ export default function Listofta() {
     setSearchTerm(event.target.value);
   };
 
- 
+  const handleClearSearch = () => {
+    setSearchTerm('');
+  }; 
 
   const filteredRows = rows.filter((row) => {
     if (selectedColumn) {
@@ -133,7 +135,7 @@ export default function Listofta() {
 
   return (
     <>
-      <h1 id="hd1">List of Talent Acquisition</h1>
+      <h2 id="hd1">List of Talent Acquisition</h2>
       <div className='uppercon'>
         <FormControl variant="outlined">
           <Select
@@ -153,6 +155,9 @@ export default function Listofta() {
           value={searchTerm}
           onChange={handleSearchTermChange}
         />
+        {searchTerm && (
+            <button onClick={handleClearSearch} className="clear-search-btn">Clear</button>
+          )}
       </div>
       <TableContainer component={Paper} className='table'>
         <Table sx={{ minWidth: 650 }} aria-label="simple table">

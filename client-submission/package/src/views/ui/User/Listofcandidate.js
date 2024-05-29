@@ -32,7 +32,7 @@ const columns = [
   { id: 'experience', label: 'Exp (years)' },
   { id: 'skill', label: 'Skill' },
   { id: 'status', label: 'Status' },
-  { id: 'IsEmployee', label: 'IsEmployee' },
+  { id: 'IsEmployee', label: 'IsEmp' },
   { id: 'daysToLWD', label: 'Days to LWD' },
   { id: 'delete', label: 'Delete' },
   { id: 'add', label: 'Add' },
@@ -150,14 +150,14 @@ export default function Listofcandidate() {
             const skillsResponse = await axios.get(`http://localhost:8092/api/candidates/${item.candidateId}/skills`, { headers });
 
             console.log(`Skills API Response for candidate ${item.candidateId}:`, skillsResponse.data);
-            
+           
             const processedSkills = skillsResponse.data.map(skill => {
               if (skill.endsWith('=')) {
                 return skill.slice(0, -1);
               }
               return skill;
             });
-  
+ 
             // Join skills array into a single string separated by spaces (or any other separator you prefer)
             const skillsString = processedSkills.join(', ');
 
@@ -196,6 +196,9 @@ export default function Listofcandidate() {
     setRows(newRows);
     setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
   };
+  const handleClearSearch = () => {
+    setSearchTerm('');
+  }; 
 
   const handleSearchChange = (e) => {
     setSearchTerm(e.target.value);
@@ -215,12 +218,12 @@ export default function Listofcandidate() {
       const val = x.data;
 
       await axios.put(`http://localhost:8092/api/candidates/${id}`, val, { headers });
-    
+   
       toast.success("Deleted successfully");
       const timeoutId = setTimeout(() => {
         navigate(0); }
         , 8000);
-    
+   
     } catch (error) {
       toast.error("Error deleting candidate");
       console.error('Error deleting candidate:', error);
@@ -261,9 +264,9 @@ export default function Listofcandidate() {
         return 'inherit';
     }
   };
-  
+ 
 
-  
+ 
  
 
   const filteredRows = rows.filter((row) =>
@@ -313,31 +316,7 @@ const handleAdd = async (id) => {
     }
 
 
-    console.log(clientObj1.data);
-    console.log(headers);
-     if(!(candidateToAdd.clients.some(candidateClient => candidateClient.clientId === clientData.clientId))){
-    let client_candidate=await axios.post(`http://localhost:8092/api/candidate-client/link?candidateId=${candidateToAdd.candidateId}&clientId=${clientData.clientId}`,{},{headers});
-    console.log("client_candidate",client_candidate);
-    }
-
-   
     
-    try {
-      var existingSubmissionResponse = await axios.get(`http://localhost:8092/api/submissions/candidate/${candidateToAdd.candidateId}`, { headers });
-      
-      // Submission found, parse the response data
-      var existingSubmission = existingSubmissionResponse.data;
-      console.log(existingSubmission);
-    } catch (error) {
-      if (error.response && error.response.status === 404) {
-        // No submission found for the candidate
-        var existingSubmission = false;
-        console.log(existingSubmission);
-      } else {
-        // Other errors
-        console.error('Error:', error);
-      }
-    }
     
 
     // Prepare submission data
@@ -375,10 +354,83 @@ const handleAdd = async (id) => {
       isDeleted: false,
     };
 
+
+
+    console.log(clientObj1.data);
+    console.log(headers);
+    console.log(submissionData);
+     if(!(candidateToAdd.clients.some(candidateClient => candidateClient.clientId === clientData.clientId))){
+      console.log("Hello");
+      await axios.post('http://localhost:8092/api/submissions',submissionData,{headers});
+      toast.success("Candidate Added Successfully");
+    let client_candidate=await axios.post(`http://localhost:8092/api/candidate-client/link?candidateId=${candidateToAdd.candidateId}&clientId=${clientData.clientId}`,{},{headers});
+    console.log("client_candidate",client_candidate);
+    return;
+
+    }
+   
+
+   
+   
+    try {
+      var existingSubmissionResponse = await axios.get(`http://localhost:8092/api/submissions/candidate/${candidateToAdd.candidateId}`, { headers });
+     
+      // Submission found, parse the response data
+      var existingSubmission = existingSubmissionResponse.data;
+      console.log(existingSubmission);
+    } catch (error) {
+      if (error.response && error.response.status === 404) {
+        // No submission found for the candidate
+        var existingSubmission = false;
+        console.log(existingSubmission);
+      } else {
+        // Other errors
+        console.error('Error:', error);
+      }
+    }
+   
+ 
+    // const submissionData ={
+
+    //   users: user?{
+    //     userId: user.userId,
+    //     userName: user.userName,
+    //     userRole: user.userRole,
+    //     email: user.email,
+    //     loginUserPassword: user.loginUserPassword,
+    //     isDeleted: user.isDeleted,
+    //   }:null,
+    //   client: clientData?{
+    //     clientId: clientData.clientId,
+    //     clientName: clientData.clientName,
+    //     clientResponseTimeinDays: clientData.clientResponseTimeinDays,
+    //     clientRequirement: clientData.clientRequirement,
+    //     skills: clientData.skills,
+    //     isDeleted: clientData.isDeleted,
+    //   }:null,
+    //   candidate:candidateToAdd? {
+    //     candidateId: candidateToAdd.candidateId,
+    //     candidateName: candidateToAdd.candidateName,
+    //     candidateEmail: candidateToAdd.candidateEmail,
+    //     candidateStatus: candidateToAdd.candidateStatus,
+    //     last_working_day: candidateToAdd.last_working_day,
+    //     isAccoliteEmployee: candidateToAdd.isAccoliteEmployee,
+    //     experience: candidateToAdd.experience,
+    //     isDeleted: candidateToAdd.isDeleted,
+    //     skills: candidateToAdd.skills? candidateToAdd.skills || []:null,
+    //   }:null,
+    //   submissionDate: new Date().getTime(),
+    //   status: candidateToAdd.candidateStatus,
+    //   remark: 'Good Understanding',
+    //   isDeleted: false,
+    // };
+
     console.log(submissionData);
     console.log("existingSubmission",existingSubmission);
+    let flag=0;
     if (existingSubmission) {
       // Update existing submission
+ 
       console.log("bas update")
       submissionData.status=candidateToAdd.candidateStatus;
       let response =await axios.put(`http://localhost:8092/api/candidates/${candidateToAdd.candidateId}`,{
@@ -409,7 +461,7 @@ const handleAdd = async (id) => {
         status:subObj.status,
         submissionDate:subObj.submissionDate,
         isDeleted:subObj.isDeleted,
-         ...subObj 
+         ...subObj
        },{headers});
       toast.success("Candidate submission updated successfully!");
     } else {
@@ -427,6 +479,8 @@ const handleAdd = async (id) => {
     toast.error('Error adding candidate');
   }
 };
+
+
   const generateChartData = () => {
     const data = {};
     statusOptions.forEach(status => {
@@ -562,8 +616,7 @@ const handleAdd = async (id) => {
           variant="outlined"
           size="small"
         >
-        
-                  {columns.map((column) => (
+       {columns.map((column) => (
           // Filter out specific fields
           (column.label !== 'Days to LWD' && column.label !== 'Delete' && column.label !== 'Add') && (
             <MenuItem key={column.id} value={column.id}>
@@ -580,6 +633,9 @@ const handleAdd = async (id) => {
           size="small"
           className='searchip'
         />
+        {searchTerm && (
+            <button onClick={handleClearSearch} className="clear-search-btn">Clear</button>
+          )}
         <Button onClick={handleOpenModal} variant="contained" color="primary" style={{ marginLeft: '500px' }}>
           Add Candidate
         </Button>
@@ -606,7 +662,7 @@ const handleAdd = async (id) => {
                     <TableCell key={column.id}>
                       {column.id === 'daysToLWD' ? (
                         <span>{row[column.id] !== null ? `${row[column.id]} days` : 'N/A'}</span>
-                        
+                       
                       ) : column.id === 'status' ? (
                         <div style={{ display: 'flex', alignItems: 'center' }}>
                           <TextField className='dropdown'
@@ -635,13 +691,13 @@ const handleAdd = async (id) => {
                       ) : (
                         row[column.id]
                       )}
-                      
+                     
                     </TableCell>
                   ))}
                 </TableRow>
               ))}
-            </TableBody> 
-            
+            </TableBody>
+           
 
 
 
@@ -747,9 +803,7 @@ const handleAdd = async (id) => {
     </Box>
   </Modal>
 
-        
+       
       </>
       );
     }
-
-        

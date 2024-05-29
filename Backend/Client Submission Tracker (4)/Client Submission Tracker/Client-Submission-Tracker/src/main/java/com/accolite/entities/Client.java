@@ -64,7 +64,7 @@ public class Client {
 	private List<Candidate> candidates;
 	
 	@OneToMany(mappedBy="client",fetch=FetchType.EAGER)
-	//@JsonIgnore
+//	@JsonManagedReference
 	private List<Users> users;
 	
 	@OneToMany(mappedBy="client",fetch=FetchType.EAGER)

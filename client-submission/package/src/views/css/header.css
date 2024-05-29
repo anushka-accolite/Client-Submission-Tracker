@@ -1,10 +1,10 @@
 
-.dropdownbtn{
+ #dropdownbtn{
 background-color:white;
 border: none;
 color:blue;
-width:100%;
-/* padding-right:10px; */
+width:100%; 
+padding-right:10px !important; 
 font-family:Georgia, 'Times New Roman', Times, serif
 
 }

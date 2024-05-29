@@ -58,6 +58,9 @@ export default function Listofam() {
   const handleSearchTermChange = (event) => {
     setSearchTerm(event.target.value);
   };
+  const handleClearSearch = () => {
+    setSearchTerm('');
+  };
 
   const filteredRows = rows.filter((row) => {
     if (selectedColumn === '') {
@@ -100,7 +103,6 @@ export default function Listofam() {
             value={selectedColumn}
             onChange={handleColumnChange}
             displayEmpty
-           
           >
             {rows.length > 0 && Object.keys(rows[0]).map((column) => (
               <MenuItem key={column} value={column}>
@@ -115,6 +117,9 @@ export default function Listofam() {
           value={searchTerm}
           onChange={handleSearchTermChange}
         />
+        {searchTerm && (
+            <button onClick={handleClearSearch} className="clear-search-btn">Clear</button>
+          )}
       </div>
       <TableContainer component={Paper} className="table-container">
         <Table sx={{ minWidth: 650 }} aria-label="simple table">

@@ -1,4 +1,4 @@
-
+/* 
 .logincon{
     background-image: url(../../assets/images/bg.jpg);
     background-repeat: no-repeat;
@@ -78,9 +78,115 @@
     margin-top: 5px; 
 }
 
+.line {
+    display: inline-block;
+    width: 6.7em;
+    height: 1px;
+    background-color: #000;
+    vertical-align: middle;
+    margin: 0 10px;
+}
+
 @media screen and (max-width: 767px) {
     .container {
         padding: 20px;
     }
-}
+} */
+ 
 
+
+
+
+
+
+
+.logincon{
+    background-image: url(../../assets/images/bg.jpg);
+    background-repeat: no-repeat;
+    background-size: cover;
+    height:100vh;
+   
+}
+ label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+.ip {
+    margin-bottom: 15px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+/* body {
+    background-image: url(../../assets/images/bg.jpg);
+    background-repeat: no-repeat;
+    background-size: cover;
+} */
+.logo {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+}
+.logo img {
+    max-width: 100%;
+    max-height: 100%;
+}
+.ip[type="text"],
+.ip[type="password"],
+.btn {
+    width: 100%;
+    box-sizing: border-box;
+}
+.container {
+    background-color: white;
+    padding: 12px;
+    max-width: 400px;
+    margin-top: 3em;
+    border: 1px solid black;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(36, 45, 175, 0.1);
+}
+.auth-footer-text-link {
+    text-align: center;
+}
+.btn:hover {
+    background-color: rgb(69, 123, 240);
+    color: white;
+}
+.btn {
+    background-color: rgb(62, 118, 240);
+    color: black;
+    padding: 10px 16px;
+    margin: 8px 0;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+    border: 1px solid #37D1D6;
+    border-radius: 5px;
+}
+.v0 {
+    text-align: center;
+}
+.center-text {
+    text-align: center;
+}
+.auth-footer-text-link {
+    text-align: center;
+    display: inline-block;
+    margin-top: 5px;
+}
+.line {
+    display: inline-block;
+    width: 6.7em;
+    height: 1px;
+    background-color: #000;
+    vertical-align: middle;
+    margin: 0 10px;
+}
+@media screen and (max-width: 767px) {
+    .container {
+        padding: 20px;
+    }
+} 

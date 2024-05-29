@@ -8,7 +8,7 @@ import '../../css/createclient.css';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate } from 'react-router-dom';
-const skillsOptions = ['Java', 'Python', 'JavaScript', 'C#', 'Ruby'];
+const skillsOptions = ['Java', 'Python', 'SpringBoot', 'ReactJS', 'Angular' ,'JavaScript', 'C#'];
 
 const CreateClient = () => {
   const [formData, setFormData] = useState({
@@ -36,10 +36,91 @@ const CreateClient = () => {
         const headers = { 'Authorization': `Bearer ${token}` };
         const response = await axios.get('http://localhost:8092/api/user/users', { headers });
         const users = response.data;
+        // let clients = await axios.get('http://localhost:8092/api/admin/clients',{headers});
+        // console.log(clients.data);
+        // console.log(users);
+        // const filteredClients=clients.data.filter(client => 
+        //   client.users.some(user => user.userId === users.userId));
+        // console.log(filteredClients);
 
-        setTalentAcquisitionOptions(users.filter(user => user.userRole === 'TalentAcquistion'));
-        setProjectManagerOptions(users.filter(user => user.userRole === 'ProjectManager'));
-        setAccountManagerOptions(users.filter(user => user.userRole === 'AccountManager'));
+        // setTalentAcquisitionOptions(users.filter(user => user.userRole === 'TalentAcquistion'));
+        // setProjectManagerOptions(users.filter(user => user.userRole === 'ProjectManager'));
+        // setAccountManagerOptions(users.filter(user => user.userRole === 'AccountManager'));
+        let taWithNoClients=[];
+        const ta=users.filter(user => user.userRole === 'TalentAcquistion');
+        ta.forEach(async (item) => {
+          try {
+            let response = await axios.get('http://localhost:8092/api/admin/clients', { headers });
+            let clients = response.data;
+            console.log(clients);
+        
+            const filteredClients = clients.filter(client => 
+              client.users.some(user => user.userId === item.userId)
+            );
+        
+            console.log(filteredClients);
+        
+            // Filter users based on the condition whether filteredClients is empty
+            if (filteredClients.length === 0) {
+              taWithNoClients.push(item);
+            }
+          } catch (error) {
+            console.error('Error fetching clients:', error);
+          }
+        });
+        setTalentAcquisitionOptions(taWithNoClients);
+        //console.log(ta);
+        let pmWithNoClients=[];
+        const pm=users.filter(user => user.userRole === 'ProjectManager');
+        pm.forEach(async (item) => {
+          try {
+            let response = await axios.get('http://localhost:8092/api/admin/clients', { headers });
+            let clients = response.data;
+            console.log(clients);
+        
+            const filteredClients = clients.filter(client => 
+              client.users.some(user => user.userId === item.userId)
+            );
+        
+            console.log(filteredClients);
+        
+            // Filter users based on the condition whether filteredClients is empty
+            if (filteredClients.length === 0) {
+              pmWithNoClients.push(item);
+            }
+          } catch (error) {
+            console.error('Error fetching clients:', error);
+          }
+        });
+
+        setProjectManagerOptions(pmWithNoClients);
+        //console.log(pm);
+        let amWithNoClients=[];
+        const am = users.filter(user => user.userRole === 'AccountManager');
+        //console.log(am);
+        am.forEach(async (item) => {
+          try {
+            let response = await axios.get('http://localhost:8092/api/admin/clients', { headers });
+            let clients = response.data;
+            console.log(clients);
+        
+            const filteredClients = clients.filter(client => 
+              client.users.some(user => user.userId === item.userId)
+            );
+        
+            console.log(filteredClients);
+
+        
+            // Filter users based on the condition whether filteredClients is empty
+            if (filteredClients.length === 0) {
+              amWithNoClients.push(item);
+            }
+          } catch (error) {
+            console.error('Error fetching clients:', error);
+          }
+        });
+        setAccountManagerOptions(amWithNoClients);
+        
       } catch (error) {
         console.error('Error fetching users:', error);
       }
@@ -110,7 +191,7 @@ const CreateClient = () => {
   return (
     <>
     <ToastContainer/>
-      <h1 className="header">Add Client Details</h1>
+      <h2 className="header">Add Client Details</h2>
       <form onSubmit={handleSubmit} className="form-container">
         <TextField
           label="Client Id"
@@ -239,7 +320,7 @@ const CreateClient = () => {
           value={formData.clientResponseTimeinDays}
           onChange={handleChange}
           required
-                    className="text-field"
+          className="text-field"
         />
         <Button
           variant="contained"

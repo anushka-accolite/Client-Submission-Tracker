@@ -73,7 +73,7 @@ const Header = () => {
         </Nav>
         <Dropdown isOpen={dropdownOpen} toggle={toggle}>
           <DropdownToggle className="icon">
-            <img
+            <img 
               src={user1}
               alt="profile"
               className="rounded-circle"
@@ -81,10 +81,13 @@ const Header = () => {
             ></img>
           </DropdownToggle>
           <DropdownMenu style={{background:"white"}}>
-            <DropdownItem><button className="dropdownbtn" onClick={()=>navigate('/myaccount')}>My Account</button></DropdownItem>
-            <DropdownItem><button className="dropdownbtn" onClick={()=>navigate('/myprofile')}>Edit Profile</button></DropdownItem>
+          <DropdownItem>
+              <div className="dropdown-welcome">Welcome, {localStorage.getItem("username")}</div>
+            </DropdownItem>
+            <DropdownItem><button id="dropdownbtn" onClick={()=>navigate('/myaccount')}>My Account</button></DropdownItem>
+            <DropdownItem><button id="dropdownbtn"  onClick={()=>navigate('/myprofile')}>Edit Profile</button></DropdownItem>
             <DropdownItem divider />
-            <DropdownItem><button className="dropdownbtn" onClick={()=>{localStorage.setItem("userRole","");navigate('/loginform')}}>Logout</button></DropdownItem>
+            <DropdownItem><button id="dropdownbtn"  onClick={()=>{localStorage.setItem("userRole","");navigate('/loginform')}}>Logout</button></DropdownItem>
           </DropdownMenu>
         </Dropdown>
       </Collapse>

@@ -31,15 +31,13 @@ enum Status{
 	
 }
 
-
 @Entity
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @AuditTable(value="audit_log")
-@Table(name="submission_to_client", uniqueConstraints = {
-		@jakarta.persistence.UniqueConstraint(columnNames = {"candidate_id", "client_id"})})
+@Table(name="submission_to_client")
 public class SubmissionToClient {
 	
 	@Id
@@ -47,7 +45,7 @@ public class SubmissionToClient {
 	@Column(name="submission_id")
 	@Audited
 	private int submissionId;
-	
+
 	
 	@Column(name="remark")
 	@Audited
@@ -75,7 +73,7 @@ public class SubmissionToClient {
 	private Client client;
 	
 	@ManyToOne(fetch=FetchType.EAGER)
-	@JoinColumn(name="candidate_id",referencedColumnName = "candidate_id",unique = true)
+	@JoinColumn(name="candidate_id",referencedColumnName = "candidate_id")
 	@NotAudited
 	private Candidate candidate;
 
