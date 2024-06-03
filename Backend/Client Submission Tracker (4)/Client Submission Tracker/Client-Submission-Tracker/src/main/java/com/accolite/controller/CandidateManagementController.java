@@ -19,6 +19,7 @@ public class CandidateManagementController {
 	
 	@Autowired
 	private CandidateService candidateService;
+	//excel file upload
 	@PostMapping("/product/upload")
 	public ResponseEntity<?> upload(@RequestParam("file") MultipartFile file){
 		if(Helper.checkExcelFormat(file)){
