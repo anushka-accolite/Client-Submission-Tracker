@@ -1,7 +1,9 @@
 package com.accolite.service;
 
+import java.io.IOException;
 import java.util.List;
 
+import com.accolite.helper.Helper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -11,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import com.accolite.entities.Candidate;
 import com.accolite.repository.CandidateRepository;
 import com.accolite.repository.ClientRepository;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 public class CandidateService {
@@ -21,7 +24,18 @@ public class CandidateService {
 	 public Candidate createCandidate(Candidate candidate) {
 	        return candidateRepository.save(candidate);
 	 }
-	 
+
+	public void save(MultipartFile file){
+		try {
+			List<Candidate> products= Helper.convertExcelToListOfProduct(file.getInputStream());
+			this.candidateRepository.saveAll(products);
+		}
+		catch (IOException e){
+			e.printStackTrace();
+		}
+
+	}
+
 	 public List<Candidate> getAllCandidates() {
 	        return (List<Candidate>) candidateRepository.findAll();
 	 }
