@@ -10,7 +10,7 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import TextField from '@mui/material/TextField';
-import '../../css/listofam.css';  
+import '../../css/listofpm.css'; 
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
@@ -102,6 +102,7 @@ export default function Listofam() {
             className='filter-select'
             value={selectedColumn}
             onChange={handleColumnChange}
+            style={{paddingLeft:"60px"}}
             displayEmpty
           >
             {rows.length > 0 && Object.keys(rows[0]).map((column) => (
@@ -116,6 +117,7 @@ export default function Listofam() {
           variant="outlined"
           value={searchTerm}
           onChange={handleSearchTermChange}
+          style={{marginLeft:"20px"}}
         />
         {searchTerm && (
             <button onClick={handleClearSearch} className="clear-search-btn">Clear</button>

@@ -1,13 +1,10 @@
 .header {
-  /* text-align: center; */
   color: rgb(15, 48, 92);
   font-size:40px;
-  /* text-align: center; */
   margin-bottom:10px;
 }
 
 .form-container {
-  /* max-width: 600px; */
   width:100%;
   margin: 0 auto;
   padding: 20px;
@@ -15,6 +12,7 @@
   border-radius: 8px;
   background-color: #f9f9f9;
 }
+
 
 .text-field {
   margin-bottom: 20px;
@@ -27,4 +25,10 @@
 
 .chip-container .MuiChip-root {
   margin: 5px;
+}
+
+.submit{
+  display: inline-block;
+  justify-content: center;
+  align-items: center;
 }

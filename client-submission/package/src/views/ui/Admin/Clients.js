@@ -79,26 +79,6 @@ export default function Clients() {
     setFilteredClients(filteredResult);
   };
   
-
-  // const handleSearchChange = (event) => {
-  //   const { value } = event.target;
-  //   setSearchTerm(value);
-
-  //   // Filter clients based on the selected column
-  //   let filteredResult;
-  //   if (selectedColumn === 'clientName') {
-  //     filteredResult = clients.filter(client => client.clientName.toLowerCase().includes(value.toLowerCase()));
-  //   } else if (selectedColumn === 'skills') {
-  //     filteredResult = clients.filter(client => client.skills?.toLowerCase().includes(value.toLowerCase()));
-  //   } else {
-  //     filteredResult = clients.filter(client => {
-  //       const columnValue = client[selectedColumn];
-  //       return columnValue && columnValue.toString().toLowerCase().includes(value.toLowerCase());
-  //     });
-  //   }
-  //   setFilteredClients(filteredResult);
-  // };
-
   const getResponseTimeStyle = (responseTime) => {
     let backgroundColor = {};
     if (responseTime === 0) {

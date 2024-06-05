@@ -17,6 +17,7 @@ const SubmittedProfile=lazy(()=> import("../views/ui/User/SubmittedProfile.js"))
 const EditProfile=lazy(()=> import("../views/ui/Admin/EditProfile.js"));
 const LoginForm=lazy(()=> import("../views/ui/LoginPage/LoginForm.js"));
 const MyAccount=lazy(()=> import("../views/ui/Admin/MyAccount.js"));
+const ListofClients=lazy(()=>import("../views/ui/User/ListofClients.js"))
 // Routes
 const ThemeRoutes = [
   {
@@ -41,13 +42,17 @@ const ThemeRoutes = [
       { path: "/listofta", exact: true, element: <Listofta /> },
       { path: "/listofpm", exact: true, element: <Listofpm /> },
       { path: "/listofam", exact: true, element: <Listofam /> },
-      {path:"/listofcandidates",exact:true,element:<Listofcandidates/>},
-      {path:"/profile",exact:true,element:<SubmittedProfile/>},
-      {path:"/myprofile",exact:true,element:<EditProfile/>},
-      {path:"/audit",exact:true,element:<AuditLog/>},
-      {path:"/myaccount",exact:true,element:<MyAccount/>}
+      { path: "/listofcandidates",exact:true,element:<Listofcandidates/>},
+      { path: "/profile",exact:true,element:<SubmittedProfile/>},
+      { path: "/myprofile",exact:true,element:<EditProfile/>},
+      { path: "/audit",exact:true,element:<AuditLog/>},
+      { path: "/listofclientuser",exact:true,element:<ListofClients/>},
+      { path: "/myaccount",exact:true,element:<MyAccount/>}
     ],
   },
   
 ];
 export default ThemeRoutes;
+
+
+

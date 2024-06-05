@@ -38,6 +38,11 @@ const adminNavigation = [
 
 const userNavigation = [
   {
+    title: "List of Clients",
+    href: "/listofclientuser",
+    icon: "bi bi-list",
+  },
+  {
     title: "List of Candidates",
     href: "/listofcandidates",
     icon: "bi bi-list",
@@ -47,7 +52,7 @@ const userNavigation = [
     href: "/profile",
     icon: "bi bi-list",
   },
-  // Add more user-specific navigation items here
+  
   {
     title:"Audit Log",
     href:"/audit",
