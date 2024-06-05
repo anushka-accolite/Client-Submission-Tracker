@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.List;
 
 import com.accolite.helper.Helper;
+import com.accolite.repository.CandidateSkillRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -20,6 +21,10 @@ public class CandidateService {
 	
 	@Autowired
 	private CandidateRepository candidateRepository;
+
+	@Autowired
+	private CandidateSkillRepository candidateSkillRepository;
+
 	
 	 public Candidate createCandidate(Candidate candidate) {
 	        return candidateRepository.save(candidate);
@@ -28,7 +33,7 @@ public class CandidateService {
 	 //excel file upload
 	public void save(MultipartFile file){
 		try {
-			List<Candidate> products= Helper.convertExcelToListOfProduct(file.getInputStream());
+			List<Candidate> products= Helper.convertExcelToListOfProduct(file.getInputStream(),candidateSkillRepository);
 			this.candidateRepository.saveAll(products);
 		}
 		catch (IOException e){

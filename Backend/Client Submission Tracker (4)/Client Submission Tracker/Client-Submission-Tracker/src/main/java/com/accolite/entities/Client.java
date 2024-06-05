@@ -19,6 +19,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.apache.catalina.User;
+
 @Entity
 @Table(name = "client")
 @AllArgsConstructor
@@ -63,9 +65,19 @@ public class Client {
 	@JsonIgnore
 	private List<Candidate> candidates;
 	
-	@OneToMany(mappedBy="client",fetch=FetchType.EAGER)
-//	@JsonManagedReference
-	private List<Users> users;
+//	@OneToMany(mappedBy="client",fetch=FetchType.EAGER)
+////	@JsonManagedReference
+//	private List<Users> users;
+
+
+	@ManyToMany(fetch = FetchType.EAGER)
+	@JoinTable(
+			name = "user_client",
+			joinColumns = @JoinColumn(name = "client_id"),
+			inverseJoinColumns = @JoinColumn(name = "user_id")
+	)
+	@JsonIgnore
+	private List<User> users;
 	
 	@OneToMany(mappedBy="client",fetch=FetchType.EAGER)
 	@JsonIgnore

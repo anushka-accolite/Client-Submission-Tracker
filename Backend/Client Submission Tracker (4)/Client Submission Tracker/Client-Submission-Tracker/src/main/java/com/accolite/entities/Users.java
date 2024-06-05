@@ -4,18 +4,7 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -61,10 +50,12 @@ public class Users {
 	@Column(name="isdeleted")
 	private Boolean isDeleted;
 
-	@ManyToOne(fetch=FetchType.EAGER)
-	@JoinColumn(name="client_id",referencedColumnName="client_id")
-	@JsonBackReference
-	private Client client;
+	@ManyToMany(mappedBy = "users", fetch = FetchType.EAGER)
+	@JsonIgnore
+	private List<Client> clients;
+
+//	@JsonBackReference
+//	private<List> Client clients;
 	
 	@OneToMany(mappedBy="users",fetch=FetchType.EAGER)
 	@JsonIgnore
@@ -126,8 +117,7 @@ public class Users {
 		this.email = email;
 	}
 
-	
-	
-	
 
+	public List<Client> getClient() { return this.clients;
+	}
 }

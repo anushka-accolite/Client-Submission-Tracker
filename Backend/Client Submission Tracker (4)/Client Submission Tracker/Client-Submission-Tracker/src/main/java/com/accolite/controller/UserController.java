@@ -2,6 +2,7 @@ package com.accolite.controller;
 
 import java.util.List;
 
+import com.accolite.entities.Client;
 import com.accolite.entities.Users;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -52,6 +53,16 @@ public class UserController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
+    @GetMapping("/{userId}/clients")
+    public ResponseEntity<List<Client>> getClientsByUser(@PathVariable Integer userId) {
+        List<Client> clients = userService.getClientsByUserId(userId);
+        return ResponseEntity.ok(clients);}
+    @PostMapping("/{userId}/clients/{clientId}")
+    public ResponseEntity<Void> addUserToClient(@PathVariable("userId") Integer userId, @PathVariable("clientId") Integer clientId) {
+        userService.addUserToClient(userId, clientId);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
 	
 	@PutMapping("/{userId}")
     public ResponseEntity<Users> updateUser(@PathVariable Integer userId, @RequestBody Users updatedUsers) {

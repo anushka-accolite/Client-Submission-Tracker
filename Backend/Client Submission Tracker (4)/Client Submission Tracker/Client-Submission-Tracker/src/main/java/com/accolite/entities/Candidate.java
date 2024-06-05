@@ -59,6 +59,9 @@ public class Candidate {
 	
 	@Column(name="isdeleted")
 	private Boolean isDeleted;
+
+	@Column(name="remark")
+	private String remark;
 	
 	
 	@ManyToMany(mappedBy = "candidates",cascade = {CascadeType.ALL},fetch = FetchType.EAGER)
