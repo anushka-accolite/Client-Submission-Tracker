@@ -19,7 +19,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.apache.catalina.User;
+//import org.apache.catalina.User;
 
 @Entity
 @Table(name = "client")
@@ -77,7 +77,7 @@ public class Client {
 			inverseJoinColumns = @JoinColumn(name = "user_id")
 	)
 	@JsonIgnore
-	private List<User> users;
+	private List<Users> users;
 	
 	@OneToMany(mappedBy="client",fetch=FetchType.EAGER)
 	@JsonIgnore

@@ -2,7 +2,7 @@ package com.accolite.controller;
 
 import java.util.List;
 
-import org.apache.catalina.User;
+import com.accolite.entities.Users;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -57,8 +57,8 @@ public class ClientCandidateController {
     }
 
     @GetMapping("/{clientId}/users")
-    public ResponseEntity<List<User>> getUsersByClient(@PathVariable Integer clientId) {
-        List<User> users = clientCandidateService.getUsersByClientId(clientId);
+    public ResponseEntity<List<Users>> getUsersByClient(@PathVariable Integer clientId) {
+        List<Users> users = clientCandidateService.getUsersByClientId(clientId);
         return ResponseEntity.ok(users);
     }
 

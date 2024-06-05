@@ -54,7 +54,7 @@ public Client createClient(Client client) {
 	return clientRepository.save(client);
 }
 
-	public List<User> getUsersByClientId(Integer clientId) {
+	public List<Users> getUsersByClientId(Integer clientId) {
 		Optional<Client> clientOptional = clientRepository.findById(clientId);
 		if (clientOptional.isPresent()) {
 			Client client = clientOptional.get();
@@ -70,7 +70,7 @@ public Client createClient(Client client) {
 		if (clientOptional.isPresent() && userOptional.isPresent()) {
 			Client client = clientOptional.get();
 			User user = (User) userOptional.get();
-			client.getUsers().add(user);
+			client.getUsers().add((Users) user);
 			clientRepository.save(client);
 		} else {
 			// Handle case when client or user not found
