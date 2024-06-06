@@ -76,4 +76,8 @@
   margin-top:20px;
   margin-left:130px;
 }
+#remarkbtn:hover{
+  background-color:darkmagenta;
+  color:white
+}
  

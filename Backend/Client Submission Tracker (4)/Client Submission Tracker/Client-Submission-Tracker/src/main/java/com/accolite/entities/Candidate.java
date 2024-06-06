@@ -76,8 +76,8 @@ public class Candidate {
 			})
 	@JsonIgnore
 	private List<CandidateSkill> skills;
-	
-	@OneToMany(mappedBy="candidate",fetch=FetchType.EAGER)
+
+	@OneToMany(mappedBy = "candidate", fetch = FetchType.EAGER)
 	@JsonIgnore
 	private List<SubmissionToClient> submissions;
 

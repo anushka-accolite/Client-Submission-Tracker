@@ -18,8 +18,8 @@ import { useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-function createData(id, name, email, experience, skill, status, IsEmployee, daysToLWD) {
-  return { id, name, email, experience, skill, status, IsEmployee, daysToLWD };
+function createData(id, name, email, experience, skill, status, IsEmployee, daysToLWD,remark) {
+  return { id, name, email, experience, skill, status, IsEmployee, daysToLWD,remark};
 }
 
 
@@ -34,6 +34,7 @@ const columns = [
   { id: 'status', label: 'Status' },
   { id: 'IsEmployee', label: 'IsEmp' },
   { id: 'daysToLWD', label: 'Days to LWD' },
+  { id:'remark',label:'Remark'},
   { id: 'delete', label: 'Delete' },
   { id: 'add', label: 'Add' },
 ];
@@ -61,6 +62,27 @@ const modalStyle = {
   p: 4,
 };
 
+// const style = {
+//   modalStyle: {
+//     position: 'absolute',
+//     top: '50%',
+//     left: '50%',
+//     transform: 'translate(-50%, -50%)',
+//     width: 400,
+//     bgcolor: 'background.paper',
+//     border: '2px solid #000',
+//     boxShadow: 24,
+//     p: 4,
+//   },
+//   textField: {
+//     marginBottom: '16px',
+//   },
+//   button: {
+//     marginTop: '16px',
+//   },
+// };
+
+
 export default function Listofcandidate() {
   const [rows, setRows] = useState([]);
   const [sortOrder, setSortOrder] = useState('asc');
@@ -72,6 +94,9 @@ export default function Listofcandidate() {
   const chartInstance = useRef(null);
   const navigate = useNavigate();
   const [selectedRow,setSelectedRow]=useState();
+  const [remark,setRemark]=useState("");
+  const [remarkModalOpen, setRemarkModalOpen] = useState(false);
+  const [selectedCandidate, setSelectedCandidate] = useState(null);
   let response="";
 
 
@@ -80,6 +105,7 @@ export default function Listofcandidate() {
     if(role!=="user"){
       navigate("/loginform");
     }
+    localStorage.setItem("remark","");
 
   //   const fetchCandidates = async () => {
   //     try {
@@ -129,6 +155,7 @@ export default function Listofcandidate() {
 
   //   fetchCandidates();
   // }, []);
+  
   const fetchCandidates = async () => {
     try {
       let token = localStorage.getItem("token");
@@ -160,7 +187,6 @@ export default function Listofcandidate() {
  
             // Join skills array into a single string separated by spaces (or any other separator you prefer)
             const skillsString = processedSkills.join(', ');
-
             const daysToLWD = item.last_working_day ? Math.ceil((new Date(item.last_working_day) - new Date()) / (1000 * 60 * 60 * 24)) : null;
             return createData(
               item.candidateId,
@@ -170,11 +196,13 @@ export default function Listofcandidate() {
               skillsString,
               item.candidateStatus,
               item.isAccoliteEmployee,
-              daysToLWD
+              daysToLWD,
+              remark
+              
             );
           })
       );
-
+      console.log(candidatesWithSkills)
       setRows(candidatesWithSkills);
     } catch (error) {
       console.error('Error fetching candidates or skills:', error);
@@ -350,7 +378,7 @@ const handleAdd = async (id) => {
       }:null,
       submissionDate: new Date().getTime(),
       status: candidateToAdd.candidateStatus,
-      remark: 'Good Understanding',
+      remark: localStorage.getItem("remark"),
       isDeleted: false,
     };
 
@@ -454,15 +482,18 @@ const handleAdd = async (id) => {
       let subObj=await axios.get(`http://localhost:8092/api/submissions/${sid}`,{headers});
       subObj=subObj.data;
       subObj.status=candidateToAdd.candidateStatus;
+      subObj.remark=localStorage.getItem("remark");
       console.log("deleted",subObj.isDeleted);
       console.log("sid",sid);
-       await axios.put(`http://localhost:8092/api/submissions/${sid}`,{
-        remark:subObj.remark,
+
+      console.log(localStorage.getItem("remark"));
+       const response1=await axios.put(`http://localhost:8092/api/submissions/${sid}`,{
         status:subObj.status,
         submissionDate:subObj.submissionDate,
         isDeleted:subObj.isDeleted,
          ...subObj
        },{headers});
+       console.log(response1);
       toast.success("Candidate submission updated successfully!");
     } else {
       console.log("first time")
@@ -604,6 +635,14 @@ const handleAdd = async (id) => {
     setNewCandidate({});
   }
 
+  const handleOpenRemarkModal = (candidate) => {
+    setRemarkModalOpen(true);
+  };
+
+  const handleCloseRemarkModal = () => {
+    setRemarkModalOpen(false);
+  };
+
   return (
     <>
     <ToastContainer/>
@@ -660,7 +699,7 @@ const handleAdd = async (id) => {
                 <TableRow key={row.id} className='tablerow'>
                   {columns.map((column) => (
                     <TableCell key={column.id}>
-                      {column.id === 'daysToLWD' ? (
+                      {column.id === 'daysToLWD' ? (  
                         <span>{row[column.id] !== null ? `${row[column.id]} days` : 'N/A'}</span>
                        
                       ) : column.id === 'status' ? (
@@ -684,7 +723,9 @@ const handleAdd = async (id) => {
                             style={{ marginLeft: '5px' }}
                           />
                         </div>
-                      ) : column.id === 'delete' ? (
+                      ):column.id==='remark' ?(
+                        <Button id="remarkbtn" onClick={() => handleOpenRemarkModal(row)}>Add remark</Button>
+                      ): column.id === 'delete' ? (
                         <Button id="delbtn" onClick={() => handleDelete(row.id)}>Delete</Button>
                       ) : column.id === 'add' ? (
                         <Button disabled={selectedRow===row.id} id="addbtn" onClick={() => handleAdd(row.id)}>Add</Button>
@@ -697,10 +738,7 @@ const handleAdd = async (id) => {
                 </TableRow>
               ))}
             </TableBody>
-           
-
-
-
+  
           </Table>
         </TableContainer>
       </div>
@@ -802,6 +840,23 @@ const handleAdd = async (id) => {
       </form>
     </Box>
   </Modal>
+  <Modal
+        open={remarkModalOpen}
+        onClose={handleCloseRemarkModal}
+        aria-labelledby="remark-modal-title"
+        aria-describedby="remark-modal-description"
+      >
+        <Box sx={modalStyle}>
+          <h2 id="remark-modal-title">Add Remark</h2>
+          <TextField
+            fullWidth
+            label="Remark"
+            value={remark}
+            onChange={(e) => {setRemark(e.target.value);console.log(remark);localStorage.setItem("remark",e.target.value)}}
+          />
+          <Button>Submit</Button>
+        </Box>
+      </Modal>
 
        
       </>

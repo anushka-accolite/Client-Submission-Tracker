@@ -13,20 +13,18 @@ import InputLabel from '@mui/material/InputLabel';
 import TextField from '@mui/material/TextField';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-
+import '../../css/submittedprofile.css'
 function createData(sid, cid, name, experience, skill, status, clientname, remark, responseTime, lastWorkingDay) {
   return { sid, cid, name, experience, skill, status, clientname, remark, responseTime, lastWorkingDay };
 }
-
 export default function MyComponent() {
   const [selectedColumn, setSelectedColumn] = React.useState('name');
   const [searchTerm, setSearchTerm] = React.useState('');
   const [daysLeft, setDaysLeft] = React.useState('10'); // Default value set to 5
-  const [responseTimeLimit, setResponseTimeLimit] = React.useState('');
+  const [responseTimeLimit, setResponseTimeLimit] = React.useState('3');
   const [sortOrder, setSortOrder] = React.useState('asc');
   const [rows, setRows] = React.useState([]);
   const navigate = useNavigate();
-
   React.useEffect(() => {
     const role = localStorage.getItem("role");
     if (role !== "user") {
@@ -38,73 +36,114 @@ export default function MyComponent() {
         let headers = { "Authorization": `Bearer ${token}` };
         let response = await axios.get('http://localhost:8092/api/submissions/getAll', { headers });
         let val = response.data;
-        let clients_data = await axios.get('http://localhost:8092/api/admin/clients',{headers});
+        let clients_data = await axios.get('http://localhost:8092/api/admin/clients', { headers });
         let userObj = await axios.get(`http://localhost:8092/api/user/users`, { headers });
         let username = localStorage.getItem("username");
         let user = userObj.data.find((item) => item.userName === username);
-    let clientData="";
-    clients_data.data.forEach(client => {
-      client.users.forEach(item => {
-        if (item.userId === user.userId) {
-          clientData = client;
-        }
-      });
-    });
-    console.log(clientData);
-    if (!clientData) {
-      console.error('No matching client found for the user');
-      return;
-    }
-    let listofcandidates=[];
-    val.map(item=>{
-      console.log(item);
-      let user_data=item.users;
-      console.log(user_data);
-      if(user_data.userId===user.userId)
-        listofcandidates.push(item);
-    })
-
-        const candidates = listofcandidates.map(item => {
-          let skill = item.candidate.skills && Array.isArray(item.candidate.skills) ? item.candidate.skills.map(skill => skill.skill).join(', ') : ' ';
-          let clientname = item.client.clientName || 'N/A';
-          let responseTime = item.client.clientResponseTimeinDays || 'N/A';
-          let lastWorkingDay = item.candidate.last_working_day || 'N/A';
-
-          // Convert last working day timestamp to number of days from today
-          if (lastWorkingDay !== 'N/A') {
-            const lastWorkingDate = new Date(lastWorkingDay);
-            const currentDate = new Date();
-            const diffTime = Math.abs(currentDate - lastWorkingDate);
-            lastWorkingDay = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-          }
-          console.log(listofcandidates.length);
-
-          // listofcandidates.forEach(async (submission)=>{
-          //   let history= await axios.get(`http://localhost:8092/api/submissions/${submission.submissionId}/history`,{headers});
-          //   //let latest_history=history.data;
-          //   //console.log(history.data.length);
-          //   // let latest_history=history.data[history.data.length-1];
-          //   //console.log(history.data[history.data.length-1]);
-          //   let latest_history=history.data[history.data.length-1];
-          //   responseTime=new Date(latest_history[6]).toLocaleString();
-          //   // console.log(latest_history);
-          // });
-          
-
-          return createData(
-            item.submissionId,
-            item.candidate.candidateId,
-            item.candidate.candidateName,
-            item.candidate.experience,
-            skill,
-            item.candidate.candidateStatus,
-            clientname,
-            item.remark || 'N/A',
-            responseTime,
-            lastWorkingDay
-          );
+        let clientData = "";
+        clients_data.data.forEach(client => {
+          client.users.forEach(item => {
+            if (item.userId === user.userId) {
+              clientData = client;
+            }
+          });
         });
-        setRows(candidates);
+        console.log(clientData);
+        if (!clientData) {
+          console.error('No matching client found for the user');
+          return;
+        }
+        let listofcandidates = [];
+        val.map(item => {
+
+          console.log(item);
+          let user_data = item.users;
+          console.log(user_data);
+          if (user_data.userId === user.userId)
+            listofcandidates.push(item);
+        })
+        let timestampDifference = 'N/A';
+        let latestSubmissions = [];
+        console.log(listofcandidates);
+
+        const submissionPromises = listofcandidates.map(async (submission) => {
+          try {
+            const response = await axios.get(`http://localhost:8092/api/submissions/${submission.submissionId}/history`, { headers });
+            const history = response.data;
+
+            // Log the history for debugging
+            console.log(`Submission ID: ${submission.submissionId}, History:`, history);
+
+            if (history.length > 0) {
+              console.log(history[history.length - 1]);
+              return history[history.length - 1]; // Return the latest history
+            } else {
+              console.log(`No history found for submission ID: ${submission.submissionId}`);
+              return null;
+            }
+          } catch (error) {
+            console.error(`Error fetching history for submission ID: ${submission.submissionId}`, error);
+            return null;
+          }
+
+        });
+
+
+        Promise.all(submissionPromises)
+          .then((latestSubmissions) => {
+            console.log(latestSubmissions); // This will now contain all the latest submissions
+
+            const candidates = listofcandidates.map((item, index) => {
+              let skill = item.candidate.skills && Array.isArray(item.candidate.skills)
+                ? item.candidate.skills.map(skill => skill.skill).join(', ')
+                : ' ';
+              let clientname = item.client.clientName || 'N/A';
+
+              // Access the corresponding latest submission
+              const latestSubmission = latestSubmissions[index];
+              console.log(item.candidate.last_working_day);
+              console.log(index);
+              console.log(latestSubmission); // Log the latest submission for debugging
+              let lastWorkingDay = 'N/A';
+              if (item.candidate.last_working_day && item.candidate.last_working_day !== 'N/A') {
+                const lastWorkingDate = item.candidate.last_working_day;
+                const currentDate = new Date();
+                const diffTime = Math.abs(currentDate - lastWorkingDate);
+                lastWorkingDay = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+              }
+              let responseTime = 'N/A';
+              if (latestSubmission) {
+                const submissionDate = new Date(latestSubmission[6]).setHours(0, 0, 0, 0); // Set submission time to start of day
+                const currentDate = new Date();
+                const today = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate()); // Get today's date without time
+                const diffTime = Math.abs(today - submissionDate);
+                const timestampDifference = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); // Difference in days
+                responseTime = timestampDifference === 0 ? item.client.clientResponseTimeinDays : timestampDifference;
+              }
+              lastWorkingDay = item.candidate.last_working_day || 'N/A';
+              // // Convert last working day timestamp to number of days from today
+              if (lastWorkingDay !== 'N/A') {
+                const lastWorkingDate = lastWorkingDay
+                const diffTime = Math.abs(new Date() - lastWorkingDate);
+                lastWorkingDay = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+              }
+
+              return createData(
+                item.submissionId,
+                item.candidate.candidateId,
+                item.candidate.candidateName,
+                item.candidate.experience,
+                skill,
+                item.candidate.candidateStatus,
+                clientname,
+                item.remark || 'N/A',
+                responseTime,
+                lastWorkingDay
+              );
+            });
+            setRows(candidates);
+          });
+
       } catch (error) {
         console.error('Error fetching data:', error);
       }
@@ -112,24 +151,25 @@ export default function MyComponent() {
     fetchData();
   }, [navigate]);
 
+
+
   const handleColumnChange = (event) => {
     const selectedValue = event.target.value.toLowerCase();
     setSelectedColumn(selectedValue);
     handleSort(selectedValue);
   };
-
+  const handleClearSearch = () => {
+    setSearchTerm('');
+  };
   const handleSearchTermChange = (event) => {
     setSearchTerm(event.target.value);
   };
-
   const handleDaysFilterChange = (event) => {
     setDaysLeft(event.target.value);
   };
-
   const handleResponseTimeChange = (event) => {
     setResponseTimeLimit(event.target.value);
   };
-
   const handleSort = (column) => {
     const sortedRows = [...rows].sort((a, b) => {
       let aValue = a[column];
@@ -145,13 +185,11 @@ export default function MyComponent() {
     setRows(sortedRows);
     setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
   };
-
   const filteredRows = rows.map(row => {
     const lessThanDaysLeft = daysLeft !== '' && row.lastWorkingDay !== 'N/A' && row.lastWorkingDay <= parseInt(daysLeft);
     const lessThanResponseTime = responseTimeLimit !== '' && row.responseTime !== 'N/A' && parseInt(row.responseTime) <= parseInt(responseTimeLimit);
     return { ...row, lessThanDaysLeft, lessThanResponseTime };
   });
-
   return (
     <div>
       <FormControl sx={{ m: 1, minWidth: 120 }} style={{ marginTop: "0.2px" }}>
@@ -178,6 +216,9 @@ export default function MyComponent() {
         value={searchTerm}
         onChange={handleSearchTermChange}
       />
+      {searchTerm && (
+        <button onClick={handleClearSearch} className="clear-search-btn">Clear</button>
+      )}
       <TextField
         id="daysLeft"
         label="Days Left for Last Working Day"
@@ -213,7 +254,7 @@ export default function MyComponent() {
                 >
                   <b>Response Time</b>
                   <span onClick={() => handleSort('responseTime')} style={{ cursor: "pointer" }}>
-                    {sortOrder === 'asc' ? ' ↑' : ' ↓'}
+                    {sortOrder === 'asc' ? '🔼' : '🔽'}
                   </span>
                 </span>
               </TableCell>
@@ -247,10 +288,6 @@ export default function MyComponent() {
     </div>
   );
 }
-
-
-
-
 
 
 
