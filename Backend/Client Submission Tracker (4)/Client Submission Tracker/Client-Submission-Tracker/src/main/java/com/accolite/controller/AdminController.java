@@ -81,7 +81,7 @@ public class AdminController {
 		if (user == null) {
 			return ResponseEntity.notFound().build();
 		}
-		user.setClients((List<Client>) client);
+		user.setClients(client);
 		userService.saveUser(user);
 		return ResponseEntity.ok("User linked to client successfully");
 	}

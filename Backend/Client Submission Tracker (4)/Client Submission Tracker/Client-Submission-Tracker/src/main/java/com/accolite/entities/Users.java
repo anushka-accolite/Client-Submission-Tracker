@@ -50,9 +50,10 @@ public class Users {
 	@Column(name="isdeleted")
 	private Boolean isDeleted;
 
-	@ManyToMany(mappedBy = "users", fetch = FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name="client_id",referencedColumnName = "client_id")
 	@JsonIgnore
-	private List<Client> clients;
+	private Client clients;
 
 //	@JsonBackReference
 //	private<List> Client clients;
@@ -118,6 +119,6 @@ public class Users {
 	}
 
 
-	public List<Client> getClient() { return this.clients;
+	public Client getClient() { return this.clients;
 	}
 }

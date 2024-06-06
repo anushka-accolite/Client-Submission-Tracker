@@ -7,6 +7,7 @@ import com.accolite.entities.Users;
 import com.accolite.repository.ClientRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import java.util.Collections;
 import java.util.List;
@@ -22,31 +23,43 @@ public class UserService {
 
 	@Autowired
 	private ClientRepository clientRepository;
-	public List<Client> getClientsByUserId(Integer userId) {
-		Optional<Users> userOptional = userRepository.findById(userId);
-		if (userOptional.isPresent()) {
-			Users user = userOptional.get();
-			return user.getClient(); // Assuming you have a proper association between User and Client
-		} else {
-			return Collections.emptyList();
-		}
-	}
+
+//	public String authenticateUser(Users user) throws UsernameNotFoundException{
+//		Optional <Users> opUser=userRepository.findById(user.getUserName());
+//		if(opUser.isPresent()){
+//			Users dbUsr = opUser.get();
+//			if(user.getLoginUserPassword().equals(dbUsr.getLoginUserPassword()))
+//				return "authenticated user";
+//			else
+//				return "incorrect password";
+//		}
+//		throw new UsernameNotFoundException("no user is not found for this uername!!")
+//	}
+
+//	public Client getClientsByUserId(Integer userId) {
+//		Optional<Users> userOptional = userRepository.findById(userId);
+//		if (userOptional.isPresent()) {
+//			Users user = userOptional.get();
+//			return user.getClient(); // Assuming you have a proper association between User and Client
+//		} else {
+//			return Collections.emptyList();
+//		}
+//	}
 
 
-	public void addUserToClient(Integer userId, Integer clientId) {
-		Optional<Users> userOptional = userRepository.findById(userId);
-		Optional<Client> clientOptional = clientRepository.findById(clientId);
-
-		if (userOptional.isPresent() && clientOptional.isPresent()) {
-			Users user = userOptional.get();
-			Client client = clientOptional.get();
-
-			user.getClients().add(client); // Assuming there's a method to get the list of clients associated with the user
-			userRepository.save(user);
-		} else {
-			// Handle case when user or client not found
-		}
-	}
+//	public void addUserToClient(Integer userId, Integer clientId) {
+//		Optional<Users> userOptional = userRepository.findById(userId);
+//		Optional<Client> clientOptional = clientRepository.findById(clientId);
+//
+//		if (userOptional.isPresent() && clientOptional.isPresent()) {
+//			Users user = userOptional.get();
+//			Client client = clientOptional.get();
+//			user.getClients().add(client); // Assuming there's a method to get the list of clients associated with the user
+//			userRepository.save(user);
+//		} else {
+//			// Handle case when user or client not found
+//		}
+//	}
 
 
 	public List<Users> getAllUsers()

@@ -12,6 +12,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -26,6 +27,9 @@ public class AuthController {
 
     @Autowired
     private JwtHelper helper;
+
+    @Autowired
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     private Logger logger= LoggerFactory.getLogger(AuthController.class);
 
@@ -46,13 +50,27 @@ public class AuthController {
 
     private void doAuthenticate(String email, String password) {
 
-        UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(email, password);
-        try {
+//        UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(email, password);
+//        try {
+//            manager.authenticate(authentication);
+//
+//
+//        } catch (BadCredentialsException e) {
+//            throw new BadCredentialsException(" Invalid Username or Password  !!");
+//        }
+        UserDetails userDetails = userDetailsService.loadUserByUsername(email);
+        System.out.println(userDetails);
+
+        // Check if userDetails exists and if the provided password matches the stored password
+        System.out.println(userDetails.getPassword()+" "+password);
+        if (userDetails != null && bCryptPasswordEncoder.matches(password, userDetails.getPassword()) ) {
+            System.out.println("true");
+            // Create an authentication token and authenticate it using the AuthenticationManager
+            UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(email, password);
             manager.authenticate(authentication);
-
-
-        } catch (BadCredentialsException e) {
-            throw new BadCredentialsException(" Invalid Username or Password  !!");
+        } else {
+            // Throw exception if authentication fails
+            throw new BadCredentialsException("Invalid Username or Password!");
         }
 
     }

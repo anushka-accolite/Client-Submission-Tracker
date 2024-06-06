@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.userdetails.User;
@@ -32,7 +33,9 @@ public class MySecurityConfig {
         for (Users userEntity : loginDetailsList) {
             UserDetails user = User.builder()
                     .username(userEntity.getUserName())
-                    .password(passwordEncoder().encode(userEntity.getLoginUserPassword())) // Ensure password encoding// Assuming you have a method to get roles
+//                    .password(passwordEncoder().encode(userEntity.getLoginUserPassword()))
+// Ensure password encoding// Assuming you have a method to get roles
+                    .password(userEntity.getLoginUserPassword())
                     .build();
             users.add(user);
         }
@@ -41,8 +44,16 @@ public class MySecurityConfig {
     }
 
     @Bean
-    public PasswordEncoder passwordEncoder() {
+    public BCryptPasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
+    }
+//    @Override
+//    protected void configure(AuthenticationManagerBuilder auth) throws Exception{
+//        auth.userDetailsService(this.userDetailsServiceImpl).passwordEncoder(passwordEncoder());
+//    }
+
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth.userDetailsService(userDetailsService()).passwordEncoder(passwordEncoder());
     }
 
     @Bean
