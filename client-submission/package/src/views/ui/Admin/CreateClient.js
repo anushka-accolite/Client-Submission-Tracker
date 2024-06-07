@@ -44,11 +44,11 @@ const CreateClient = () => {
             let response = await axios.get('http://localhost:8092/api/admin/clients', { headers });
             let clients = response.data;
             console.log(clients);
-        
-            const filteredClients = clients.filter(client => 
+
+            const filteredClients = clients.filter(client =>
               client.users.some(user => user.userId === item.userId)
             );
-        
+
             console.log(filteredClients);
         
             // Filter users based on the condition whether filteredClients is empty
@@ -59,6 +59,7 @@ const CreateClient = () => {
             console.error('Error fetching clients:', error);
           }
         });
+        console.log(taWithNoClients);
         setTalentAcquisitionOptions(taWithNoClients);
         //console.log(ta);
         let pmWithNoClients=[];
@@ -68,13 +69,13 @@ const CreateClient = () => {
             let response = await axios.get('http://localhost:8092/api/admin/clients', { headers });
             let clients = response.data;
             console.log(clients);
-        
-            const filteredClients = clients.filter(client => 
+
+            const filteredClients = clients.filter(client =>
               client.users.some(user => user.userId === item.userId)
             );
-        
+
             console.log(filteredClients);
-        
+
             // Filter users based on the condition whether filteredClients is empty
             if (filteredClients.length === 0) {
               pmWithNoClients.push(item);
@@ -83,6 +84,7 @@ const CreateClient = () => {
             console.error('Error fetching clients:', error);
           }
         });
+        console.log(pmWithNoClients);
 
         setProjectManagerOptions(pmWithNoClients);
         //console.log(pm);
@@ -94,11 +96,11 @@ const CreateClient = () => {
             let response = await axios.get('http://localhost:8092/api/admin/clients', { headers });
             let clients = response.data;
             console.log(clients);
-        
-            const filteredClients = clients.filter(client => 
+
+            const filteredClients = clients.filter(client =>
               client.users.some(user => user.userId === item.userId)
             );
-        
+
             console.log(filteredClients);
 
         
@@ -111,7 +113,7 @@ const CreateClient = () => {
           }
         });
         setAccountManagerOptions(amWithNoClients);
-        
+
       } catch (error) {
         console.error('Error fetching users:', error);
       }
@@ -119,6 +121,9 @@ const CreateClient = () => {
 
     fetchUsers();
   }, []);
+
+  
+
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -147,10 +152,7 @@ const CreateClient = () => {
     };
 
     try {
-      // Update client IDs of Talent Acquisition, Project Manager, and Account Manager
-      // console.log("AM",formData.accountManager);
       console.log(formData.clientId);
-
 
       const response = await axios.post('http://localhost:8092/api/admin', formDataWithSkillsString, { headers });
       console.log('Data posted successfully:', response.data);
@@ -181,7 +183,7 @@ const CreateClient = () => {
 
   return (
     <>
-    <ToastContainer/>
+      <ToastContainer />
       <h2 className="header">Add Client Details</h2>
       <form onSubmit={handleSubmit} className="form-container">
         <TextField
@@ -262,6 +264,7 @@ const CreateClient = () => {
             />
           )}
         />
+
         <Autocomplete
           id="project-manager-dropdown"
           options={projectManagerOptions}
@@ -313,17 +316,22 @@ const CreateClient = () => {
           required
           className="text-field"
         />
-        <Button
-          variant="contained"
-          color="primary"
-          type="submit"
-          className="submit-button"
-        >
-          Submit
-        </Button>
+        <div className='submit'>
+          <Button
+            variant="contained"
+            color="primary"
+            type="submit"
+            className="submit-button"
+          >
+            Submit
+          </Button>
+        </div>
       </form>
     </>
   );
 };
 
 export default CreateClient;
+
+
+

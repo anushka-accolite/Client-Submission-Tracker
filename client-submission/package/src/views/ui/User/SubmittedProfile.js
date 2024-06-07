@@ -14,8 +14,8 @@ import TextField from '@mui/material/TextField';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import '../../css/submittedprofile.css'
-function createData(sid, cid, name, experience, skill, status, clientname, remark, responseTime, lastWorkingDay) {
-  return { sid, cid, name, experience, skill, status, clientname, remark, responseTime, lastWorkingDay };
+function createData(sid, cid, name, experience, status, clientname, remark, responseTime, lastWorkingDay) {
+  return { sid, cid, name, experience,status, clientname, remark, responseTime, lastWorkingDay };
 }
 export default function MyComponent() {
   const [selectedColumn, setSelectedColumn] = React.useState('name');
@@ -94,9 +94,10 @@ export default function MyComponent() {
             console.log(latestSubmissions); // This will now contain all the latest submissions
 
             const candidates = listofcandidates.map((item, index) => {
-              let skill = item.candidate.skills && Array.isArray(item.candidate.skills)
-                ? item.candidate.skills.map(skill => skill.skill).join(', ')
-                : ' ';
+              // console.log(item.candidate.skills);
+              // let skill = item.candidate.skills && Array.isArray(item.candidate.skills)
+              //   ? item.candidate.skills.map(skill => skill.skill).join(', ')
+              //   : ' ';
               let clientname = item.client.clientName || 'N/A';
 
               // Access the corresponding latest submission
@@ -127,13 +128,14 @@ export default function MyComponent() {
                 const diffTime = Math.abs(new Date() - lastWorkingDate);
                 lastWorkingDay = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
               }
+              // console.log(skill);
 
               return createData(
                 item.submissionId,
                 item.candidate.candidateId,
                 item.candidate.candidateName,
                 item.candidate.experience,
-                skill,
+                // skill,
                 item.candidate.candidateStatus,
                 clientname,
                 item.remark || 'N/A',
@@ -154,9 +156,13 @@ export default function MyComponent() {
 
 
   const handleColumnChange = (event) => {
-    const selectedValue = event.target.value.toLowerCase();
+    const selectedValue = event.target.value;
     setSelectedColumn(selectedValue);
-    handleSort(selectedValue);
+    if (selectedValue === 'Candidate Id') {
+      const sortedRows = [...rows].sort((a, b) => (sortOrder === 'asc' ? a.id - b.id : b.id - a.id));
+      setRows(sortedRows);
+      setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
+    }
   };
   const handleClearSearch = () => {
     setSearchTerm('');
@@ -185,7 +191,9 @@ export default function MyComponent() {
     setRows(sortedRows);
     setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
   };
-  const filteredRows = rows.map(row => {
+  const filteredRows = rows.filter(row => {
+    return row.name.toLowerCase().includes(searchTerm.toLowerCase());
+  }).map(row => {
     const lessThanDaysLeft = daysLeft !== '' && row.lastWorkingDay !== 'N/A' && row.lastWorkingDay <= parseInt(daysLeft);
     const lessThanResponseTime = responseTimeLimit !== '' && row.responseTime !== 'N/A' && parseInt(row.responseTime) <= parseInt(responseTimeLimit);
     return { ...row, lessThanDaysLeft, lessThanResponseTime };
@@ -245,7 +253,7 @@ export default function MyComponent() {
               <TableCell><b>Candidate Id</b></TableCell>
               <TableCell align="right"><b>Name</b></TableCell>
               <TableCell align="right"><b>Experience</b></TableCell>
-              <TableCell align="right"><b>Skill</b></TableCell>
+              {/* <TableCell align="right"><b>Skill</b></TableCell> */}
               <TableCell align="right"><b>Status</b></TableCell>
               <TableCell align="right"><b>ClientName</b></TableCell>
               <TableCell align="right">
@@ -274,7 +282,7 @@ export default function MyComponent() {
                 </TableCell>
                 <TableCell align="right">{row.name}</TableCell>
                 <TableCell align="right">{row.experience}</TableCell>
-                <TableCell align="right">{row.skill}</TableCell>
+                {/* <TableCell align="right">{row.skill}</TableCell> */}
                 <TableCell align="right">{row.status}</TableCell>
                 <TableCell align="right">{row.clientname}</TableCell>
                 <TableCell align="right">{row.responseTime}</TableCell>

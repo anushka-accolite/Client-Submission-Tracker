@@ -19,7 +19,7 @@ function EditProfile() {
 
         const userData = data.filter(item => item.userName === localStorage.getItem("username"))[0];
         setUserId(userData.userId || '');
-        setUsername(userData.userName || ''); // Assuming it's userName, not username
+        setUsername(userData.userName || ''); 
         setEmail(userData.email || '');
         setRole(userData.userRole || '');
         console.log(userData);

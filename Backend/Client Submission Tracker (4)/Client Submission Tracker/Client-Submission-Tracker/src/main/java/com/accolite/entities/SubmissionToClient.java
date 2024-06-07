@@ -27,8 +27,8 @@ enum Status{
 	Pending,
 	OnHold,
 	Selected,
-	Rejected
-	
+	Rejected,
+	InterviewScheduled
 }
 
 @Entity

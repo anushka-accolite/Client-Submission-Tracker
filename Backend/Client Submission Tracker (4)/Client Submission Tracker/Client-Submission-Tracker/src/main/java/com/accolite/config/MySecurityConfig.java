@@ -32,7 +32,9 @@ public class MySecurityConfig {
         for (Users userEntity : loginDetailsList) {
             UserDetails user = User.builder()
                     .username(userEntity.getUserName())
-                    .password(passwordEncoder().encode(userEntity.getLoginUserPassword())) // Ensure password encoding// Assuming you have a method to get roles
+//                    .password(passwordEncoder().encode(userEntity.getLoginUserPassword()))
+//// Ensure password encoding// Assuming you have a method to get roles
+                    .password(userEntity.getLoginUserPassword())
                     .build();
             users.add(user);
         }
@@ -41,7 +43,7 @@ public class MySecurityConfig {
     }
 
     @Bean
-    public PasswordEncoder passwordEncoder() {
+    public BCryptPasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
