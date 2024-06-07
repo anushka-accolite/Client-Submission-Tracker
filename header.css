@@ -1,0 +1,67 @@
+/* 
+ #dropdownbtn {
+  background-color: white;
+  border: none;
+  color: blue;
+  width: 100%;
+  padding-right: 10px !important;
+  font-family: Georgia, 'Times New Roman', Times, serif;
+}
+
+.navbar {
+  background-color: #073763;
+  position: fixed;
+  width: 100%;
+  z-index: 1000;
+  transition: width 0.3s ease;
+}
+
+.icon {
+  background-color: #4d759a;
+}
+ */
+
+
+
+ /* Existing CSS */
+
+#dropdownbtn {
+  background-color: white;
+  border: none;
+  color: blue;
+  width: 100%;
+  padding-right: 10px !important;
+  font-family: Georgia, 'Times New Roman', Times, serif;
+}
+
+.navbar {
+  background-color: #073763;
+  position: fixed;
+  width: 100%;
+  z-index: 1000;
+  transition: width 0.3s ease;
+  display: flex;
+  align-items: center; /* Center items vertically */
+}
+
+.icon {
+  background-color: #4d759a;
+}
+
+.navbar-brand {
+  margin-left: 10px; /* Adjust as needed */
+  flex: 0; /* Fixed width for the logo */
+}
+
+/* New styles for Dropdown */
+.dropdown {
+  margin-left: auto; /* Push dropdown to the right */
+}
+
+.content {
+    margin-top: 80px; /* Adjust this value based on the height of your header */
+  }
+
+.contentbar {
+    margin-top: 20px;
+}
