@@ -7,7 +7,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class ClientSubmissionTrackerApplication {
 
 	public static void main(String[] args) {
-			SpringApplication.run(ClientSubmissionTrackerApplication.class, args);
+		SpringApplication.run(ClientSubmissionTrackerApplication.class, args);
 	}
 
 }
