@@ -1,14 +1,18 @@
 package com.accolite.controller;
 
+import java.util.Date;
 import java.util.List;
 
+import com.accolite.entities.*;
+import com.accolite.service.CandidateService;
+import com.accolite.service.ClientService;
+import com.accolite.service.UserService;
+import jdk.jshell.Snippet;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import com.accolite.entities.Client;
-import com.accolite.entities.SubmissionToClient;
 import com.accolite.service.SubmissionService;
 
 @RestController
@@ -18,6 +22,15 @@ public class SubmissionController {
 	
 	@Autowired
 	private SubmissionService submissionService;
+
+	@Autowired
+	private ClientService clientService;
+
+	@Autowired
+	private CandidateService candidateService;
+
+	@Autowired
+	private UserService userService;
 	
 	@GetMapping("/getAll")
     public ResponseEntity<List<SubmissionToClient>> getAllSubmissions() {
@@ -78,6 +91,52 @@ public class SubmissionController {
 		}
 		return new ResponseEntity<>(submissionIds, HttpStatus.OK);
 	}
+	@PostMapping("/clients/{clientId}/candidates/{candidateId}/submit/{userId}")
+	public ResponseEntity<String> submitCandidateProfile(@PathVariable Integer clientId, @PathVariable Integer candidateId, @PathVariable Integer userId) {
+		// Check if the user exists
+		Users user = userService.getUserById(userId);
+		if (user == null) {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not found");
+		}
+
+		// Check if the client exists
+		Client client = clientService.getClientById(clientId);
+		if (client == null) {
+			return ResponseEntity.notFound().build();
+		}
+
+		// Check if the user is associated with the client
+		if (!client.getUsers().contains(user)) {
+			return ResponseEntity.status(HttpStatus.FORBIDDEN).body("User is not authorized to submit candidates to this client");
+		}
+
+		// Check if the candidate exists
+		Candidate candidate = candidateService.getCandidateById(candidateId);
+		if (candidate == null) {
+			return ResponseEntity.notFound().build();
+		}
+
+		// Perform submission logic here
+		// For example, you might want to update the candidate's status to "submitted"
+		SubmissionToClient submission=new SubmissionToClient();
+		submission.setCandidate(candidate);
+		submission.setClient(client);
+		submission.setUsers(user);
+		submission.setIsDeleted(false);
+		submission.setSubmissionDate(new Date());
+		submission.setRemark("");
+		submission.setStatus(Status.Selected);
+		submissionService.submitCandidateToClient(submission);
+		return ResponseEntity.ok("Candidate profile submitted successfully");
+	}
+
+
+
+
+
+
+
+
 
 
 

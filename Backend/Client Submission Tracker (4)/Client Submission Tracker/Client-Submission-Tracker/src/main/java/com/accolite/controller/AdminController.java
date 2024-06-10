@@ -2,6 +2,7 @@ package com.accolite.controller;
 
 
 import com.accolite.entities.Users;
+import com.accolite.repository.ClientRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +19,7 @@ import com.accolite.entities.Client;
 import com.accolite.service.ClientService;
 import com.accolite.service.UserService;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -30,6 +32,9 @@ public class AdminController {
 
 		@Autowired
 	    private UserService userService;
+
+		@Autowired
+		private ClientRepository clientRepository;
         @PostMapping
 	    public ResponseEntity<Client> createClient(@RequestBody Client client) {
 	        Client createdClient = clientService.createClient(client);
@@ -81,8 +86,27 @@ public class AdminController {
 		if (user == null) {
 			return ResponseEntity.notFound().build();
 		}
-		user.setClient(client);
+		if(user.getClients()==null)
+		{
+			List<Client> clients=new ArrayList<>();
+			clients.add(client);
+			user.setClients(clients);
+		}
+		else {
+			user.getClients().add(client);
+		}
 		userService.saveUser(user);
+		if(client.getUsers()==null)
+		{
+			List<Users> users =new ArrayList<>();
+			users.add(user);
+			client.setUsers(users);
+			clientRepository.save(client);
+		}
+		else {
+			client.getUsers().add(user);
+			clientRepository.save(client);
+		}
 		return ResponseEntity.ok("User linked to client successfully");
 	}
 

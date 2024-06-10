@@ -23,14 +23,6 @@ import org.hibernate.envers.AuditTable;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.NotAudited;
 
-enum Status{
-	Pending,
-	OnHold,
-	Selected,
-	Rejected,
-	InterviewScheduled
-}
-
 @Entity
 @Getter
 @Setter
