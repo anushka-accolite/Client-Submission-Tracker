@@ -85,6 +85,10 @@
     border-color: rgb(29, 29, 241);
 }
 
+.icon{
+  margin-left: 85px;
+}
+
   @media (max-width: 600px) {
     #container {
       flex-direction: column;

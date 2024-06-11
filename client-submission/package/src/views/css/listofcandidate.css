@@ -21,6 +21,9 @@
 .status-dot.onhold{
   background-color: orange;
 }
+.status-dot.interviewscheduled{
+  background-color: pink;
+}
 
 .pie-chart {
   width: 100%;
@@ -85,5 +88,9 @@
 #addbtnmodal{
   margin-top:20px;
   margin-left:130px;
+}
+#remarkbtn:hover{
+  background-color:darkmagenta;
+  color:white
 }
  

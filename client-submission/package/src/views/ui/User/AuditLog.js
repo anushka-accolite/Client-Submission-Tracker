@@ -13,6 +13,7 @@ import Select from '@mui/material/Select';
 import InputLabel from '@mui/material/InputLabel';
 import FormControl from '@mui/material/FormControl';
 import CircularProgress from '@mui/material/CircularProgress';
+import TablePagination from '@mui/material/TablePagination';
 import '../../css/auditlog.css';
 
 export default function AuditLog() {
@@ -20,6 +21,8 @@ export default function AuditLog() {
     const [searchTerm, setSearchTerm] = useState('');
     const [rows, setRows] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [page, setPage] = useState(0);
+    const [rowsPerPage, setRowsPerPage] = useState(5);
 
     useEffect(() => {
         const fetchSubmissionsWithRevisions = async () => {
@@ -82,11 +85,28 @@ export default function AuditLog() {
 
     const handleSearchTermChange = (event) => {
         setSearchTerm(event.target.value);
+        setPage(0); // Reset to first page on new search term
     };
 
     const handleClearSearch = () => {
         setSearchTerm('');
+        setPage(0); // Reset to first page on clear search
     };
+
+    const handleChangePage = (event, newPage) => {
+        setPage(newPage);
+    };
+
+    const handleChangeRowsPerPage = (event) => {
+        setRowsPerPage(parseInt(event.target.value, 10));
+        setPage(0);
+    };
+
+    // Filter rows before pagination
+    const filteredRows = rows.filter(row => {
+        const value = row[selectedColumn];
+        return value && value.toString().toLowerCase().includes(searchTerm.toLowerCase());
+    });
 
     return (
         <div>
@@ -137,11 +157,8 @@ export default function AuditLog() {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {rows
-                                .filter(row => {
-                                    const value = row[selectedColumn];
-                                    return value && value.toString().toLowerCase().includes(searchTerm.toLowerCase());
-                                })
+                            {filteredRows
+                                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                                 .map((row, index) => (
                                     <TableRow className='trow'
                                         key={index}
@@ -158,15 +175,17 @@ export default function AuditLog() {
                                 ))}
                         </TableBody>
                     </Table>
+                    <TablePagination
+                        rowsPerPageOptions={[5, 10, 25]}
+                        component="div"
+                        count={filteredRows.length}
+                        rowsPerPage={rowsPerPage}
+                        page={page}
+                        onPageChange={handleChangePage}
+                        onRowsPerPageChange={handleChangeRowsPerPage}
+                    />
                 </TableContainer>
             )}
         </div>
     );
 }
-
-
-
-
-
-
-

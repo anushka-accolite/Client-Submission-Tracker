@@ -202,7 +202,7 @@ const LoginForm = () => {
           if (userRole === 'admin') {
             navigate('/home');
           } else {
-            navigate('/listofcandidates');
+            navigate('/listofclientuser');
           }
         } else {
           console.error('User not found in response data');

@@ -10,7 +10,8 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import TextField from '@mui/material/TextField';
-import '../../css/listofpm.css';
+import TablePagination from '@mui/material/TablePagination';
+import '../../css/listofta.css';
 import axios from 'axios';
 
 export default function Listofpm() {
@@ -18,11 +19,12 @@ export default function Listofpm() {
   const [selectedColumn, setSelectedColumn] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
   const [sortOrder, setSortOrder] = useState('asc');
- 
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+
   useEffect(() => {
     const fetchData = async () => {
       try {
-        
         const token = localStorage.getItem("token");
         const headers = { "Authorization": "Bearer " + token };
 
@@ -57,6 +59,10 @@ export default function Listofpm() {
   const handleColumnChange = (event) => {
     setSelectedColumn(event.target.value);
   };
+  // const handleColumnChange = (event) => {
+  //   setSelectedColumn(event.target.value);
+  //   setSearchTerm(''); // Reset search term when changing the column
+  // };
 
   const handleSearchTermChange = (event) => {
     setSearchTerm(event.target.value);
@@ -64,6 +70,15 @@ export default function Listofpm() {
 
   const handleSortOrderChange = () => {
     setSortOrder((prevSortOrder) => (prevSortOrder === 'asc' ? 'desc' : 'asc'));
+  };
+
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
   };
 
   const filteredRows = rows.filter((row) => {
@@ -85,7 +100,7 @@ export default function Listofpm() {
   });
 
   const renderHeaderCells = () => {
-    const columns = ['Id', 'Username', 'Email'];
+    const columns = ['Id', 'Name', 'Email'];
     return (
       <TableRow>
         {columns.map((column) => (
@@ -98,13 +113,15 @@ export default function Listofpm() {
   };
 
   const renderBodyRows = () => {
-    return sortedRows.map((row) => (
-      <TableRow key={row.Id} className="tr">
-        <TableCell>{row.Id}</TableCell>
-        <TableCell>{row.Name}</TableCell>
-        <TableCell>{row.Email}</TableCell>
-      </TableRow>
-    ));
+    return sortedRows
+      .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+      .map((row) => (
+        <TableRow key={row.Id} className="tr">
+          <TableCell>{row.Id}</TableCell>
+          <TableCell>{row.Name}</TableCell>
+          <TableCell>{row.Email}</TableCell>
+        </TableRow>
+      ));
   };
 
   const handleClearSearch = () => {
@@ -113,10 +130,10 @@ export default function Listofpm() {
 
   return (
     <>
-      <h2 id="hd1">List of Project Manager</h2>
+      <h2 id="hd1">Project Manager Members</h2>
       <div className='uppercon'>
         <div className="filter-container">
-          <FormControl variant="outlined">
+          {/* <FormControl variant="outlined">
             <Select
               id="dropdown"
               value={selectedColumn}
@@ -134,11 +151,36 @@ export default function Listofpm() {
             value={searchTerm}
             onChange={handleSearchTermChange}
             className='searchip'
-            style={{marginLeft:"20px"}}
+            style={{ marginLeft: "20px" }}
           />
           {searchTerm && (
             <button onClick={handleClearSearch} className="clear-search-btn">Clear</button>
-          )}
+          )} */}
+          <div className='uppercon'>
+        <FormControl variant="outlined">
+          <Select
+            className="dropdown"
+            value={selectedColumn}
+            onChange={handleColumnChange}
+            style={{paddingLeft:"60px"}}
+            displayEmpty
+          >
+            <MenuItem value="Id">Id</MenuItem>
+            <MenuItem value="Name">Username</MenuItem>
+            <MenuItem value="Email">Email</MenuItem>
+          </Select>
+        </FormControl>
+        <TextField
+          label="Search"
+          variant="outlined"
+          value={searchTerm}
+          onChange={handleSearchTermChange}
+          style={{marginLeft:"20px"}}
+        />
+        {searchTerm && (
+          <button onClick={handleClearSearch} className="clear-search-btn">Clear</button>
+        )}
+      </div>
         </div>
       </div>
       <TableContainer component={Paper} className='table'>
@@ -147,6 +189,15 @@ export default function Listofpm() {
           <TableBody>{renderBodyRows()}</TableBody>
         </Table>
       </TableContainer>
+      <TablePagination
+        rowsPerPageOptions={[3, 5, 10, 25]}
+        component="div"
+        count={sortedRows.length}
+        rowsPerPage={rowsPerPage}
+        page={page}
+        onPageChange={handleChangePage}
+        onRowsPerPageChange={handleChangeRowsPerPage}
+      />
     </>
   );
 }

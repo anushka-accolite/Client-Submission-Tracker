@@ -8,7 +8,7 @@
     margin-right:20px;
 }
 .table{
-    margin-top:10px;
+    margin-top:30px;
 }
 .tr:hover{
     background-color: lightgray;
@@ -21,4 +21,6 @@
     background-color: white;
     border-color: rgb(29, 29, 241);
 }
-
+.icon{
+    margin-left: 85px;
+}

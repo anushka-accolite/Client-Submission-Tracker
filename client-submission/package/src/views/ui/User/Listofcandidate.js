@@ -1,30 +1,23 @@
 import React, { useState, useEffect, useRef } from 'react';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import Paper from '@mui/material/Paper';
-import TextField from '@mui/material/TextField';
-import MenuItem from '@mui/material/MenuItem';
-import Button from '@mui/material/Button';
-import Modal from '@mui/material/Modal';
-import Box from '@mui/material/Box';
-import '../../css/listofcandidate.css';
+import {
+  Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
+  Paper, TextField, MenuItem, Button, Modal, Box, TablePagination
+} from '@mui/material';
 import Chart from 'chart.js/auto';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import '../../css/listofcandidate.css';
 
-function createData(id, name, email, experience, skill, status, IsEmployee, daysToLWD) {
-  return { id, name, email, experience, skill, status, IsEmployee, daysToLWD };
+function createData(id, name, email, experience, skill, status, IsEmployee, daysToLWD, remark) {
+  return { id, name, email, experience, skill, status, IsEmployee, daysToLWD, remark };
 }
 
 
-const statusOptions = ['Selected', 'Rejected', 'Pending', 'OnHold','Interview Schedule'];
+const statusOptions = ['Selected', 'Rejected', 'Pending', 'OnHold', 'InterviewScheduled'];
 const skillsOptions = ['Angular', 'React', 'Java', 'Python', 'Spring', 'JavaScript'];
+
 const columns = [
   { id: 'id', label: 'Candidate Id' },
   { id: 'name', label: 'Candidate Name' },
@@ -32,7 +25,8 @@ const columns = [
   { id: 'experience', label: 'Exp (years)' },
   { id: 'skill', label: 'Skill' },
   { id: 'status', label: 'Status' },
-  { id: 'IsEmployee', label: 'IsEmp' },
+  { id: 'remark', label: 'Remark' },
+  { id: 'IsEmployee', label: 'IsEmployee' },
   { id: 'daysToLWD', label: 'Days to LWD' },
   { id: 'delete', label: 'Delete' },
   { id: 'add', label: 'Add' },
@@ -47,7 +41,7 @@ const rowsInd = [
   createDataInd('Rejected', 'Red'),
   createDataInd('Pending', 'Yellow'),
   createDataInd('OnHold', 'Orange'),
-  createDataInd('Interview Schedule', 'Pink')
+  createDataInd('InterviewScheduled', 'Pink')
 ];
 
 const modalStyle = {
@@ -55,11 +49,12 @@ const modalStyle = {
   top: '50%',
   left: '50%',
   transform: 'translate(-50%, -50%)',
-  width: 400,
+  width: 450,
+  maxHeight: 550,
   bgcolor: 'background.paper',
-  border: '2px solid #000',
-  boxShadow: 24,
+  boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.5)',
   p: 4,
+  overflowY: 'auto',
 };
 
 export default function Listofcandidate() {
@@ -76,6 +71,10 @@ export default function Listofcandidate() {
   const [selectedFile, setSelectedFile] = useState(null);
   const [uploadSuccess, setUploadSuccess] = useState(false);
   const [uploadError, setUploadError] = useState(false);
+  const [remark, setRemark] = useState("");
+  const [remarkModalOpen, setRemarkModalOpen] = useState(false);
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
   let response = "";
 
 
@@ -84,60 +83,13 @@ export default function Listofcandidate() {
     if (role !== "user") {
       navigate("/loginform");
     }
+    localStorage.setItem("remark", "");
 
-  //   const fetchCandidates = async () => {
-  //     try {
-  //       let token = localStorage.getItem("token");
-  //       let headers = { "Authorization": `Bearer ${token}` };
-  //       response = await axios.get('http://localhost:8092/api/candidates/getAll', { headers });
-
-  //       console.log('Candidates API Response:', response.data);
-
-  //       if (!Array.isArray(response.data)) {
-  //         throw new Error('API response is not an array');
-  //       }
-
-  //       const candidateData = response.data;
-  //       console.log("look->", candidateData)
-  //       const candidatesWithSkills = await Promise.all(
-  //         candidateData
-  //           .filter(data => data.isDeleted === false)
-  //           .map(async (item) => {
-  //             const skillsResponse = await axios.get(`http://localhost:8092/api/candidates/${item.candidateId}/skills`, { headers });
-
-  //             console.log(`Skills API Response for candidate ${item.candidateId}:`, skillsResponse.data);
-  //             //  const formattedSkills = skillsResponse.data.map(skill => skill.skills).join(', ');
-               
-  //             // const skillsData = skillsResponse.data.map(skill => JSON.parse(skill.skills)).join(', ');
-  //             // console.log(formattedSkills);
-  //             console.log(item.skill);
-  //             const daysToLWD = item.last_working_day ? Math.ceil((new Date(item.last_working_day) - new Date()) / (1000 * 60 * 60 * 24)) : null;
-  //             return createData(
-  //               item.candidateId,
-  //               item.candidateName,
-  //               item.candidateEmail,
-  //               item.experience,
-  //               item.skill,
-  //               item.candidateStatus,
-  //               item.isAccoliteEmployee,
-  //               daysToLWD
-  //             );
-  //           })
-  //       );
-
-  //       setRows(candidatesWithSkills);
-  //     } catch (error) {
-  //       console.error('Error fetching candidates or skills:', error);
-  //     }
-  //   };
-
-  //   fetchCandidates();
-  // }, []);
-  const fetchCandidates = async () => {
-    try {
-      let token = localStorage.getItem("token");
-      let headers = { "Authorization": `Bearer ${token}` };
-      response = await axios.get('http://localhost:8092/api/candidates/getAll', { headers });
+    const fetchCandidates = async () => {
+      try {
+        let token = localStorage.getItem("token");
+        let headers = { "Authorization": `Bearer ${token}` };
+        response = await axios.get('http://localhost:8092/api/candidates/getAll', { headers });
 
         console.log('Candidates API Response:', response.data);
 
@@ -172,11 +124,12 @@ export default function Listofcandidate() {
                 skillsString,
                 item.candidateStatus,
                 item.isAccoliteEmployee,
-                daysToLWD
+                daysToLWD,
+                remark
               );
             })
         );
-
+        console.log(candidatesWithSkills)
         setRows(candidatesWithSkills);
       } catch (error) {
         console.error('Error fetching candidates or skills:', error);
@@ -209,7 +162,7 @@ export default function Listofcandidate() {
     setSelectedColumn(e.target.value);
   };
   const handleFileChange = (e) => {
-    console.log('File selected:', e.target.files[0]); 
+    console.log('File selected:', e.target.files[0]);
     setSelectedFile(e.target.files[0]);
     console.log(selectedFile);
     setUploadSuccess(false);
@@ -241,6 +194,9 @@ export default function Listofcandidate() {
       console.error('Error uploading file:', error);
       setUploadError(true);
     }
+    setTimeout(() => {
+      window.location.reload();
+    }, 3000);
   };
   const handleDelete = async (id) => {
     try {
@@ -295,12 +251,29 @@ export default function Listofcandidate() {
         return 'yellow';
       case 'OnHold':
         return 'orange';
-      case 'Interview Schedule':
-        return 'pink';  
+      case 'InterviewScheduled':
+        return 'pink';
       default:
         return 'inherit';
     }
   };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setNewCandidate(prevState => ({ ...prevState, [name]: value }));
+  };
+
+
+  const handlePageChange = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleRowsPerPageChange = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
+
+  const displayRows = rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
 
   const filteredRows = rows.filter((row) =>
     selectedColumn && searchTerm
@@ -374,7 +347,7 @@ export default function Listofcandidate() {
         } : null,
         submissionDate: new Date().getTime(),
         status: candidateToAdd.candidateStatus,
-        remark: 'Good Understanding',
+        remark: localStorage.getItem("remark"),
         isDeleted: false,
       };
       console.log(clientObj1.data);
@@ -392,10 +365,12 @@ export default function Listofcandidate() {
       try {
         var existingSubmissionResponse = await axios.get(`http://localhost:8092/api/submissions/candidate/${candidateToAdd.candidateId}`, { headers });
 
+      // Submission found, parse the response data
         var existingSubmission = existingSubmissionResponse.data;
         console.log(existingSubmission);
       } catch (error) {
         if (error.response && error.response.status === 404) {
+        // No submission found for the candidate
           var existingSubmission = false;
           console.log(existingSubmission);
         } else {
@@ -431,10 +406,12 @@ export default function Listofcandidate() {
         let subObj = await axios.get(`http://localhost:8092/api/submissions/${sid}`, { headers });
         subObj = subObj.data;
         subObj.status = candidateToAdd.candidateStatus;
+        subObj.remark = localStorage.getItem("remark");
         console.log("deleted", subObj.isDeleted);
         console.log("sid", sid);
-        await axios.put(`http://localhost:8092/api/submissions/${sid}`, {
-          remark: subObj.remark,
+
+        console.log(localStorage.getItem("remark"));
+        const response1 = await axios.put(`http://localhost:8092/api/submissions/${sid}`, {
           status: subObj.status,
           submissionDate: subObj.submissionDate,
           isDeleted: subObj.isDeleted,
@@ -446,12 +423,17 @@ export default function Listofcandidate() {
         await axios.post('http://localhost:8092/api/submissions', submissionData, { headers });
         toast.success("Candidate added successfully!");
       }
+
       setSelectedRow(id);
+      // toast.success("Candidate added successfully!");
+
     } catch (error) {
       console.error('Error adding candidate:', error);
       toast.error('Error adding candidate');
     }
   };
+
+
   const generateChartData = () => {
     const data = {};
     statusOptions.forEach(status => {
@@ -570,6 +552,17 @@ export default function Listofcandidate() {
     setNewCandidate({});
   }
 
+  const handleOpenRemarkModal = (candidate) => {
+    setRemarkModalOpen(true);
+  };
+
+  const handleCloseRemarkModal = () => {
+    setRemarkModalOpen(false);
+  };
+  const handleRemark = () => {
+    toast.success("Remark updated successfully", { autoClose: 2000 });
+    console.log(remark);
+  }
   return (
     <>
       <ToastContainer />
@@ -583,6 +576,7 @@ export default function Listofcandidate() {
           size="small"
         >
           {columns.map((column) => (
+          // Filter out specific fields
             (column.label !== 'Days to LWD' && column.label !== 'Delete' && column.label !== 'Add') && (
               <MenuItem key={column.id} value={column.id}>
                 {column.label}
@@ -597,7 +591,7 @@ export default function Listofcandidate() {
           variant="outlined"
           size="small"
           className='searchip'
-          style={{marginLeft:"20px"}}
+          style={{ marginLeft: "20px" }}
         />
         {searchTerm && (
           <button onClick={handleClearSearch} className="clear-search-btn">Clear</button>
@@ -606,11 +600,11 @@ export default function Listofcandidate() {
           Add Candidate
         </Button>
         <div className='upload_data'>
-        <input type="file" accept=".xlsx, .xls" onChange={handleFileChange} />
-        <button className='upload_button' onClick={handleUpload}>Upload</button>
-        {uploadSuccess && <div style={{ color: 'green'}}>File uploaded successfully!</div>}
-        {uploadError && <div style={{ color: 'red' }}>Error uploading file. Please try again later.</div>}
-      </div>
+          <input type="file" accept=".xlsx, .xls" onChange={handleFileChange} />
+          <button className='upload_button' onClick={handleUpload}>Upload</button>
+          {uploadSuccess && <div style={{ color: 'green' }}>File uploaded successfully!</div>}
+          {uploadError && <div style={{ color: 'red' }}>Error uploading file. Please try again later.</div>}
+        </div>
         <TableContainer component={Paper} style={{ maxWidth: "50vw !important", marginTop: "15px" }}>
           <Table sx={{ maxWidth: "10px" }} aria-label="simple table">
             <TableHead>
@@ -628,7 +622,7 @@ export default function Listofcandidate() {
               </TableRow>
             </TableHead>
             <TableBody>
-              {filteredRows.map((row) => (
+              {filteredRows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => (
                 <TableRow key={row.id} className='tablerow'>
                   {columns.map((column) => (
                     <TableCell key={column.id}>
@@ -656,6 +650,8 @@ export default function Listofcandidate() {
                             style={{ marginLeft: '5px' }}
                           />
                         </div>
+                      ) : column.id === 'remark' ? (
+                        <Button id="remarkbtn" onClick={() => handleOpenRemarkModal(row)}>Add remark</Button>
                       ) : column.id === 'delete' ? (
                         <Button id="delbtn" onClick={() => handleDelete(row.id)}>Delete</Button>
                       ) : column.id === 'add' ? (
@@ -671,6 +667,7 @@ export default function Listofcandidate() {
             </TableBody>
           </Table>
         </TableContainer>
+        <TablePagination rowsPerPageOptions={[5, 10, 25]} component="div" count={rows.length} rowsPerPage={rowsPerPage} page={page} onPageChange={handlePageChange} onRowsPerPageChange={handleRowsPerPageChange} />
       </div>
       <div className="bottom-table">
         <div style={{ display: 'flex' }}>
@@ -722,12 +719,12 @@ export default function Listofcandidate() {
                   key={column.id}
                   label={column.label}
                   name={column.id}
-                  value={newCandidate[column.id] || []} 
-                  onChange={handleInputChange} 
+                  value={newCandidate[column.id] || []} // Make sure value is an array for multiple selection
+                  onChange={handleInputChange} // Pass the event handler for change events
                   fullWidth
                   margin="normal"
                   select
-                  SelectProps={{ multiple: true }} 
+                  SelectProps={{ multiple: true }} // Enable multiple selection
                 >
                   {skillsOptions.map((skill) => (
                     <MenuItem key={skill} value={skill}>
@@ -768,6 +765,23 @@ export default function Listofcandidate() {
               Add
             </Button>
           </form>
+        </Box>
+      </Modal>
+      <Modal
+        open={remarkModalOpen}
+        onClose={handleCloseRemarkModal}
+        aria-labelledby="remark-modal-title"
+        aria-describedby="remark-modal-description"
+      >
+        <Box sx={modalStyle}>
+          <h2 id="remark-modal-title">Add Remark</h2>
+          <TextField
+            fullWidth
+            label="Remark"
+            value={remark}
+            onChange={(e) => { setRemark(e.target.value); localStorage.setItem("remark", e.target.value) }}
+          />
+          <Button onClick={handleRemark}>Submit</Button>
         </Box>
       </Modal>
     </>

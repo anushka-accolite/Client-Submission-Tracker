@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -13,20 +13,25 @@ import InputLabel from '@mui/material/InputLabel';
 import TextField from '@mui/material/TextField';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import '../../css/submittedprofile.css'
+import '../../css/submittedprofile.css';
+import TablePagination from '@mui/material/TablePagination';
 
-function createData(sid, cid, name, experience, skill, status, clientname, remark, responseTime, lastWorkingDay) {
-  return { sid, cid, name, experience, skill, status, clientname, remark, responseTime, lastWorkingDay };
+function createData(sid, cid, name, experience, status, clientname, remark, responseTime, lastWorkingDay) {
+  return { sid, cid, name, experience, status, clientname, remark, responseTime, lastWorkingDay };
 }
+
 export default function MyComponent() {
   const [selectedColumn, setSelectedColumn] = React.useState('name');
   const [searchTerm, setSearchTerm] = React.useState('');
   const [daysLeft, setDaysLeft] = React.useState('10'); // Default value set to 5
-  const [responseTimeLimit, setResponseTimeLimit] = React.useState('');
+  const [responseTimeLimit, setResponseTimeLimit] = React.useState('3');
   const [sortOrder, setSortOrder] = React.useState('asc');
   const [rows, setRows] = React.useState([]);
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
   const navigate = useNavigate();
-  React.useEffect(() => {
+
+  useEffect(() => {
     const role = localStorage.getItem("role");
     if (role !== "user") {
       navigate("/loginform");
@@ -71,11 +76,13 @@ export default function MyComponent() {
           try {
             const response = await axios.get(`http://localhost:8092/api/submissions/${submission.submissionId}/history`, { headers });
             const history = response.data;
+
+            // Log the history for debugging
             console.log(`Submission ID: ${submission.submissionId}, History:`, history);
 
             if (history.length > 0) {
               console.log(history[history.length - 1]);
-              return history[history.length - 1]; 
+              return history[history.length - 1]; // Return the latest history
             } else {
               console.log(`No history found for submission ID: ${submission.submissionId}`);
               return null;
@@ -86,14 +93,13 @@ export default function MyComponent() {
           }
 
         });
+
+
         Promise.all(submissionPromises)
           .then((latestSubmissions) => {
             console.log(latestSubmissions); // This will now contain all the latest submissions
 
             const candidates = listofcandidates.map((item, index) => {
-              let skill = item.candidate.skills && Array.isArray(item.candidate.skills)
-                ? item.candidate.skills.map(skill => skill.skill).join(', ')
-                : ' ';
               let clientname = item.client.clientName || 'N/A';
 
               // Access the corresponding latest submission
@@ -117,18 +123,26 @@ export default function MyComponent() {
                 const timestampDifference = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); // Difference in days
                 responseTime = timestampDifference === 0 ? item.client.clientResponseTimeinDays : timestampDifference;
               }
+              lastWorkingDay = item.candidate.last_working_day || 'N/A';
+              // // Convert last working day timestamp to number of days from today
+              if (lastWorkingDay !== 'N/A') {
+                const lastWorkingDate = lastWorkingDay
+                const diffTime = Math.abs(new Date() - lastWorkingDate);
+                lastWorkingDay = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+              }
+              // console.log(skill);
 
               return createData(
                 item.submissionId,
                 item.candidate.candidateId,
                 item.candidate.candidateName,
                 item.candidate.experience,
-                skill,
+                // skill,
                 item.candidate.candidateStatus,
                 clientname,
                 item.remark || 'N/A',
                 responseTime,
-                item.candidate.last_working_day
+                lastWorkingDay
               );
             });
             setRows(candidates);
@@ -150,18 +164,23 @@ export default function MyComponent() {
       setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
     }
   };
+
   const handleClearSearch = () => {
     setSearchTerm('');
   };
+
   const handleSearchTermChange = (event) => {
     setSearchTerm(event.target.value);
   };
+
   const handleDaysFilterChange = (event) => {
     setDaysLeft(event.target.value);
   };
+
   const handleResponseTimeChange = (event) => {
     setResponseTimeLimit(event.target.value);
   };
+
   const handleSort = (column) => {
     const sortedRows = [...rows].sort((a, b) => {
       let aValue = a[column];
@@ -177,6 +196,16 @@ export default function MyComponent() {
     setRows(sortedRows);
     setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
   };
+
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
+
   const filteredRows = rows.filter(row => {
     return row.name.toLowerCase().includes(searchTerm.toLowerCase());
   }).map(row => {
@@ -184,6 +213,8 @@ export default function MyComponent() {
     const lessThanResponseTime = responseTimeLimit !== '' && row.responseTime !== 'N/A' && parseInt(row.responseTime) <= parseInt(responseTimeLimit);
     return { ...row, lessThanDaysLeft, lessThanResponseTime };
   });
+
+  const paginatedRows = filteredRows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
 
   return (
     <div>
@@ -214,7 +245,6 @@ export default function MyComponent() {
       {searchTerm && (
         <button onClick={handleClearSearch} className="clear-search-btn">Clear</button>
       )}
-      
       <TextField
         id="daysLeft"
         label="Days Left for Last Working Day"
@@ -241,7 +271,7 @@ export default function MyComponent() {
               <TableCell><b>Candidate Id</b></TableCell>
               <TableCell align="right"><b>Name</b></TableCell>
               <TableCell align="right"><b>Experience</b></TableCell>
-              <TableCell align="right"><b>Skill</b></TableCell>
+              {/* <TableCell align="right"><b>Skill</b></TableCell> */}
               <TableCell align="right"><b>Status</b></TableCell>
               <TableCell align="right"><b>ClientName</b></TableCell>
               <TableCell align="right">
@@ -250,7 +280,7 @@ export default function MyComponent() {
                 >
                   <b>Response Time</b>
                   <span onClick={() => handleSort('responseTime')} style={{ cursor: "pointer" }}>
-                    {sortOrder === 'asc' ? ' ↑' : ' ↓'}
+                    {sortOrder === 'asc' ? '🔼' : '🔽'}
                   </span>
                 </span>
               </TableCell>
@@ -259,7 +289,7 @@ export default function MyComponent() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {filteredRows.map((row) => (
+            {paginatedRows.map((row) => (
               <TableRow
                 key={row.sid}
                 sx={{ '&:last-child td, &:last-child th': { border: 0 }, backgroundColor: row.lessThanDaysLeft ? 'lightcoral' : row.lessThanResponseTime ? 'yellow' : 'inherit' }}
@@ -270,7 +300,7 @@ export default function MyComponent() {
                 </TableCell>
                 <TableCell align="right">{row.name}</TableCell>
                 <TableCell align="right">{row.experience}</TableCell>
-                <TableCell align="right">{row.skill}</TableCell>
+                {/* <TableCell align="right">{row.skill}</TableCell> */}
                 <TableCell align="right">{row.status}</TableCell>
                 <TableCell align="right">{row.clientname}</TableCell>
                 <TableCell align="right">{row.responseTime}</TableCell>
@@ -281,6 +311,15 @@ export default function MyComponent() {
           </TableBody>
         </Table>
       </TableContainer>
+      <TablePagination
+        rowsPerPageOptions={[5, 10, 25]}
+        component="div"
+        count={filteredRows.length}
+        rowsPerPage={rowsPerPage}
+        page={page}
+        onPageChange={handleChangePage}
+        onRowsPerPageChange={handleChangeRowsPerPage}
+      />
     </div>
   );
 }

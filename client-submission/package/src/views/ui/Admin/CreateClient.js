@@ -36,16 +36,7 @@ const CreateClient = () => {
         const headers = { 'Authorization': `Bearer ${token}` };
         const response = await axios.get('http://localhost:8092/api/user/users', { headers });
         const users = response.data;
-        // let clients = await axios.get('http://localhost:8092/api/admin/clients',{headers});
-        // console.log(clients.data);
-        // console.log(users);
-        // const filteredClients=clients.data.filter(client => 
-        //   client.users.some(user => user.userId === users.userId));
-        // console.log(filteredClients);
-
-        // setTalentAcquisitionOptions(users.filter(user => user.userRole === 'TalentAcquistion'));
-        // setProjectManagerOptions(users.filter(user => user.userRole === 'ProjectManager'));
-        // setAccountManagerOptions(users.filter(user => user.userRole === 'AccountManager'));
+       
         let taWithNoClients=[];
         const ta=users.filter(user => user.userRole === 'TalentAcquistion');
         ta.forEach(async (item) => {
@@ -68,6 +59,7 @@ const CreateClient = () => {
             console.error('Error fetching clients:', error);
           }
         });
+        console.log(taWithNoClients);
         setTalentAcquisitionOptions(taWithNoClients);
         //console.log(ta);
         let pmWithNoClients=[];
@@ -92,6 +84,7 @@ const CreateClient = () => {
             console.error('Error fetching clients:', error);
           }
         });
+        console.log(pmWithNoClients);
 
         setProjectManagerOptions(pmWithNoClients);
         //console.log(pm);
@@ -201,7 +194,7 @@ const CreateClient = () => {
           name="clientId"
           value={formData.clientId}
           onChange={handleChange}
-          required
+          // required
           className="text-field"
         />
         <TextField

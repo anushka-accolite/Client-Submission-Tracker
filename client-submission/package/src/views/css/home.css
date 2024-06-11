@@ -102,3 +102,11 @@
     z-index:-1;
   }
 }
+
+.clear-search-btn{
+  padding: 13px;
+  margin-left: 10px;
+  border-radius: 10%;
+  background-color: white;
+  border-color: rgb(29, 29, 241);
+}

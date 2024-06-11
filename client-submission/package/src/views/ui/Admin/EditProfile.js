@@ -44,7 +44,7 @@ const navigate=useNavigate();
       localStorage.setItem("username",username);
        await axios.put(`http://localhost:8092/api/user/${userId}`, userData, { headers });
       alert('Profile updated successfully!');
-      navigate('/profile');   // if profile is updated successfully then it will ridirect to myaccount page
+      navigate('/myaccount');   // if profile is updated successfully then it will ridirect to myaccount page
       
     } catch (error) {
       console.error('Error updating user data:', error);
