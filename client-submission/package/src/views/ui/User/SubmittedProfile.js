@@ -14,8 +14,8 @@ import TextField from '@mui/material/TextField';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import '../../css/submittedprofile.css'
-function createData(sid, cid, name, experience, status, clientname, remark, responseTime, lastWorkingDay) {
-  return { sid, cid, name, experience,status, clientname, remark, responseTime, lastWorkingDay };
+function createData(sid, cid, name, experience, status, clientname, remark, responseTime,lastWorkingDate) {
+  return { sid, cid, name, experience,status, clientname, remark, responseTime, lastWorkingDate};
 }
 export default function MyComponent() {
   const [selectedColumn, setSelectedColumn] = React.useState('name');
@@ -40,7 +40,10 @@ export default function MyComponent() {
         let userObj = await axios.get(`http://localhost:8092/api/user/users`, { headers });
         let username = localStorage.getItem("username");
         let user = userObj.data.find((item) => item.userName === username);
-        let clientData = "";
+        // let clientId=localStorage.getItem("clientId");
+        // let clientObj = await axios.get(`http://localhost:8092/api/admin/${clientId}`,{headers});
+        // let clientData=clientObj.data;
+        let clientData="";
         clients_data.data.forEach(client => {
           client.users.forEach(item => {
             if (item.userId === user.userId) {
@@ -123,8 +126,9 @@ export default function MyComponent() {
               }
               lastWorkingDay = item.candidate.last_working_day || 'N/A';
               // // Convert last working day timestamp to number of days from today
+              let lastWorkingDate='N/A';
               if (lastWorkingDay !== 'N/A') {
-                const lastWorkingDate = lastWorkingDay
+                 lastWorkingDate = lastWorkingDay
                 const diffTime = Math.abs(new Date() - lastWorkingDate);
                 lastWorkingDay = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
               }
@@ -136,11 +140,11 @@ export default function MyComponent() {
                 item.candidate.candidateName,
                 item.candidate.experience,
                 // skill,
-                item.candidate.candidateStatus,
+                item.status,
                 clientname,
                 item.remark || 'N/A',
                 responseTime,
-                lastWorkingDay
+               lastWorkingDate !== 'N/A' ? new Date(lastWorkingDate).toLocaleDateString() : 'N/A'
               );
             });
             setRows(candidates);
@@ -227,7 +231,7 @@ export default function MyComponent() {
       {searchTerm && (
         <button onClick={handleClearSearch} className="clear-search-btn">Clear</button>
       )}
-      <TextField
+      {/* <TextField
         id="daysLeft"
         label="Days Left for Last Working Day"
         variant="outlined"
@@ -235,7 +239,7 @@ export default function MyComponent() {
         value={daysLeft}
         onChange={handleDaysFilterChange}
         style={{ marginLeft: "10px" }}
-      />
+      /> */}
       <TextField
         id="responseTimeLimit"
         label="Response Time Limit"
@@ -267,7 +271,7 @@ export default function MyComponent() {
                 </span>
               </TableCell>
               <TableCell align="right"><b>Remark</b></TableCell>
-              <TableCell align="right"><b>Last Working Day</b></TableCell>
+              <TableCell align='right'><b>Last Working Date</b></TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -287,7 +291,8 @@ export default function MyComponent() {
                 <TableCell align="right">{row.clientname}</TableCell>
                 <TableCell align="right">{row.responseTime}</TableCell>
                 <TableCell align="right">{row.remark}</TableCell>
-                <TableCell align="right">{row.lastWorkingDay}</TableCell>
+                <TableCell align='right'>{row.lastWorkingDate}</TableCell>
+                {/* <TableCell align="right">{row.lastWorkingDay}</TableCell> */}
               </TableRow>
             ))}
           </TableBody>
@@ -296,7 +301,4 @@ export default function MyComponent() {
     </div>
   );
 }
-
-
-
 

@@ -86,7 +86,7 @@ public class SubmissionServiceTest {
 
         when(submissionRepository.save(updatedSubmission)).thenReturn(updatedSubmission);
 
-        SubmissionToClient result = submissionService.updateSubmissionStatus(1, updatedSubmission);
+        SubmissionToClient result = submissionService.updateSubmissionStatus(1, updatedSubmission,updatedSubmission.getStatus());
 
         assertEquals(updatedSubmission, result);
     }

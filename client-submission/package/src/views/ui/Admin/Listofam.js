@@ -95,7 +95,7 @@ export default function Listofam() {
 
   return (
     <>
-      <h1 id='hd1'>List of Account Manager</h1>
+      <h1 id='hd1'>Account Manager Members</h1>
       <div className='uppercontainer'>
         <FormControl variant="outlined">
           <Select

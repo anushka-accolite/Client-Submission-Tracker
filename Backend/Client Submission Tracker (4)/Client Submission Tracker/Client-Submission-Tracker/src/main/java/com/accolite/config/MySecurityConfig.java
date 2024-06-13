@@ -35,6 +35,7 @@ public class MySecurityConfig {
 //                    .password(passwordEncoder().encode(userEntity.getLoginUserPassword()))
 //// Ensure password encoding// Assuming you have a method to get roles
                     .password(userEntity.getLoginUserPassword())
+//                    .password((passwordEncoder().encode(userEntity.getLoginUserPassword())))
                     .build();
             users.add(user);
         }

@@ -45,8 +45,13 @@ export default function AuditLog() {
                 const submissionsWithRevisions = await Promise.all(submissionData.map(async submission => {
                     let historyResponse = await axios.get(`http://localhost:8092/api/submissions/${submission.submissionId}/history`, { headers });
                     console.log('Submission History API Response:', historyResponse.data);
+                    
+                    // Fetch client name
+                    let submission_id = historyResponse.data[0][0];
+                    let subObj = await axios.get(`http://localhost:8092/api/submissions/${submission_id}`, { headers });
+                    let clientname = subObj.data.client.clientName;
 
-        // Map history data to expected format
+                    // Map history data to expected format
                     let historyData = historyResponse.data.map(history => ({
                         s_id: history[0],
                         c_id: history[7],
@@ -54,7 +59,8 @@ export default function AuditLog() {
                         status: history[4],
                         remark: history[3],
                         revtype: history[2],
-                        rev: new Date(history[6]).toLocaleString()
+                        rev: new Date(history[6]).toLocaleString(),
+                        clientName: clientname // Add clientName here
                     }));
 
                     return historyData.map(history => ({
@@ -65,6 +71,7 @@ export default function AuditLog() {
                         remark: submission.remark,
                         revtype: submission.revisionType || 0,
                         rev: new Date(submission.submissionDate).toLocaleString(),
+                        clientName: clientname, // Add clientName here
                         ...history
                     }));
                 }));
@@ -106,6 +113,7 @@ export default function AuditLog() {
                     <MenuItem value="s_id">SubmissionID</MenuItem>
                     <MenuItem value="c_id">CandidateID</MenuItem>
                     <MenuItem value="name">Name</MenuItem>
+                    <MenuItem value="clientName">Client Name</MenuItem>
                     <MenuItem value="status">Status</MenuItem>
                     <MenuItem value="remark">Remark</MenuItem>
                     <MenuItem value="revtype">No. of Revisions</MenuItem>
@@ -134,10 +142,12 @@ export default function AuditLog() {
                                 <TableCell><b>SubmissionID</b></TableCell>
                                 <TableCell><b>CandidateID</b></TableCell>
                                 <TableCell><b>Name</b></TableCell>
+                                <TableCell><b>Client Name</b></TableCell>
                                 <TableCell><b>Status</b></TableCell>
                                 <TableCell><b>Remark</b></TableCell>
                                 <TableCell><b>No. of Revisions</b></TableCell>
                                 <TableCell><b>Revision</b></TableCell>
+                               
                             </TableRow>
                         </TableHead>
                         <TableBody>
@@ -154,10 +164,12 @@ export default function AuditLog() {
                                         <TableCell>{row.s_id}</TableCell>
                                         <TableCell>{row.c_id}</TableCell>
                                         <TableCell>{row.name}</TableCell>
+                                        <TableCell>{row.clientName}</TableCell>
                                         <TableCell>{row.status}</TableCell>
                                         <TableCell>{row.remark}</TableCell>
                                         <TableCell>{row.revtype}</TableCell>
                                         <TableCell>{row.rev}</TableCell>
+                                         
                                     </TableRow>
                                 ))}
                         </TableBody>
@@ -167,10 +179,3 @@ export default function AuditLog() {
         </div>
     );
 }
-
-
-
-
-
-
-

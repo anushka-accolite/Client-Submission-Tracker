@@ -63,14 +63,25 @@ public class Client {
 	@JsonIgnore
 	private List<Candidate> candidates;
 	
-	@OneToMany(mappedBy="client",fetch=FetchType.EAGER)
 //	@JsonManagedReference
-	private List<Users> users;
+
 	
 	@OneToMany(mappedBy="client",fetch=FetchType.EAGER)
 	@JsonIgnore
 	private List<SubmissionToClient> submissions;
 
+	@ManyToMany(fetch = FetchType.EAGER)
+	@JoinTable(
+			name="client_user",
+			joinColumns = {
+					@JoinColumn(name="client_id")
+			},
+			inverseJoinColumns = {
+					@JoinColumn(name="user_id")
+			}
+	)
+//  @JsonIgnore
+	private List<Users> users;
 
 	public String getSkills() {
 		return skills;

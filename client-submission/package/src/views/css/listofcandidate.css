@@ -93,4 +93,13 @@
   background-color:darkmagenta;
   color:white
 }
+#updateBtn{
+  background-color:purple;
+  color:white;
+  float: right;
+  margin-right:50px;
+}
+#updateBtn:hover{
+  background-color: violet;
+}
  
