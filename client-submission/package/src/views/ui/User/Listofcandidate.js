@@ -21,13 +21,13 @@ const skillsOptions = ['Angular', 'React', 'Java', 'Python', 'Spring', 'JavaScri
 const columns = [
   { id: 'id', label: 'Candidate Id' },
   { id: 'name', label: 'Candidate Name' },
-  { id: 'email', label: 'Email' },
-  { id: 'experience', label: 'Exp (years)' },
+  { id: 'email', label: 'Email ID' },
+  { id: 'experience', label: 'Experience (years)' },
   { id: 'skill', label: 'Skill' },
   { id: 'status', label: 'Status' },
   { id: 'remark', label: 'Remark' },
-  { id: 'IsEmployee', label: 'IsEmployee' },
-  { id: 'daysToLWD', label: 'Days to LWD' },
+  { id: 'IsEmployee', label: 'Is Employee of Accolite' },
+  { id: 'daysToLWD', label: 'Last working Days' },
   { id: 'delete', label: 'Delete' },
   { id: 'add', label: 'Add' },
 ];
@@ -365,12 +365,12 @@ export default function Listofcandidate() {
       try {
         var existingSubmissionResponse = await axios.get(`http://localhost:8092/api/submissions/candidate/${candidateToAdd.candidateId}`, { headers });
 
-      // Submission found, parse the response data
+        // Submission found, parse the response data
         var existingSubmission = existingSubmissionResponse.data;
         console.log(existingSubmission);
       } catch (error) {
         if (error.response && error.response.status === 404) {
-        // No submission found for the candidate
+          // No submission found for the candidate
           var existingSubmission = false;
           console.log(existingSubmission);
         } else {
@@ -576,7 +576,7 @@ export default function Listofcandidate() {
           size="small"
         >
           {columns.map((column) => (
-          // Filter out specific fields
+            // Filter out specific fields
             (column.label !== 'Days to LWD' && column.label !== 'Delete' && column.label !== 'Add') && (
               <MenuItem key={column.id} value={column.id}>
                 {column.label}
@@ -719,12 +719,12 @@ export default function Listofcandidate() {
                   key={column.id}
                   label={column.label}
                   name={column.id}
-                  value={newCandidate[column.id] || []} // Make sure value is an array for multiple selection
-                  onChange={handleInputChange} // Pass the event handler for change events
+                  value={newCandidate[column.id] || []}
+                  onChange={handleInputChange}
                   fullWidth
                   margin="normal"
                   select
-                  SelectProps={{ multiple: true }} // Enable multiple selection
+                  SelectProps={{ multiple: true }}
                 >
                   {skillsOptions.map((skill) => (
                     <MenuItem key={skill} value={skill}>
