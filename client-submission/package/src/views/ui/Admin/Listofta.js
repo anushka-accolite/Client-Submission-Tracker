@@ -135,7 +135,7 @@ export default function Listofta() {
 
   return (
     <>
-      <h2 id="hd1">List of Talent Acquisition</h2>
+      <h2 id="hd1">Talent Acquisition Members</h2>
       <div className='uppercon'>
         <FormControl variant="outlined">
           <Select

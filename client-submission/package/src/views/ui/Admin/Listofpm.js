@@ -113,7 +113,7 @@ export default function Listofpm() {
 
   return (
     <>
-      <h2 id="hd1">List of Project Manager</h2>
+      <h2 id="hd1">Project Manager Members</h2>
       <div className='uppercon'>
         <div className="filter-container">
           <FormControl variant="outlined">

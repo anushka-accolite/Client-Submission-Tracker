@@ -320,8 +320,11 @@ export default function Clients() {
 
   const handleAddCandidateClick = (clientId) => {
     // Navigate to the "Add Candidate" page for the specific client
+    localStorage.setItem("clientId",clientId);
+   const clientObj=clients.filter(client=>client.clientId==clientId);
+    localStorage.setItem("clientName",clientObj[0].clientName);
     navigate(`/listofcandidates`);
-  };
+  };  
 
   return (
     <>
