@@ -4,24 +4,26 @@ import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate } from 'react-router-dom';
-// import 'react-toastify/dist/ReactToastify.css';
+import TablePagination from '@mui/material/TablePagination';
 
 const Starter = () => {
   const [data, setData] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [sortOrder, setSortOrder] = useState('asc');
   const [filterColumn, setFilterColumn] = useState('cname');
-  const [token, setToken] = useState(localStorage.getItem('token')); // Get token from local storage
-  const navigate=useNavigate();
+  const [token, setToken] = useState(localStorage.getItem('token'));
+  const [page, setPage] = useState(0); // Current page number
+  const [rowsPerPage, setRowsPerPage] = useState(5); // Number of rows per page
+  const navigate = useNavigate();
 
   useEffect(() => {
-    if(localStorage.role!=='admin'){
+    if(localStorage.role !== 'admin'){
       navigate('/loginform');
     }
     if (!token) {
-      fetchToken(); // Fetch JWT token when component mounts if not available in local storage
+      fetchToken();
     } else {
-      fetchData(); // Fetch data when token is available
+      fetchData();
     }
   }, [token]);
 
@@ -29,23 +31,21 @@ const Starter = () => {
     setToken(localStorage.getItem("token"));
   };
 
-
   const fetchData = async () => {
     try {
-      const adminClientsResponse = await axios.get('http://localhost:8092/api/admin/clients', { //fetching all the clients details
+      const adminClientsResponse = await axios.get('http://localhost:8092/api/admin/clients', {
         headers: {
           Authorization: `Bearer ${token}`
         }
       });
-      console.log(adminClientsResponse.data);
       
       if (Array.isArray(adminClientsResponse.data)) {
         const mappedData = adminClientsResponse.data
           .filter(client => !client.isDeleted)
-          .map(client => {   // searching ta,pm,am associated with client
-            const taUser = client.users  ? client.users.find(user => user.userRole === 'TalentAcquistion') : null;
-            const pmUser = client.users  ? client.users.find(user => user.userRole === 'ProjectManager') : null;
-            const amUser = client.users  ? client.users.find(user => user.userRole === 'AccountManager') : null;
+          .map(client => {
+            const taUser = client.users ? client.users.find(user => user.userRole === 'TalentAcquistion') : null;
+            const pmUser = client.users ? client.users.find(user => user.userRole === 'ProjectManager') : null;
+            const amUser = client.users ? client.users.find(user => user.userRole === 'AccountManager') : null;
             return {
               clientId: client.clientId,
               cname: client.clientName,
@@ -56,7 +56,6 @@ const Starter = () => {
             };
           });
         setData(mappedData);
-        console.log(mappedData);
       } else {
         console.error('Error: Response data structure is not as expected');
       }
@@ -65,9 +64,7 @@ const Starter = () => {
     }
   };
   
-  
   const removeData = async (clientIdToRemove) => {
-   
     try {
       if (!clientIdToRemove) {
         console.error('Error: clientIdToRemove is undefined');
@@ -79,43 +76,39 @@ const Starter = () => {
         console.error('Error: No token available');
         return;
       }
-      let headers={"Authorization":`Bearer ${token}`}
-      let clientData=await axios.get(`http://localhost:8092/api/admin/${clientIdToRemove}`,{headers});  // removing the client by getting client by id and using put method to update isDeleted 
-      clientData=clientData.data;
-      clientData.isDeleted=true;
+
+      let headers = {"Authorization": `Bearer ${token}`};
+      let clientData = await axios.get(`http://localhost:8092/api/admin/${clientIdToRemove}`, { headers });
+      clientData = clientData.data;
+      clientData.isDeleted = true;
+
       const adminClientsResponse = await axios.put(
         `http://localhost:8092/api/admin/${clientIdToRemove}`, 
         { 
-          clientId:clientData.clientId,
-          clientName:clientData.clientName,
-          clientRequirement:clientData.clientRequirement,
-          clientResponseTimeinDays:clientData.clientResponseTimeinDays,
-          skills:clientData.skills,
-          isDeleted:clientData.isDeleted
+          clientId: clientData.clientId,
+          clientName: clientData.clientName,
+          clientRequirement: clientData.clientRequirement,
+          clientResponseTimeinDays: clientData.clientResponseTimeinDays,
+          skills: clientData.skills,
+          isDeleted: clientData.isDeleted
         },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        }
+        { headers }
       );
-      console.log(clientData);
 
-      if (adminClientsResponse.status === 200) {  // if status is success then removing from frontend using filter
+      if (adminClientsResponse.status === 200) {
         const newData = data.filter(item => item.clientId !== clientIdToRemove);
         setData(newData);
         toast.success('Data deleted successfully!');
       } else {
         console.error('Error updating data:', adminClientsResponse.statusText);
       }
-    } 
-    catch (error) {
+    } catch (error) {
       console.error('Error updating data:', error);
       toast.error('Error updating data.');
     }
   };
 
-  const handleSort = (key) => {  //sorting according to response time asc,desc
+  const handleSort = (key) => {
     const newData = [...data];
     newData.sort((a, b) => {
       if (key === 'restime') {
@@ -127,6 +120,16 @@ const Starter = () => {
     setData(newData);
     setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
   };
+
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0); // Reset page to 0 when rows per page changes
+  };
+
   return (
     <>
       <div className="search-container">
@@ -170,6 +173,7 @@ const Starter = () => {
               const columnValue = item[filterColumn];
               return typeof columnValue === 'string' && columnValue.toLowerCase().includes(searchTerm.toLowerCase());
             })
+            .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
             .map((item, index) => (
               <tr className='trow' key={index}>
                 <td className="td">{item.cname}</td>
@@ -184,6 +188,16 @@ const Starter = () => {
             ))}
         </tbody>
       </table>
+
+      <TablePagination
+        rowsPerPageOptions={[2, 5, 10, 25]}
+        component="div"
+        count={data.length}
+        rowsPerPage={rowsPerPage}
+        page={page}
+        onPageChange={handleChangePage}
+        onRowsPerPageChange={handleChangeRowsPerPage}
+      />
       <ToastContainer />
     </>
   );

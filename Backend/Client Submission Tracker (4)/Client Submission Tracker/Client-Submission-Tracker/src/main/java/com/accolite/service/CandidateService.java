@@ -33,7 +33,7 @@ public class CandidateService {
 	//excel file upload
 	public void save(MultipartFile file){
 		try {
-			List<Candidate> products= Helper.convertExcelToListOfProduct(file.getInputStream(),candidateSkillRepository);
+			List<Candidate> products= Helper.convertExcelToListOfProduct(file.getInputStream(),candidateSkillRepository,candidateRepository);
 			this.candidateRepository.saveAll(products);
 		}
 		catch (IOException e){

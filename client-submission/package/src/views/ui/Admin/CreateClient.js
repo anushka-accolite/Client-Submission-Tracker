@@ -46,51 +46,23 @@ const CreateClient = () => {
             let clients = response.data;
             console.log(clients);
 
-
-            // const filteredClients = clients.filter(client =>
-            //   client.users.some(user => user.userId === item.userId)
-            // );
-
-            // console.log(filteredClients);
-        
-            // // Filter users based on the condition whether filteredClients is empty
-            // if (filteredClients.length === 0) {
-            //   taWithNoClients.push(item);
-            // }
           } catch (error) {
             console.error('Error fetching clients:', error);
           }
         });
         // console.log(taWithNoClients);
         setTalentAcquisitionOptions(ta);
-        //console.log(ta);
-        // let pmWithNoClients=[];
         const pm=users.filter(user => user.userRole === 'ProjectManager');
         pm.forEach(async (item) => {
           try {
             let response = await axios.get('http://localhost:8092/api/admin/clients', { headers });
             let clients = response.data;
             console.log(clients);
-
-            // const filteredClients = clients.filter(client =>
-            //   client.users.some(user => user.userId === item.userId)
-            // );
-
-            // console.log(filteredClients);
-
-            // // Filter users based on the condition whether filteredClients is empty
-            // if (filteredClients.length === 0) {
-            //   pmWithNoClients.push(item);
-            // }
           } catch (error) {
             console.error('Error fetching clients:', error);
           }
         });
-        // console.log(pmWithNoClients);
-
         setProjectManagerOptions(pm);
-        //console.log(pm);
-        // let amWithNoClients=[];
         const am = users.filter(user => user.userRole === 'AccountManager');
         //console.log(am);
         am.forEach(async (item) => {
@@ -98,18 +70,6 @@ const CreateClient = () => {
             let response = await axios.get('http://localhost:8092/api/admin/clients', { headers });
             let clients = response.data;
             console.log(clients);
-
-            // const filteredClients = clients.filter(client =>
-            //   client.users.some(user => user.userId === item.userId)
-            // );
-
-            // console.log(filteredClients);
-
-        
-            // // Filter users based on the condition whether filteredClients is empty
-            // if (filteredClients.length === 0) {
-            //   amWithNoClients.push(item);
-            // }
           } catch (error) {
             console.error('Error fetching clients:', error);
           }
@@ -123,8 +83,6 @@ const CreateClient = () => {
 
     fetchUsers();
   }, []);
-
-  
 
 
   const handleChange = (e) => {
@@ -195,7 +153,7 @@ const CreateClient = () => {
           name="clientId"
           value={formData.clientId}
           onChange={handleChange}
-          required
+          // required
           className="text-field"
         />
         <TextField

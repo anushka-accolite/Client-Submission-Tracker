@@ -3,6 +3,7 @@ package com.accolite.helper;
 
 import com.accolite.entities.Candidate;
 import com.accolite.entities.CandidateSkill;
+import com.accolite.repository.CandidateRepository;
 import com.accolite.repository.CandidateSkillRepository;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;
@@ -31,7 +32,7 @@ public class Helper {
 
 
     //converts excel to list of products
-    public  static List<Candidate> convertExcelToListOfProduct(InputStream is, CandidateSkillRepository candidateSkillRepository) {
+    public  static List<Candidate> convertExcelToListOfProduct(InputStream is, CandidateSkillRepository candidateSkillRepository, CandidateRepository candidateRepository) {
         List<Candidate> list = new ArrayList<>();
         List<CandidateSkill> list1 = new ArrayList<>();
         try {
@@ -72,22 +73,43 @@ public class Helper {
                             System.out.println(skills1);
                             String[] skills=skills1.split(",");
                             System.out.println(Arrays.toString(skills));
+                            System.out.println(skills.length);
                             for(int i=0;i<skills.length;i++) {
-
                                 if (candidateSkillRepository.existsBySkill(skills[i])) {
-
+                                    System.out.println(skills[i]);
                                     CandidateSkill candidateSkill1 = candidateSkillRepository.findBySkills(skills[i]);
-                                    List<CandidateSkill> candidateSkills = new ArrayList<>();
-                                    candidateSkills.add(candidateSkill1);
-                                    candidate.setSkills(candidateSkills);
+                                    System.out.println(candidateSkill1.getSkill());
+                                    if(candidate.getSkills()==null) {
+                                        List<CandidateSkill> candidateSkills = new ArrayList<>();
+                                        candidateSkills.add(candidateSkill1);
+                                        candidate.setSkills(candidateSkills);
+                                        candidateRepository.save(candidate);
+                                    }
+                                    else {
+                                        candidate.getSkills().add(candidateSkill1);
+                                        candidate.setSkills(candidate.getSkills());
+                                        System.out.println(candidate.getSkills());
+                                        candidateRepository.save(candidate);
+                                    }
                                 } else {
+                                    System.out.println("In Else block");
+                                    System.out.println(skills[i]);
                                     CandidateSkill candidateSkill1 = new CandidateSkill();
                                     candidateSkill1.setSkill(skills[i]);
-                                    candidateSkillRepository.save(candidateSkill);
+                                    System.out.println(candidateSkill1.getSkill());
+                                    candidateSkill1.setIsDeleted(false);
+                                    candidateSkillRepository.save(candidateSkill1);
                                     if (candidate.getSkills() == null) {
                                         List<CandidateSkill> candidateSkills = new ArrayList<>();
                                         candidateSkills.add(candidateSkill1);
                                         candidate.setSkills(candidateSkills);
+                                        candidateRepository.save(candidate);
+                                    }
+                                    else {
+                                        candidate.getSkills().add(candidateSkill1);
+                                        candidate.setSkills(candidate.getSkills());
+                                        System.out.println(candidate.getSkills());
+                                        candidateRepository.save(candidate);
                                     }
                                 }
                             }
@@ -95,10 +117,11 @@ public class Helper {
 
 
                         case 6:
-                            candidate.setIsAccoliteEmployee(cell.getStringCellValue());
+                                candidate.setIsAccoliteEmployee(cell.getStringCellValue());
                             break;
                         case 7:
                             if (cell.getCellType() == CellType.BOOLEAN) {
+                                System.out.println(cell.getCellType()+" "+cell.getBooleanCellValue());
                                 candidate.setIsDeleted(cell.getBooleanCellValue());
                             }
                             break;

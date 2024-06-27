@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from 'react';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -14,32 +15,50 @@ import '../../css/listofpm.css';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
+function fetchClientsWithUsername(clients, userName) {
+  console.log(clients, userName);
+  let clientList = [];
+  for (const client of clients) {
+    const users = client.users; // Assuming users field is an array of user objects
+    const matchingUser = users.find(user => user.userName === userName);
+    if (matchingUser) clientList.push(client.clientName); // Fetch client names
+  }
+  console.log(clientList);
+  return clientList;
+}
+
 export default function Listofta() {
   const [rows, setRows] = useState([]);
   const [selectedColumn, setSelectedColumn] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
   const [sortOrder, setSortOrder] = useState('asc');
-  const navigate=useNavigate();  
+  const navigate = useNavigate();
+
   useEffect(() => {
-    if(localStorage.role!=='admin'){
+    if (localStorage.role !== 'admin') {
       navigate('/loginform');
     }
+
     const fetchData = async () => {
       try {
-        const token = localStorage.getItem("token");
-        const headers = { "Authorization": "Bearer " + token };
-        const response = await axios.get('http://localhost:8092/api/user/users', { headers });
-        let details = response.data;
-        console.log('Fetched Details:', details);
+        const token = localStorage.getItem('token');
+        const headers = { Authorization: 'Bearer ' + token };
+        const userResponse = await axios.get('http://localhost:8092/api/user/users', { headers });
+        let userDetails = userResponse.data;
+        console.log('Fetched Details:', userDetails);
         const toBeSearched = 'TalentAcquistion'.replace(/\s+/g, '').toLowerCase();
-        details = details.filter(item => {
-          return item.userRole.replace(/\s+/g, '').toLowerCase() === toBeSearched;
-        });
-        console.log('Filtered Details:', details);
-        const mappedDetails = details.map(item => ({
+        userDetails = userDetails.filter(item => item.userRole.replace(/\s+/g, '').toLowerCase() === toBeSearched);
+        
+        const clientsResponse = await axios.get('http://localhost:8092/api/admin/clients', { headers });
+        const clients = clientsResponse.data;
+        console.log('Clients:', clients);
+        console.log('Filtered Details:', userDetails);
+        
+        const mappedDetails = userDetails.map(item => ({
           Id: item.userId,
           Name: item.userName,
-          Email: item.email
+          Email: item.email,
+          Clients: fetchClientsWithUsername(clients, item.userName)
         }));
 
         setRows(mappedDetails);
@@ -49,36 +68,7 @@ export default function Listofta() {
     };
 
     fetchData();
-  }, []);
-
-  var details="";
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const token = localStorage.getItem("token");
-        const headers = { "Authorization": "Bearer " + token };
-        const response = await axios.get('http://localhost:8092/api/user/users', { headers });
-        details = response.data;
-        console.log('Fetched Details:', details);
-        const toBeSearched = 'TalentAcquistion'.replace(/\s+/g, '').toLowerCase();
-        details = details.filter(item => {
-          return item.userRole.replace(/\s+/g, '').toLowerCase() === toBeSearched;
-        });
-        console.log('Filtered Details:', details);
-        const mappedDetails = details.map(item => ({
-          Id: item.userId,
-          Name: item.userName,
-          Email: item.email
-        }));
-
-        setRows(mappedDetails);
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
-    };
-
-    fetchData();
-  }, [details]);
+  }, [navigate]);
 
   const handleColumnChange = (event) => {
     setSelectedColumn(event.target.value);
@@ -90,7 +80,7 @@ export default function Listofta() {
 
   const handleClearSearch = () => {
     setSearchTerm('');
-  }; 
+  };
 
   const filteredRows = rows.filter((row) => {
     if (selectedColumn) {
@@ -111,12 +101,12 @@ export default function Listofta() {
   });
 
   const renderHeaderCells = () => {
-    const columns = ['Id', 'Username', 'Email'];
+    const columns = ['Id', 'Username', 'Email', 'Clients'];
     return (
       <TableRow>
         {columns.map((column) => (
-          <TableCell key={column}>  
-              <b>{column}</b>
+          <TableCell key={column}>
+            <b>{column}</b>
           </TableCell>
         ))}
       </TableRow>
@@ -129,6 +119,7 @@ export default function Listofta() {
         <TableCell>{row.Id}</TableCell>
         <TableCell>{row.Name}</TableCell>
         <TableCell>{row.Email}</TableCell>
+        <TableCell>{row.Clients.join(', ')}</TableCell> {/* Joining the array for display */}
       </TableRow>
     ));
   };
@@ -142,12 +133,13 @@ export default function Listofta() {
             className="dropdown"
             value={selectedColumn}
             onChange={handleColumnChange}
-            style={{paddingLeft:"60px"}}
+            style={{ paddingLeft: "60px" }}
             displayEmpty
           >
             <MenuItem value="Id">Id</MenuItem>
             <MenuItem value="Name">Username</MenuItem>
             <MenuItem value="Email">Email</MenuItem>
+            <MenuItem value="Clients">Clients</MenuItem>
           </Select>
         </FormControl>
         <TextField
@@ -155,11 +147,11 @@ export default function Listofta() {
           variant="outlined"
           value={searchTerm}
           onChange={handleSearchTermChange}
-          style={{marginLeft:"20px"}}
+          style={{ marginLeft: "20px" }}
         />
         {searchTerm && (
-            <button onClick={handleClearSearch} className="clear-search-btn">Clear</button>
-          )}
+          <button onClick={handleClearSearch} className="clear-search-btn">Clear</button>
+        )}
       </div>
       <TableContainer component={Paper} className='table'>
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
