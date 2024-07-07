@@ -21,7 +21,6 @@ const userNavigation = [
   { title: "Submitted Profiles", href: "/profile", icon: "bi bi-list" },
   { title: "Bench Offer", href: "/benchoffer", icon: "bi bi-list" },
   { title: "Audit Log", href: "/audit", icon: "bi bi-activity" },
-  {title : "Bench Offer",href:"/benchoffer",icon : "bi bi-list"},
 
 ];
 
