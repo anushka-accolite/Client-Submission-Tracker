@@ -22,9 +22,8 @@ const SubmittedProfile=lazy(()=> import("../views/ui/User/SubmittedProfile.js"))
 const EditProfile=lazy(()=> import("../views/ui/Admin/EditProfile.js"));
 const LoginForm=lazy(()=> import("../views/ui/LoginPage/LoginForm.js"));
 const MyAccount=lazy(()=> import("../views/ui/Admin/MyAccount.js"));
-const ListofClients=lazy(()=>import("../views/ui/User/ListofClients.js"));
-const BenchOffer=lazy(()=>import("../views/ui/User/BenchOffer.js") );
-
+const ListofClients=lazy(()=>import("../views/ui/User/ListofClients.js"))
+const BenchOffer=lazy(()=>import("../views/ui/User/BenchOffer.js"));
 
 // Routes
 const ThemeRoutes = [
