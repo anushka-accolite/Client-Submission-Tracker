@@ -20,7 +20,8 @@ const App = () => {
         role = "admin";
       }
       localStorage.setItem("role", role);
-    } else {
+    } 
+    else {
       navigate("/loginform");
     }
   }, [navigate]);

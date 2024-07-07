@@ -31,6 +31,7 @@ public class SubmissionService {
 	public SubmissionToClient updateSubmissionStatus(Integer submissionId, SubmissionToClient submission, Status status) {
 		submission.setSubmissionId(submissionId);
 		submission.setStatus(status);
+		submission.setRemark(submission.getRemark());
 		return submissionRepository.save(submission);
 	}
 

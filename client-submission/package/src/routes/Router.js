@@ -1,9 +1,14 @@
-import { element } from "prop-types";
 import { lazy } from "react";
 import { Navigate } from "react-router-dom";
-;
+import OtpPage from "../views/ui/LoginPage/OtpPage.js";
+import Resetpwd from "../views/ui/LoginPage/Resetpwd.js";
+import EmailVerificationPage from "../views/ui/LoginPage/EmailVerificationPage.js";
+import { element, exact } from "prop-types";
+
 // Layout
 const FullLayout = lazy(() => import("../layouts/FullLayout.js"));
+
+
 // Pages
 const Starter = lazy(() => import("../views/ui/Admin/Home.js"));
 const CreateClient = lazy(() => import("../views/ui/Admin/CreateClient.js"));
@@ -17,12 +22,28 @@ const SubmittedProfile=lazy(()=> import("../views/ui/User/SubmittedProfile.js"))
 const EditProfile=lazy(()=> import("../views/ui/Admin/EditProfile.js"));
 const LoginForm=lazy(()=> import("../views/ui/LoginPage/LoginForm.js"));
 const MyAccount=lazy(()=> import("../views/ui/Admin/MyAccount.js"));
-const ListofClients=lazy(()=>import("../views/ui/User/ListofClients.js"))
+const ListofClients=lazy(()=>import("../views/ui/User/ListofClients.js"));
+const BenchOffer=lazy(()=>import("../views/ui/User/BenchOffer.js") );
+
+
 // Routes
 const ThemeRoutes = [
   {
     path:"/loginform",
     element:<LoginForm/>
+  },
+  {
+    path: "/forgot-password", // Define the route for forgot password
+    element: <EmailVerificationPage/>,
+  },
+ 
+  {
+    path:"/otp",
+    element:<OtpPage/>
+  },
+  {
+    path:"/reset",
+    element:<Resetpwd/>
   },
   {
     path: "/",  
@@ -32,6 +53,7 @@ const ThemeRoutes = [
       { path: "/loginform", exact: true, element: <LoginForm/> }
     ],
   },
+  
   {
     path: "/",  
     element: <FullLayout showSidebarAndHeader={true} />,
@@ -47,7 +69,9 @@ const ThemeRoutes = [
       { path: "/myprofile",exact:true,element:<EditProfile/>},
       { path: "/audit",exact:true,element:<AuditLog/>},
       { path: "/listofclientuser",exact:true,element:<ListofClients/>},
-      { path: "/myaccount",exact:true,element:<MyAccount/>}
+      { path: "/myaccount",exact:true,element:<MyAccount/>},
+      {path:"/benchoffer",exact:true,element:<BenchOffer/>}
+     
     ],
   },
   

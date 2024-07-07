@@ -8,7 +8,59 @@ import '../../css/createclient.css';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate } from 'react-router-dom';
-const skillsOptions = ['Java', 'Python', 'SpringBoot', 'ReactJS', 'Angular' ,'JavaScript', 'C#'];
+// const skillsOptions = ['Java', 'Python', 'SpringBoot', 'ReactJS', 'Angular' ,'JavaScript', 'C#'];
+const skillsOptions = [
+  'Agile Methodologies',
+  'AWS',
+  'Angular',
+  'Azure',
+  'Bitbucket',
+  'CI/CD',
+  'C#',
+  'Communication Skills',
+  'Continuous Learning',
+  'Creativity',
+  'Debugging',
+  'Design Patterns',
+  'Django',
+  'Docker',
+  'Express.js',
+  'Flask',
+  'Git',
+  'GitHub',
+  'GitLab',
+  'Google Cloud Platform',
+  'GraphQL',
+  'HTML/CSS',
+  'Integration Testing',
+  'Java',
+  'Jenkins',
+  'Kanban',
+  'Kubernetes',
+  'MongoDB',
+  'MySQL',
+  'Node.js',
+  'OWASP Top 10',
+  'PHP',
+  'PostgreSQL',
+  'Problem-Solving',
+  'Python',
+  'React.js',
+  'Redis',
+  'RESTful APIs',
+  'Ruby on Rails',
+  'Scrum',
+  'Security Best Practices',
+  'Software Architecture',
+  'Spring Boot',
+  'SQL',
+  'Technical Writing',
+  'Teamwork',
+  'Time Management',
+  'Unit Testing',
+  'Vue.js'
+];
+
 
 const CreateClient = () => {
   const [formData, setFormData] = useState({
@@ -145,7 +197,7 @@ const CreateClient = () => {
       <ToastContainer />
       <h2 className="header">Add Client Details</h2>
       <form onSubmit={handleSubmit} className="form-container">
-        <TextField
+        {/* <TextField
           label="Client Id"
           variant="outlined"
           fullWidth
@@ -155,7 +207,7 @@ const CreateClient = () => {
           onChange={handleChange}
           // required
           className="text-field"
-        />
+        /> */}
         <TextField
           label="Client Name"
           variant="outlined"

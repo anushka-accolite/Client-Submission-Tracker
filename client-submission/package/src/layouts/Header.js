@@ -13,7 +13,7 @@ import {
   Button,
 } from "reactstrap";
 import user1 from "../assets/images/users/user4.png";
-import logo from '../assets/images/logos/Bounteous X Accolite_transparent.png'; 
+import logo from '../assets/images/logos/logo.png'; 
 
 const Header = ({ toggleSidebar, sidebarOpen }) => {
   const [isOpen, setIsOpen] = React.useState(false);
@@ -31,7 +31,7 @@ const Header = ({ toggleSidebar, sidebarOpen }) => {
   return (
     <Navbar className="navbar" dark expand="md">
       <Link to={path} className="navbar-brand">
-        <img src={logo} alt="Logo" height="50px" width="200px" style={{marginRight:"10px"}} />
+        <img src={logo} alt="Logo" height="40px" width= "200px" style={{background:"white ",marginRight:"10px"}} />
       </Link>
       <Button
         color="primary"

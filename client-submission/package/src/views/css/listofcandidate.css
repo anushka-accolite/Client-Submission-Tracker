@@ -32,8 +32,8 @@
 }
 
 #uppercon {
-    max-width: 1020px; 
-    overflow:hidden;
+    max-width: 1050px; 
+    overflow-x:scroll;
     padding-top:10px;
   }
   .search{

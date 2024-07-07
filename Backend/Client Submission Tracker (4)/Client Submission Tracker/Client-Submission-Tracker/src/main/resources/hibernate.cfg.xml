@@ -8,7 +8,7 @@
         <property name="hibernate.connection.driver_class">com.mysql.cj.jdbc.Driver</property>
         <property name="hibernate.connection.url">jdbc:mysql://localhost:3306/project_tables</property>
         <property name="hibernate.connection.username">root</property>
-        <property name="hibernate.connection.password">Rishika@2002</property>
+        <property name="hibernate.connection.password">Compacta@12      </property>
         <!-- SQL dialect -->
         <property name="hibernate.dialect">org.hibernate.dialect.MySQL8Dialect</property>
         <!-- Echo all executed SQL to stdout -->

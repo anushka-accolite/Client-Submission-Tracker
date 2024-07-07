@@ -9,17 +9,11 @@ const rootElement = document.getElementById('root');
 const root = createRoot(rootElement);
 
 root.render(
-  // <Suspense fallback={<Loader />}>
-  //   <HashRouter>
-  //     <App />
-  //   </HashRouter>
-  // </Suspense>,
   <Suspense fallback={<Loader />}>
   <HashRouter>
   <App/>
   </HashRouter>
   </Suspense>
 
-  // document.getElementById("root")
 );
 

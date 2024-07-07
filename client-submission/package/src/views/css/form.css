@@ -1,0 +1,65 @@
+
+   .mainDiv {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #F5F5F5;
+}
+.cardStyle {
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    max-width: 400px;
+    width: 100%;
+    text-align: center;
+}
+.inputDiv {
+    margin-bottom: 20px;
+}
+.inputLabel {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 18px;
+    color: black;
+    text-align: left;
+}
+input[type="password"] {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    outline: none;
+}
+input[type="password"]:focus {
+    border-color: #007BFF;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+.error {
+    color: red;
+    font-size: 14px;
+    margin-top: -10px;
+    margin-bottom: 20px;
+}
+.buttonWrapper {
+    text-align: center;
+}
+.submitButton {
+    background-color: #007BFF;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+}
+.submitButton:hover {
+    background-color: #0056B3;
+}
+#loader {
+    display: inline-block;
+    margin-left: 10px;
+}

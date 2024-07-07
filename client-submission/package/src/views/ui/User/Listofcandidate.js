@@ -19,24 +19,27 @@ import { useNavigate } from 'react-router-dom';
 import TablePagination from '@mui/material/TablePagination';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import {  Dialog, DialogTitle, DialogContent, DialogActions } from '@material-ui/core';
+
+
 
 function createData(id, name, email, experience, skill, status, IsEmployee, daysToLWD, remark) {
   return { id, name, email, experience, skill, status, IsEmployee, daysToLWD, remark };
 }
 
-const statusOptions = ['Selected', 'Rejected', 'Pending', 'OnHold', 'InterviewScheduled'];
+const statusOptions = ['Selected', 'Rejected', 'Submitted','Pending', 'OnHold', 'InterviewScheduled'];
 const skillsOptions = ['Angular', 'React', 'Java', 'Python', 'Spring', 'JavaScript'];
 const columns = [
-  { id: 'checkbox', label: '' },
-  { id: 'id', label: 'Candidate Id' },
-  { id: 'name', label: 'Candidate Name' },
-  { id: 'email', label: 'Email' },
-  { id: 'experience', label: 'Exp' },
-  { id: 'skill', label: 'Skill' },
+  { id: 'checkbox', label: '' },  
+  { id:'id',label:"Candidate Id"},
+  { id: 'name', label: 'Candidate Name',required: true },
+  { id: 'email', label: 'Email',required: true },
+  { id: 'experience', label: 'Exp ',required: true },
+  { id: 'skill', label: 'Skill ',required: true },
   { id: 'status', label: 'Status' },
   { id: 'remark', label: 'Remark' },
-  { id: 'IsEmployee', label: "Is Accolite\nEmployee" },
-  { id: 'daysToLWD', label: 'Last Working Date' },
+  { id: 'IsEmployee', label: "Is Accolite\nEmployee ",required: true },
+  { id: 'daysToLWD', label: 'Last Working Date'},
   { id: 'delete', label: 'Delete' },
   { id: 'add', label: 'Add' },
 ];
@@ -48,6 +51,7 @@ const createDataInd = (status, color) => {
 const rowsInd = [
   createDataInd('Selected', 'Green'),
   createDataInd('Rejected', 'Red'),
+  createDataInd('Submitted', 'Grey'),
   createDataInd('Pending', 'Yellow'),
   createDataInd('OnHold', 'Orange'),
   createDataInd('InterviewScheduled', 'Pink')
@@ -72,6 +76,7 @@ export default function Listofcandidate() {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedColumn, setSelectedColumn] = useState('');
   const [open, setOpen] = useState(false);
+  const [openBox, setOpenBox] = useState(false);
   const [newCandidate, setNewCandidate] = useState({});
   const pieChartRef = useRef(null);
   const chartInstance = useRef(null);
@@ -88,67 +93,61 @@ export default function Listofcandidate() {
   const [updateModalOpen, setUpdateModalOpen] = useState(false);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
-   
-  useEffect(() => {
-    const role = localStorage.getItem("role");
-    if (role !== "user") {
-      navigate("/loginform");
-    }
+ 
 
     const fetchCandidates = async () => {
-      try {
-        let token = localStorage.getItem("token");
-        let headers = { "Authorization": `Bearer ${token}` };
-        const response = await axios.get('http://localhost:8092/api/candidates/getAll', { headers });
-
-        console.log('Candidates API Response:', response.data);
-
-        if (!Array.isArray(response.data)) {
-          throw new Error('API response is not an array');
-        }
-
-        const candidateData = response.data;
-        console.log("look->", candidateData)
-        const candidatesWithSkills = await Promise.all(
-          candidateData
-            .filter(data => data.isDeleted === false)
-            .map(async (item) => {
-              const skillsResponse = await axios.get(`http://localhost:8092/api/candidates/${item.candidateId}/skills`, { headers });
-
-              console.log(`Skills API Response for candidate ${item.candidateId}:`, skillsResponse.data);
-
-              const processedSkills = skillsResponse.data.map(skill => {
-                if (skill.endsWith('=')) {
-                  return skill.slice(0, -1);
-                }
-                return skill;
-              });
-              const skillsString = processedSkills.join(', ');
-
-              const daysToLWD = item.last_working_day ? item.last_working_day : 'N/A';
-              return createData(
-                item.candidateId,
-                item.candidateName,
-                item.candidateEmail,
-                item.experience,
-                skillsString,
-                item.candidateStatus,
-                item.isAccoliteEmployee,
-                daysToLWD !== 'N/A' ? new Date(daysToLWD).toLocaleDateString() : 'N/A',
-                localStorage.getItem("remark")
-              );
-            })
-        );
-        console.log(candidatesWithSkills)
-        setRows(candidatesWithSkills);
-      } catch (error) {
-        console.error('Error fetching candidates or skills:', error);
+    try {
+      let token = localStorage.getItem("token");
+      let headers = { "Authorization": `Bearer ${token}` };
+      const response = await axios.get('http://localhost:8092/api/candidates/getAll', { headers });
+      console.log('Candidates API Response:', response.data);
+      if (!Array.isArray(response.data)) {
+        throw new Error('API response is not an array');
       }
-    };
+      const candidateData = response.data;
+      console.log("look->", candidateData)
+      const candidatesWithSkills = await Promise.all(
+        candidateData
+          .filter(data => data.isDeleted === false)
+          .map(async (item) => {
+            const skillsResponse = await axios.get(`http://localhost:8092/api/candidates/${item.candidateId}/skills`, { headers });
+            console.log(`Skills API Response for candidate ${item.candidateId}:`, skillsResponse.data);
+            const processedSkills = skillsResponse.data.map(skill => {
+              if (skill.endsWith('=')) {
+                return skill.slice(0, -1);
+              }
+              return skill;
+            });
+            const skillsString = processedSkills.join(', ');
+            const daysToLWD = item.last_working_day ? item.last_working_day : 'N/A';
+            return createData(
+              item.candidateId,
+              item.candidateName,
+              item.candidateEmail,
+              item.experience,
+              skillsString,
+              item.candidateStatus,
+              item.isAccoliteEmployee,
+              daysToLWD !== 'N/A' ? new Date(daysToLWD).toLocaleDateString() : 'N/A',
+              localStorage.getItem("remark")
+            );
+          })
+      );
+      console.log(candidatesWithSkills)
+      setRows(candidatesWithSkills);
+    } catch (error) {
+      console.error('Error fetching candidates or skills:', error);
+    }
+  };
+
+  useEffect(()=>{
+    const role=localStorage.getItem("role");
+    if(role!=="user"){
+      navigate("/loginform");
+    }
     fetchCandidates();
     console.log(rows);
-  }, []);
-
+  },[])
   const handleClearSearch = () => {
     setSearchTerm('');
   };
@@ -171,6 +170,13 @@ export default function Listofcandidate() {
 
   const handleUpload = async () => {
     try {
+      const requiredFields = ['name', 'email', 'experience', 'skill', 'IsEmployee'];
+    const missingFields = requiredFields.filter(field => !newCandidate[field]);
+
+    if (missingFields.length > 0) {
+      alert(`Please fill in all required fields: ${missingFields.join(', ')}`);
+      return;
+    }
       let token = localStorage.getItem("token");
       if (!selectedFile) {
         console.error('No file selected');
@@ -240,7 +246,7 @@ export default function Listofcandidate() {
       let clientId = localStorage.getItem("clientId");
       let username = localStorage.getItem("username");
       let user = userObj.data.find((item) => item.userName === username);
-      let submission = await axios.get(`http://localhost:8092/api/submissions/${clientId}/candidates/${updatedCandidate.candidateId}/users/${user.userId}`, { headers });
+      var submission = await axios.get(`http://localhost:8092/api/submissions/${clientId}/candidates/${updatedCandidate.candidateId}/users/${user.userId}`, { headers });
       console.log(submission);
       if (!(submission == "Submission not found")) {
         let subId = submission.data.submissionId;
@@ -255,13 +261,31 @@ export default function Listofcandidate() {
           ...subData
         }, { headers });
         console.log(updatedSubmission.data);
+        fetchCandidates();
       }
-      else {
-        setNewStatus("Pending");
-      }
-      setRows(updatedRows);
+     
+      
     } catch (error) {
+      
       console.error('Error updating candidate status:', error);
+
+    // Set the candidate status to "Pending" in case of an error
+    let token = localStorage.getItem("token");
+    let headers = { "Authorization": `Bearer ${token}`, 'Content-Type': 'application/json' };
+
+    // Fetch candidate details and update status to "Pending"
+    let response = await axios.get(`http://localhost:8092/api/candidates/${id}`, { headers });
+    let updatedCandidate = response.data;
+    updatedCandidate.candidateStatus = "Pending";
+    await axios.put(`http://localhost:8092/api/candidates/${id}`, updatedCandidate, { headers });
+
+    // Update the rows state with the "Pending" status
+    const updatedRows = rows.map(row => (row.id === id ? { ...row, status: "Pending" } : row));
+    setRows(updatedRows);
+
+    alert("First add the candidate");
+    fetchCandidates();
+
     }
   };
 
@@ -273,6 +297,8 @@ export default function Listofcandidate() {
         return 'red';
       case 'Pending':
         return 'yellow';
+      case 'Submitted':
+        return 'grey';
       case 'OnHold':
         return 'orange';
       case 'InterviewScheduled':
@@ -479,6 +505,13 @@ export default function Listofcandidate() {
   };
 
   const handleFormSubmit = async (e) => {
+    const requiredFields = ['name', 'email', 'experience', 'skill', 'IsEmployee'];
+    const missingFields = requiredFields.filter(field => !newCandidate[field]);
+
+    if (missingFields.length > 0) {
+      alert(`Please fill in all required fields: ${missingFields.join(', ')}`);
+      return;
+    }
     e.preventDefault();
     console.log(newCandidate.id);
     let skill_set = newCandidate.skill;
@@ -529,68 +562,27 @@ export default function Listofcandidate() {
     setRemarkModalOpen(false);
   };
 
-  const handleRemark = () => {
-    toast.success("Remark updated successfully", { autoClose: 2000 });
-    console.log(remark);
+  const handleRemark =async () => {
+    try{
+      let headers={"Authorization":`Bearer ${localStorage.getItem("token")}`}
+      let users=await axios.get(`http://localhost:8092/api/user/users`,{headers});
+      console.log(users);
+      let user=users.data.filter((user)=>user.userName===localStorage.getItem("username"));
+      console.log(user[0]);
+      let submission= await axios.get(`http://localhost:8092/api/submissions/${localStorage.getItem("clientId")}/candidates/${localStorage.getItem("rowNo")}/users/${user[0].userId}`,{headers})
+      submission.data.remark=localStorage.getItem("remark");
+      console.log(submission);
+      // let postSubmission = await axios.put(`http://localhost:8092/api/submissions/${submission.data.submissionId}`,submission.data,{headers});
+      // console.log(postSubmission);
+      let postSubmission= await axios.put(`http://localhost:8092/api/submissions/clients/${localStorage.getItem("clientId")}/candidates/${localStorage.getItem("rowNo")}/submit/${user[0].userId}`,submission.data,{headers});
+      console.log(postSubmission);
+      toast.success("Remark updated successfully", { autoClose: 2000 });
+       console.log(remark);
+       }
+          catch(error){
+             alert("First add the candidate");
+      }
   }
-
-
-  const onHandleAddAll = async () => {
-    try {
-      let headers = { "Authorization": `Bearer ${localStorage.getItem("token")}` };
-      let clientId = localStorage.getItem("clientId");
-      let username = localStorage.getItem("username");
-  
-      // Fetch user object to get the user ID
-      const userObjResponse = await axios.get('http://localhost:8092/api/user/users', { headers });
-      const userObj = userObjResponse.data;
-      const user = userObj.find((item) => item.userName === username);
-  
-      // Fetch all candidates
-      const allCandidatesResponse = await axios.get('http://localhost:8092/api/candidates/getAll', { headers });
-      const allCandidates = allCandidatesResponse.data;
-      console.log(allCandidates);
-  
-      // Filter candidates that already belong to the client
-      const candidatesToAdd = allCandidates.filter(candidate =>
-        candidate.clients.some(client => client.clientId === clientId)
-      );
-  
-      console.log(candidatesToAdd);
-  
-      // Prepare promises to create submissions for each candidate to the client
-      const submissionPromises = candidatesToAdd.map(async (candidate) => {
-        const submissionData = {
-          clientId: clientId,
-          candidateId: candidate.candidateId,
-          userId: user.userId,
-          status: 'Pending' // Set initial status as needed
-        };
-  
-        try {
-          const response = await axios.post(
-            'http://localhost:8092/api/submissions',
-            submissionData,
-            { headers }
-          );
-          return response.data;
-        } catch (error) {
-          console.error(`Error adding submission for candidate ${candidate.candidateId}:`, error);
-          return undefined;
-        }
-      });
-  
-      // Execute all submission creation promises
-      const newSubmissions = await Promise.all(submissionPromises);
-      console.log(newSubmissions);
-  
-      toast.success("All candidates added to client", { autoClose: 2000 });
-  
-    } catch (error) {
-      console.error('Error adding candidates to client:', error);
-    }
-  }
-  
 
   const onHandleUpdate = async () => {
     try {
@@ -701,12 +693,46 @@ export default function Listofcandidate() {
   };
 
   const handleConfirmAdd = () => {
-    onHandleAddAll();
+    // onHandleAddAll();
+    onHandleUpdate();
     setUpdateModalOpen(false);
   };
+  //change
+  
+  
+    const handleCloseBox = () => {
+      setOpenBox(false);
+    };
+  
+    const handleOpenBBox = () => {
+      setOpenBox(true);
+    };
+  
+  //change
 
   return (
     <>
+    
+    <Button variant="contained" color="primary" onClick={handleOpenBBox}>
+        Status Info
+      </Button>
+      <Dialog open={openBox} onClose={handleCloseBox}>
+        <DialogTitle>Status Information</DialogTitle>
+        <DialogContent dividers>
+          <p><strong>Selected:</strong> Candidate has been selected for the position.</p>
+          <p><strong>Rejected:</strong> Candidate has been declined for the position.</p>
+          <p><strong>Submitted:</strong> Candidate profile has been submitted for consideration to the client.</p>
+          <p><strong>Pending:</strong> Candidate profile has been created but not yet submitted for client requirement.</p>
+          <p><strong>On Hold:</strong> Candidate's application is temporarily suspended or pending further review.</p>
+          <p><strong>Interview Scheduled:</strong> Candidate has been scheduled for an interview.</p>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseBox} color="primary" autoFocus>
+            Close
+          </Button>
+        </DialogActions>
+      </Dialog>
+
       <ToastContainer />
       <div id='uppercon'>
         <h2 style={{ textAlign: "center", textShadow: "1px 1px 1px  ", fontFamily: "sans-serif" }}>Client- {localStorage.getItem("clientName")}</h2>
@@ -739,8 +765,8 @@ export default function Listofcandidate() {
         {searchTerm && (
           <button onClick={handleClearSearch} className="clear-search-btn">Clear</button>
         )}
-
-        <Button onClick={handleOpenModal} variant="contained" color="primary" style={{ marginLeft: '500px' }}>
+ 
+        <Button onClick={handleOpenModal} variant="contained" color="primary" style={{float:"right" ,marginRight:"10px"}}>
           Add Candidate
         </Button>
         <div className='upload_data'>
@@ -749,8 +775,7 @@ export default function Listofcandidate() {
           {uploadSuccess && <div style={{ color: 'green' }}>File uploaded successfully!</div>}
           {uploadError && <div style={{ color: 'red' }}>Error uploading file. Please try again later.</div>}
         </div>
-        <Button id='updateBtn' style={{marginBottom:"10px"}} onClick={handleOpenAddModal}>Add All</Button>
-        <Button id='updateBtn' style={{marginBottom:"10px"}} onClick={handleOpenUpdateModal}>Update All</Button>
+        <Button id='updateBtn' style={{float:"right",marginRight:"37px",marginBottom:"10px"}} onClick={handleOpenUpdateModal}>Update All</Button>
         <TableContainer component={Paper} style={{ maxWidth: "50vw !important", marginTop: "15px" }}>
           <Table sx={{ maxWidth: "10px" }} aria-label="simple table">
             <TableHead>
@@ -786,7 +811,7 @@ export default function Listofcandidate() {
                           <TextField className='dropdown'
                             select
                             value={row.status}
-                            onChange={(e) => { handleStatusChange(row.id, e.target.value); newStatus.push({ id: row.id, status: e.target.value }) }}
+                            onChange={(e) => { handleStatusChange(row.id, e.target.value) }}
                             variant="outlined"
                             size="small"
                             style={{ color: getStatusColor(row?.status) }}
@@ -803,7 +828,7 @@ export default function Listofcandidate() {
                           />
                         </div>
                       ) : column.id === 'remark' ? (
-                        <Button id="remarkbtn" onClick={() => handleOpenRemarkModal(row)}>Add remark</Button>
+                        <Button id="remarkbtn" onClick={() => {handleOpenRemarkModal(row);localStorage.setItem("rowNo",row.id)}}>Add remark</Button>
                       ) : column.id === 'delete' ? (
                         <Button id="delbtn" onClick={() => handleDelete(row.id)}>Delete</Button>
                       ) : column.id === 'add' ? (
@@ -879,7 +904,7 @@ export default function Listofcandidate() {
           <h2>Add New Candidate</h2>
           <form onSubmit={handleFormSubmit}>
             {columns
-              .filter(column => column.id !== 'id' && column.id !== 'delete' && column.id !== 'add') // Exclude the 'id', 'delete', and 'add' columns
+              .filter(column => column.label !== "Candidate Id" && column.id !== 'delete' && column.id !== 'add' && column.id!=='remark' && column.id!=="checkbox") // Exclude the 'id', 'delete', and 'add' columns
               .map((column) => (
                 column.id === 'skill' ? (
                   <TextField className='modalip'
@@ -930,7 +955,22 @@ export default function Listofcandidate() {
                       shrink: true, // Ensure the label is displayed correctly for date inputs
                     }}
                   />
-                ) : (
+                ) :
+              column.id === 'IsEmployee' ? (
+                            <TextField className='modalip'
+                              key={column.id}
+                              label={column.label}
+                              name={column.id}
+                              value={newCandidate[column.id] || 'No'} // Set default value to 'No'
+                              onChange={handleInputChange}
+                              fullWidth
+                              margin="normal"
+                              select
+                            >
+                              <MenuItem value="Yes">Yes</MenuItem>
+                              <MenuItem value="No">No</MenuItem>
+                            </TextField>
+                          ) :  (
                   <TextField className='modalip'
                     key={column.id}
                     label={column.label}
@@ -987,9 +1027,9 @@ export default function Listofcandidate() {
 
 
 
-      <Modal
+       <Modal
         open={updateModalOpen}
-        onClose={handleCloseAddModal}
+        onClose={handleCloseUpdateModal}
         aria-labelledby="update-modal-title"
         aria-describedby="update-modal-description"
       >
@@ -997,10 +1037,10 @@ export default function Listofcandidate() {
           <h2 id="update-modal-title">Confirm Update</h2>
           <p id="update-modal-description">Are you sure you want to update the selected candidates?</p>
           <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '16px' }}>
-            <Button onClick={handleCloseAddModal} style={{ marginRight: '8px' }}>
+            <Button onClick={handleCloseUpdateModal} style={{ marginRight: '8px' }}>
               Cancel
             </Button>
-            <Button onClick={handleConfirmAdd} variant="contained" color="primary">
+            <Button onClick={handleConfirmUpdate} variant="contained" color="primary">
               Confirm
             </Button>
           </div>

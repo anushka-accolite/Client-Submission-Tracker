@@ -16,13 +16,13 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import TablePagination from '@mui/material/TablePagination';
 import '../../css/submittedprofile.css'
-function createData(sid, cid, name, experience, status, clientname, remark, responseTime,lastWorkingDate,lastWorkingDaysLeft) {
-  return { sid, cid, name, experience,status, clientname, remark, responseTime, lastWorkingDate,lastWorkingDaysLeft};
+function createData(sid, cid, name, experience, status, clientname, remark, responseTime, lastWorkingDate, lastWorkingDaysLeft) {
+  return { sid, cid, name, experience, status, clientname, remark, responseTime, lastWorkingDate, lastWorkingDaysLeft };
 }
 export default function MyComponent() {
   const [selectedColumn, setSelectedColumn] = React.useState('name');
   const [searchTerm, setSearchTerm] = React.useState('');
-  const [daysLeft, setDaysLeft] = React.useState('10'); 
+  const [daysLeft, setDaysLeft] = React.useState('10');
   const [responseTimeLimit, setResponseTimeLimit] = React.useState('3');
   const [sortOrder, setSortOrder] = React.useState('asc');
   const [rows, setRows] = React.useState([]);
@@ -38,38 +38,38 @@ export default function MyComponent() {
       try {
         let token = localStorage.getItem("token");
         let headers = { "Authorization": `Bearer ${token}` };
+        // Fetch submissions data
         let response = await axios.get('http://localhost:8092/api/submissions/getAll', { headers });
-        let val = response.data;
-        let clients_data = await axios.get('http://localhost:8092/api/admin/clients', { headers });
+        let submissions = response.data;
+        // Fetch clients data
+        let clientsData = await axios.get('http://localhost:8092/api/admin/clients', { headers });
+        // Fetch user data
         let userObj = await axios.get(`http://localhost:8092/api/user/users`, { headers });
         let username = localStorage.getItem("username");
         let user = userObj.data.find((item) => item.userName === username);
-        let clientData="";
-        clients_data.data.forEach(client => {
+        // Find client data for the logged-in user
+        let clientData = "";
+        clientsData.data.forEach(client => {
           client.users.forEach(item => {
             if (item.userId === user.userId) {
               clientData = client;
             }
           });
         });
-        console.log(clientData);
+        // If no client data found, log error and return
         if (!clientData) {
           console.error('No matching client found for the user');
           return;
         }
+        // Filter submissions to match user ID and exclude status "selected"
         let listofcandidates = [];
-        val.map(item => {
-
-          console.log(item);
+        submissions.forEach(item => {
           let user_data = item.users;
-          console.log(user_data);
-          if (user_data.userId === user.userId)
+          if (user_data.userId === user.userId && item.status !== "selected") {
             listofcandidates.push(item);
-        })
-        let timestampDifference = 'N/A';
-        let latestSubmissions = [];
-        console.log(listofcandidates);
-
+          }
+        });
+        // Fetch history for each submission asynchronously
         const submissionPromises = listofcandidates.map(async (submission) => {
           try {
             const response = await axios.get(`http://localhost:8092/api/submissions/${submission.submissionId}/history`, { headers });
@@ -78,7 +78,7 @@ export default function MyComponent() {
 
             if (history.length > 0) {
               console.log(history[history.length - 1]);
-              return history[history.length - 1]; // Return the latest history
+              return history[history.length - 1];
             } else {
               console.log(`No history found for submission ID: ${submission.submissionId}`);
               return null;
@@ -87,12 +87,12 @@ export default function MyComponent() {
             console.error(`Error fetching history for submission ID: ${submission.submissionId}`, error);
             return null;
           }
-
         });
+        // Resolve all promises
         Promise.all(submissionPromises)
           .then((latestSubmissions) => {
-            console.log(latestSubmissions); 
-            //correct code
+            console.log(latestSubmissions);
+            // Process each submission to create rows data
             const candidates = listofcandidates.map((item, index) => {
               let clientname = item.client.clientName || 'N/A';
               const latestSubmission = latestSubmissions[index];
@@ -129,7 +129,7 @@ export default function MyComponent() {
                 lastWorkingDaysLeft
               );
             });
-            
+
             setRows(candidates);
           });
 
@@ -137,6 +137,7 @@ export default function MyComponent() {
         console.error('Error fetching data:', error);
       }
     };
+
     fetchData();
   }, [navigate]);
 
@@ -148,7 +149,6 @@ export default function MyComponent() {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
-  
 
   const handleColumnChange = (event) => {
     const selectedValue = event.target.value;
@@ -165,12 +165,6 @@ export default function MyComponent() {
   const handleSearchTermChange = (event) => {
     setSearchTerm(event.target.value);
   };
-  const handleDaysFilterChange = (event) => {
-    setDaysLeft(event.target.value);
-  };
-  const handleResponseTimeChange = (event) => {
-    setResponseTimeLimit(event.target.value);
-  };
   const handleSort = (column) => {
     const sortedRows = [...rows].sort((a, b) => {
       let aValue = a[column];
@@ -186,39 +180,22 @@ export default function MyComponent() {
     setRows(sortedRows);
     setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
   };
-  
+
   const filteredRows = rows.filter(row => {
-    const searchValue = searchTerm.toLowerCase();
-    switch (selectedColumn) {
-      case 'Name':
-        return row.name.toLowerCase().includes(searchValue);
-      case 'Experience':
-        return row.experience.toString().toLowerCase().includes(searchValue);
-      case 'Status':
-        return row.status.toLowerCase().includes(searchValue);
-      case 'ClientName':
-        return row.clientname.toLowerCase().includes(searchValue);
-      case 'Remark':
-        return row.remark.toLowerCase().includes(searchValue);
-      case 'ResponseTime':
-        return row.responseTime.toString().toLowerCase().includes(searchValue);
-      default:
-        return true;
-    }
+    return (
+      row.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
+      (daysLeft === '' || parseInt(row.lastWorkingDaysLeft) <= parseInt(daysLeft))
+    );
   }).map(row => {
-    const lessThanDaysLeft = daysLeft !== '' && row.lastWorkingDate !== 'N/A' && parseInt(row.lastWorkingDaysLeft) <= parseInt(daysLeft);
-    const lessThanResponseTime = responseTimeLimit !== '' && row.responseTime !== 'N/A' && parseInt(row.responseTime) <= parseInt(responseTimeLimit);
-    return { ...row, lessThanDaysLeft, lessThanResponseTime };
+    const lessThanDaysLeft = daysLeft !== '' && row.status != "selected" && row.lastWorkingDate !== 'N/A' && parseInt(row.lastWorkingDaysLeft) <= parseInt(daysLeft);
+    return { ...row, lessThanDaysLeft };
   });
 
   const startIndex = page * rowsPerPage;
   const endIndex = startIndex + rowsPerPage;
-
   const paginatedRows = filteredRows.slice(startIndex, endIndex);
-
-
   return (
-    <div style={{marginTop:"20px"}}>
+    <div style={{ marginTop: "20px" }}>
       <FormControl sx={{ m: 1, minWidth: 120 }} style={{ marginTop: "0.2px" }}>
         <InputLabel id="column-label">Column</InputLabel>
         <Select
@@ -246,24 +223,7 @@ export default function MyComponent() {
       {searchTerm && (
         <button onClick={handleClearSearch} className="clear-search-btn">Clear</button>
       )}
-      <TextField
-        id="daysLeft"
-        label="Days Left for Last Working Day"
-        variant="outlined"
-        type="number"
-        value={daysLeft}
-        onChange={handleDaysFilterChange}
-        style={{ marginLeft: "10px" }}
-      />
-      <TextField
-        id="responseTimeLimit"
-        label="Response Time Limit"
-        variant="outlined"
-        type="number"
-        value={responseTimeLimit}
-        onChange={handleResponseTimeChange}
-        style={{ marginLeft: "10px" }}
-      />
+
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
           <TableHead>
@@ -306,20 +266,20 @@ export default function MyComponent() {
                 <TableCell align="right">{row.responseTime}</TableCell>
                 <TableCell align="right">{row.remark}</TableCell>
                 <TableCell align='right'>{row.lastWorkingDate}</TableCell>
-                <TableCell>{row.lastWorkingDaysLeft <= 0 ? 'Consider for Bench Offer' : row.lastWorkingDaysLeft}</TableCell>             
+                <TableCell>{row.lastWorkingDaysLeft <= 0 ? 'Consider for Bench Offer' : row.lastWorkingDaysLeft}</TableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
         <TablePagination
-            rowsPerPageOptions={[3, 5, 10, 25]}
-            component="div"
-            count={filteredRows.length}
-            rowsPerPage={rowsPerPage}
-            page={page}
-            onPageChange={handleChangePage}
-            onRowsPerPageChange={handleChangeRowsPerPage}
-          />
+          rowsPerPageOptions={[3, 5, 10, 25]}
+          component="div"
+          count={filteredRows.length}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          onPageChange={handleChangePage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+        />
       </TableContainer>
     </div>
   );

@@ -41,7 +41,6 @@ public class SubmissionController {
 		SubmissionToClient submission = submissionService.getSubmissionById(submissionId);
 		return new ResponseEntity<>(submission, HttpStatus.OK);
 	}
-
 	@PutMapping("/{submissionId}")
 	public ResponseEntity<SubmissionToClient> updateSubmissionStatus(@PathVariable Integer submissionId, @RequestBody SubmissionToClient submission) {
 		SubmissionToClient updatedSubmission = submissionService.updateSubmissionStatus(submissionId, submission,submission.getStatus());
@@ -81,8 +80,9 @@ public class SubmissionController {
 		}
 		return new ResponseEntity<>(submissionIds, HttpStatus.OK);
 	}
-	@PostMapping("/clients/{clientId}/candidates/{candidateId}/submit/{userId}")
-	public ResponseEntity<String> submitCandidateProfile(@PathVariable Integer clientId, @PathVariable Integer candidateId, @PathVariable Integer userId) {
+	@PutMapping("/clients/{clientId}/candidates/{candidateId}/submit/{userId}")
+	public ResponseEntity<String> submitCandidateProfile(@PathVariable Integer clientId, @PathVariable Integer candidateId, @PathVariable Integer userId,@RequestBody SubmissionToClient details) {
+
 		// Check if the user exists
 		Users user = userService.getUserById(userId);
 		if (user == null) {
@@ -110,8 +110,8 @@ public class SubmissionController {
 		submission.setUsers(user);
 		submission.setIsDeleted(false);
 		submission.setSubmissionDate(new Date());
-		submission.setRemark("");
-		submission.setStatus(Status.Selected);
+		submission.setRemark(details.getRemark());
+		submission.setStatus(details.getStatus());
 		submissionService.submitCandidateToClient(submission);
 		return ResponseEntity.ok("Candidate profile submitted successfully");
 	}
