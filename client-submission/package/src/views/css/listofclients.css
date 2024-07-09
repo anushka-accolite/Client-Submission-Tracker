@@ -1,7 +1,12 @@
 #hd{
-    color: rgb(15, 48, 92);
+    color: #0f305c;
+    text-shadow: 1px 1px 1px;
+    font-family: sans-serif;
     font-size:40px;
     margin-bottom:40px;
+    display: flex;
+    justify-content: center; 
+  
 }
 
 .clear-search-btn{
@@ -11,3 +16,23 @@
     background-color: white;
     border-color: rgb(29, 29, 241);
 }
+
+.search {
+    width: 35%; /* Adjust as needed */
+    max-width: 300px; /* Limit width to maintain readability */
+    margin-bottom: 10px;
+}
+
+.searchbar{
+    /* width:180px; */
+    width: 45%;
+    margin-left: 10px;
+  }
+
+  .clear-search-btn{
+    padding: 6px;
+    margin-left: 10px;
+    border-radius: 10%;
+    background-color: white;
+    border-color: rgb(29, 29, 241);
+  }

@@ -14,6 +14,7 @@ import {
 } from "reactstrap";
 import user1 from "../assets/images/users/user4.png";
 import logo from '../assets/images/logos/logo.png'; 
+import Sidebar from './Sidebar.js';
 
 const Header = ({ toggleSidebar, sidebarOpen }) => {
   const [isOpen, setIsOpen] = React.useState(false);
@@ -21,12 +22,15 @@ const Header = ({ toggleSidebar, sidebarOpen }) => {
   const navigate = useNavigate();
 
   const toggle = () => setDropdownOpen((prevState) => !prevState);
-  const Handletoggle = () => setIsOpen(!isOpen);
+   const Handletoggle = () => setIsOpen(!isOpen);
+
 
   let role = localStorage.getItem("userRole");
   role = role === 'admin' ? 'admin' : 'user';
 
   const path = localStorage.getItem('userRole') === 'admin' ? '/home' : '/listofclientuser';
+
+
 
   return (
     <Navbar className="navbar" dark expand="md">
@@ -53,6 +57,7 @@ const Header = ({ toggleSidebar, sidebarOpen }) => {
             </Link>
           </NavItem>
         </Nav>
+        <Nav className="ms-auto" navbar>
         <Dropdown isOpen={dropdownOpen} toggle={toggle}>
           <DropdownToggle className="icon">
             <img
@@ -72,6 +77,7 @@ const Header = ({ toggleSidebar, sidebarOpen }) => {
             <DropdownItem><button id="dropdownbtn" onClick={() => { localStorage.setItem("userRole", ""); navigate('/loginform') }}>Logout</button></DropdownItem>
           </DropdownMenu>
         </Dropdown>
+        </Nav>
       </Collapse>
     </Navbar>
   );

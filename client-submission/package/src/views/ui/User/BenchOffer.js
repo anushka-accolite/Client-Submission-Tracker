@@ -201,6 +201,7 @@ export default function MyComponent() {
         <Select
           labelId="column-label"
           id="column-select"
+          size='small'
           value={selectedColumn.charAt(0).toUpperCase() + selectedColumn.slice(1)}
           label="Select Column"
           onChange={handleColumnChange}
@@ -217,6 +218,7 @@ export default function MyComponent() {
         id="search"
         label="Search"
         variant="outlined"
+        size='small'
         value={searchTerm}
         onChange={handleSearchTermChange}
       />

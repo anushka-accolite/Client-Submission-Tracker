@@ -577,6 +577,7 @@ export default function MyComponent() {
         <Select
           labelId="column-label"
           id="column-select"
+          size='small'
           value={selectedColumn.charAt(0).toUpperCase() + selectedColumn.slice(1)}
           label="Select Column"
           onChange={handleColumnChange}
@@ -593,6 +594,7 @@ export default function MyComponent() {
         id="search"
         label="Search"
         variant="outlined"
+        size='small'
         value={searchTerm}
         onChange={handleSearchTermChange}
       />
@@ -603,6 +605,7 @@ export default function MyComponent() {
         id="daysLeft"
         label="Days Left for Last Working Day"
         variant="outlined"
+        size='small'
         type="number"
         value={daysLeft}
         onChange={handleDaysFilterChange}
@@ -612,6 +615,7 @@ export default function MyComponent() {
         id="responseTimeLimit"
         label="Response Time Limit"
         variant="outlined"
+        size='small'
         type="number"
         value={responseTimeLimit}
         onChange={handleResponseTimeChange}

@@ -19,7 +19,7 @@ import { useNavigate } from 'react-router-dom';
 import TablePagination from '@mui/material/TablePagination';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import {  Dialog, DialogTitle, DialogContent, DialogActions } from '@material-ui/core';
+import {  Dialog, DialogTitle, DialogContent, DialogActions, rgbToHex } from '@material-ui/core';
 
 
 
@@ -712,7 +712,7 @@ export default function Listofcandidate() {
 
   return (
     <>
-    
+    <div className='status-info'>
     <Button variant="contained" color="primary" onClick={handleOpenBBox}>
         Status Info
       </Button>
@@ -732,10 +732,12 @@ export default function Listofcandidate() {
           </Button>
         </DialogActions>
       </Dialog>
+      </div>
 
       <ToastContainer />
       <div id='uppercon'>
-        <h2 style={{ textAlign: "center", textShadow: "1px 1px 1px  ", fontFamily: "sans-serif" }}>Client- {localStorage.getItem("clientName")}</h2>
+        <h1 style={{ textAlign: "center", textShadow: "1px 1px 1px  ", fontFamily: "sans-serif", marginBottom: "20px", color: "#0f305c" }}>Client- {localStorage.getItem("clientName")}</h1>
+        <div className='search-box'>
         <TextField
           select className="search"
           label="Select Column"
@@ -760,23 +762,29 @@ export default function Listofcandidate() {
           variant="outlined"
           size="small"
           className='searchip'
-          style={{ marginLeft: "20px" }}
+          style={{ marginLeft: "10px" }}
         />
         {searchTerm && (
           <button onClick={handleClearSearch} className="clear-search-btn">Clear</button>
         )}
- 
+        </div>
+      <div className='add-candidate'>
         <Button onClick={handleOpenModal} variant="contained" color="primary" style={{float:"right" ,marginRight:"10px"}}>
           Add Candidate
         </Button>
+        </div>
+      
         <div className='upload_data'>
           <input type="file" accept=".xlsx, .xls" onChange={handleFileChange} />
           <button className='upload_button' onClick={handleUpload}>Upload</button>
           {uploadSuccess && <div style={{ color: 'green' }}>File uploaded successfully!</div>}
           {uploadError && <div style={{ color: 'red' }}>Error uploading file. Please try again later.</div>}
         </div>
-        <Button id='updateBtn' style={{float:"right",marginRight:"37px",marginBottom:"10px"}} onClick={handleOpenUpdateModal}>Update All</Button>
-        <TableContainer component={Paper} style={{ maxWidth: "50vw !important", marginTop: "15px" }}>
+        <div className='update-all'> 
+        <Button id='updateBtn' style={{float:"right",marginRight:"10px",marginBottom:"20px"}} onClick={handleOpenUpdateModal}>Update All</Button>
+        </div>
+        <TableContainer component={Paper} style={{  marginTop: "15px" }}>  
+          {/* maxWidth: "50vw !important" */}
           <Table sx={{ maxWidth: "10px" }} aria-label="simple table">
             <TableHead>
               <TableRow>
@@ -866,7 +874,7 @@ export default function Listofcandidate() {
               <canvas ref={pieChartRef}></canvas>
             </div>
           </div>
-          <div style={{ width: '50%' }}>
+          <div className="index" style={{ width: '50%' }}>
             <TableContainer component={Paper} style={{ marginTop: "15px" }}>
               <Table sx={{ maxWidth: '80vw' }} aria-label="simple table">
                 <TableHead>

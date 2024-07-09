@@ -129,6 +129,7 @@ export default function AuditLog() {
                 <Select
                     labelId="column-label"
                     id="column-select"
+                    size='small'
                     value={selectedColumn}
                     label="Column"
                     onChange={handleColumnChange}
@@ -147,6 +148,7 @@ export default function AuditLog() {
                 id="search"
                 label="Search"
                 variant="outlined"
+                size='small'
                 value={searchTerm}
                 onChange={handleSearchTermChange}
             />

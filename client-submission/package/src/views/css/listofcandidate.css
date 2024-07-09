@@ -32,13 +32,57 @@
 }
 
 #uppercon {
-    max-width: 1050px; 
-    overflow-x:scroll;
-    padding-top:10px;
+    max-width: fit-content; 
+    /* overflow-x:scroll;
+    padding-top:10px; */
+    overflow-x: auto;
+    padding-top: 10px;
+    margin: 0 auto;
   }
   .search{
-    width:150px;
+    /* width:150px; */
+    width: 15%; /* Adjust as needed */
+    max-width: 300px; /* Limit width to maintain readability */
+    margin-bottom: 10px;
   }
+
+  .searchip{
+    /* width:180px; */
+    width: 20%;
+    margin-left: 10px;
+  }
+
+  .upload_data{
+    /* margin-top: 20px; */
+    display: flex;
+    align-items: center;
+    margin-top: 20px;
+  }
+
+  .upload_button{
+    background-color: rgb(47, 93, 243);
+    color: white;
+    padding: 10px;
+    border-radius: 10%;
+    border: none;
+    margin-right: 10px;
+  }
+
+  .clear-search-btn{
+    padding: 6px;
+    margin-left: 10px;
+    border-radius: 10%;
+    background-color: white;
+    border-color: rgb(29, 29, 241);
+  }
+
+  .update-all {
+    /* align-items: flex-end; */
+    text-align: right; /* Align buttons to the right */
+    margin-top: 10px;
+    margin-bottom: 20px; /* Adjust spacing */
+  }
+
   .tablerow:hover{
     background-color: lightgray;
   }
@@ -48,31 +92,14 @@
  }
 
 .dropdown{
-  width:120px;
-}
-.searchip{
-  width:180px;
-}
-.upload_data{
-  margin-top: 20px;
-
+  /* width:120px; */
+  width: 100%; 
+  max-width: 200px; 
+  margin-right: 10px;
 }
 
-.upload_button{
-  background-color: rgb(47, 93, 243);
-  color: white;
-  padding: 10px;
-  border-radius: 10%;
-  border: none;
-}
 
-.clear-search-btn{
-  padding: 6px;
-  margin-left: 10px;
-  border-radius: 10%;
-  background-color: white;
-  border-color: rgb(29, 29, 241);
-}
+
 .top-table{
 
     margin-bottom: 60px;
@@ -83,11 +110,16 @@
   }
 
 .modalip{
-  height:40px;
+  /* height:40px; */
+  width: 100%; /* Full width for input fields in modal */
+  margin-bottom: 10px; /* Adjust spacing */
 }
 #addbtnmodal{
   margin-top:20px;
-  margin-left:130px;
+  /* margin-left:130px; */
+  margin-left: auto; /* Align button to right in modal */
+    margin-right: auto;
+    display: block;
 }
 #remarkbtn:hover{
   background-color:darkmagenta;
@@ -102,4 +134,12 @@
 #updateBtn:hover{
   background-color: violet;
 }
+
+ .bottom-table {
+  margin-top: 20px;
+  
+}
+
+
+
  

@@ -37,3 +37,35 @@
 .contentbar {
     margin-top: 20px;
 }
+
+/* Sidebar Toggle Button */
+.toggle-sidebar-btn {
+    /* Base styles */
+    background-color: transparent;
+    border: none;
+    color: #333;
+    font-size: 1.2rem;
+    cursor: pointer;
+    padding: 8px 12px;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+  
+  .toggle-sidebar-btn:hover,
+  .toggle-sidebar-btn:focus {
+    /* Hover and focus styles */
+    background-color: #f0f0f0;
+    color: #555;
+  }
+  
+  .toggle-sidebar-btn:active {
+    /* Active state */
+    transform: translateY(1px);
+  }
+  
+  @media (max-width: 768px) {
+    /* Responsive adjustments */
+    .toggle-sidebar-btn {
+      font-size: 1.1rem;
+    }
+  }
+  
