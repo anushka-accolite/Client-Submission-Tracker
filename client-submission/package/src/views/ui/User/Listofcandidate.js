@@ -362,7 +362,7 @@ export default function Listofcandidate() {
       console.log(headers);
       if (!(candidateToAdd.clients.some(candidateClient => candidateClient.clientId === clientData.clientId))) {
         console.log("Hello");
-        let response = await axios.post(`http://localhost:8092/api/submissions/clients/${clientData.clientId}/candidates/${candidateToAdd.candidateId}/submit/${user.userId}`, {}, { headers });
+        let response = await axios.put(`http://localhost:8092/api/submissions/clients/${clientData.clientId}/candidates/${candidateToAdd.candidateId}/submit/${user.userId}`, {}, { headers });
         let resData = response.data;
         console.log(resData);
         let updatedSubmission = await axios.get(`http://localhost:8092/api/submissions/${clientData.clientId}/candidates/${candidateToAdd.candidateId}/users/${user.userId}`, { headers });
@@ -571,11 +571,11 @@ export default function Listofcandidate() {
       console.log(user[0]);
       let submission= await axios.get(`http://localhost:8092/api/submissions/${localStorage.getItem("clientId")}/candidates/${localStorage.getItem("rowNo")}/users/${user[0].userId}`,{headers})
       submission.data.remark=localStorage.getItem("remark");
-      console.log(submission);
-      // let postSubmission = await axios.put(`http://localhost:8092/api/submissions/${submission.data.submissionId}`,submission.data,{headers});
-      // console.log(postSubmission);
-      let postSubmission= await axios.put(`http://localhost:8092/api/submissions/clients/${localStorage.getItem("clientId")}/candidates/${localStorage.getItem("rowNo")}/submit/${user[0].userId}`,submission.data,{headers});
+      console.log(submission.data);
+      let postSubmission = await axios.put(`http://localhost:8092/api/submissions/${submission.data.submissionId}`,submission.data,{headers});
       console.log(postSubmission);
+      // let postSubmission= await axios.put(`http://localhost:8092/api/submissions/clients/${localStorage.getItem("clientId")}/candidates/${localStorage.getItem("rowNo")}/submit/${user[0].userId}`,submission.data,{headers});
+      // console.log(postSubmission);
       toast.success("Remark updated successfully", { autoClose: 2000 });
        console.log(remark);
        }
