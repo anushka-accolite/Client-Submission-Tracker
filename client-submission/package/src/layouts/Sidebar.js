@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Nav, NavItem } from 'reactstrap';
 import { Link, useLocation } from 'react-router-dom';
 
@@ -24,12 +24,29 @@ const userNavigation = [
 
 ];
 
-const Sidebar = ({ sidebarOpen }) => {
+
+const Sidebar = ({sidebarOpen, toggleSidebar}) => {
   let location = useLocation();
   const navigation = localStorage.getItem("role") === "admin" ? adminNavigation : userNavigation;
 
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth <= 768) {
+        // Close the sidebar if the window width is less than or equal to 768px
+        if (sidebarOpen) {
+          toggleSidebar();
+        }
+      }
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, [sidebarOpen]);
+
   return (
-    <div style={{ width: '250px', flexShrink: 0, display: sidebarOpen ? 'block' : 'none', backgroundColor: '#073763' }}>
+    <div style={{ width: sidebarOpen ? '250px' : '0', flexShrink: 0, display: sidebarOpen ? 'block' : 'none', backgroundColor: '#073763', transition: 'width 0.3s ease' }}>
       <div style={{ paddingTop: '56px' }}>
         <Nav vertical>
           {navigation.map((navi, index) => (
@@ -54,3 +71,4 @@ const Sidebar = ({ sidebarOpen }) => {
 };
 
 export default Sidebar;
+

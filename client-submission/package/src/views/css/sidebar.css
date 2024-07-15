@@ -1,0 +1,41 @@
+.sidebar {
+    width: 250px;
+    flex-shrink: 0;
+    background-color: #073763;
+    height: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    overflow-x: hidden;
+    transition: width 0.3s ease;
+  }
+  
+  .sidebar.open {
+    width: 250px; /* Adjust width as needed for your design */
+  }
+  
+  .sidebar .nav-link {
+    color: white !important;
+    padding: 10px 15px;
+    text-decoration: none;
+  }
+  
+  .sidebar .nav-link:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+  
+  .sidebar .nav-link.active {
+    background-color: rgba(255, 255, 255, 0.2);
+    color: #ffffff !important;
+  }
+  
+  @media (max-width: 768px) {
+    .sidebar {
+      width: 0;
+    }
+  
+    .sidebar.open {
+      width: 250px; /* Adjust width as needed for your design */
+    }
+  }
+  

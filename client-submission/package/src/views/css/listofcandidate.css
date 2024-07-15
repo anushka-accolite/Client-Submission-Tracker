@@ -24,10 +24,14 @@
 .status-dot.interviewscheduled{
   background-color: pink;
 }
+.status-dot.submitted{
+  background-color: grey;
+}
 
 .pie-chart {
   width: 100%;
   height: auto;
+
   max-width: 300px;
 }
 

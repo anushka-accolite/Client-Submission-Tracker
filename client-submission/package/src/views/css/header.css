@@ -37,3 +37,30 @@
 .contentbar {
     margin-top: 20px;
 }
+
+.toggle-sidebar-btn {
+    background-color: transparent;
+    border: none;
+    color: #333;
+    font-size: 1.2rem;
+    cursor: pointer;
+    padding: 8px 12px;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+  
+  .toggle-sidebar-btn:hover,
+  .toggle-sidebar-btn:focus {
+    background-color: #f0f0f0;
+    color: #555;
+  }
+  
+  .toggle-sidebar-btn:active {
+    transform: translateY(1px);
+  }
+  
+  @media (max-width: 768px) {
+    .toggle-sidebar-btn {
+      font-size: 1.1rem;
+    }
+  }
+  

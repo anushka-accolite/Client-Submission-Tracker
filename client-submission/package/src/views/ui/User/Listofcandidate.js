@@ -28,9 +28,61 @@ function createData(id, name, email, experience, skill, status, IsEmployee, days
 }
 
 const statusOptions = ['Selected', 'Rejected', 'Submitted','Pending', 'OnHold', 'InterviewScheduled'];
-const skillsOptions = ['Angular', 'React', 'Java', 'Python', 'Spring', 'JavaScript'];
+// const skillsOptions = ['Angular', 'React', 'Java', 'Python', 'Spring', 'JavaScript'];
+const skillsOptions = [
+  'Agile Methodologies',
+  'AWS',
+  'Angular',
+  'Azure',
+  'Bitbucket',
+  'CI/CD',
+  'C#',
+  'Communication Skills',
+  'Continuous Learning',
+  'Creativity',
+  'Debugging',
+  'Design Patterns',
+  'Django',
+  'Docker',
+  'Express.js',
+  'Flask',
+  'Git',
+  'GitHub',
+  'GitLab',
+  'Google Cloud Platform',
+  'GraphQL',
+  'HTML/CSS',
+  'Integration Testing',
+  'Java',
+  'Jenkins',
+  'Kanban',
+  'Kubernetes',
+  'MongoDB',
+  'MySQL',
+  'Node.js',
+  'OWASP Top 10',
+  'PHP',
+  'PostgreSQL',
+  'Problem-Solving',
+  'Python',
+  'React.js',
+  'Redis',
+  'RESTful APIs',
+  'Ruby on Rails',
+  'Scrum',
+  'Security Best Practices',
+  'Software Architecture',
+  'Spring Boot',
+  'SQL',
+  'Technical Writing',
+  'Teamwork',
+  'Time Management',
+  'Unit Testing',
+  'Vue.js'
+];
+
 const columns = [
-  { id: 'checkbox', label: '' },  
+  // { id: 'checkbox', label: '' },  
   { id:'id',label:"Candidate Id"},
   { id: 'name', label: 'Candidate Name',required: true },
   { id: 'email', label: 'Email',required: true },
@@ -93,6 +145,9 @@ export default function Listofcandidate() {
   const [updateModalOpen, setUpdateModalOpen] = useState(false);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [sub,setSub] = useState([]);
+  const [isEmployee,setIsEmployee]=useState("Yes");
+  
  
 
     const fetchCandidates = async () => {
@@ -118,6 +173,30 @@ export default function Listofcandidate() {
               }
               return skill;
             });
+            let clientRes=await axios.get(`http://localhost:8092/api/admin/${localStorage.getItem("clientId")}`,{headers});
+            console.log(clientRes.data);
+            let users_array = clientRes.data.users;
+            let submissionRes='N/A';
+            for(let user of users_array)
+            {
+              let submission = await axios.get(`http://localhost:8092/api/submissions/${localStorage.getItem("clientId")}/candidates/${item.candidateId}/users/${user.userId}`,{headers});
+              console.log(submission.data);
+              if(submission.data !== "Submission not found")
+              {
+                submissionRes=submission.data;
+              }
+            }
+            let statusRes="Pending";
+            if(submissionRes === "N/A")
+            {
+              statusRes="Pending";
+            }
+            else
+            {
+              statusRes=submissionRes.status;
+            }
+            console.log(statusRes);
+           
             const skillsString = processedSkills.join(', ');
             const daysToLWD = item.last_working_day ? item.last_working_day : 'N/A';
             return createData(
@@ -126,7 +205,8 @@ export default function Listofcandidate() {
               item.candidateEmail,
               item.experience,
               skillsString,
-              item.candidateStatus,
+              // item.candidateStatus,
+              statusRes,
               item.isAccoliteEmployee,
               daysToLWD !== 'N/A' ? new Date(daysToLWD).toLocaleDateString() : 'N/A',
               localStorage.getItem("remark")
@@ -140,13 +220,29 @@ export default function Listofcandidate() {
     }
   };
 
-  useEffect(()=>{
+  const fetchSubmissions = async ()=>{
+    let token = localStorage.getItem("token");
+    let headers = { "Authorization": `Bearer ${token}` };
+    let submission_data = await axios.get("http://localhost:8092/api/submissions/getAll",{headers});
+    console.log(submission_data.data);
+    submission_data.data.forEach((item)=>{
+      sub.push(item);
+    })
+    setSub(sub);
+    console.log(sub);
+  }
+
+  useEffect( ()=>{
     const role=localStorage.getItem("role");
     if(role!=="user"){
       navigate("/loginform");
     }
     fetchCandidates();
     console.log(rows);
+   
+    //let submission_data = await axios.get("http://localhost:8092/api/submissions/getAll",{headers});
+    fetchSubmissions();
+
   },[])
   const handleClearSearch = () => {
     setSearchTerm('');
@@ -173,10 +269,10 @@ export default function Listofcandidate() {
       const requiredFields = ['name', 'email', 'experience', 'skill', 'IsEmployee'];
     const missingFields = requiredFields.filter(field => !newCandidate[field]);
 
-    if (missingFields.length > 0) {
-      alert(`Please fill in all required fields: ${missingFields.join(', ')}`);
-      return;
-    }
+    // if (missingFields.length > 0) {
+    //   alert(`Please fill in all required fields: ${missingFields.join(', ')}`);
+    //   return;
+    // }
       let token = localStorage.getItem("token");
       if (!selectedFile) {
         console.error('No file selected');
@@ -242,13 +338,20 @@ export default function Listofcandidate() {
         }
         return row;
       });
+
       let userObj = await axios.get('http://localhost:8092/api/user/users', { headers });
       let clientId = localStorage.getItem("clientId");
       let username = localStorage.getItem("username");
+      let client=await axios.get(`http://localhost:8092/api/admin/${clientId}`,{headers});
+      let users_array=client.data.users;
+      console.log(users_array);
       let user = userObj.data.find((item) => item.userName === username);
-      var submission = await axios.get(`http://localhost:8092/api/submissions/${clientId}/candidates/${updatedCandidate.candidateId}/users/${user.userId}`, { headers });
+      let flag=false;
+      for(let user of users_array)
+      {
+        var submission = await axios.get(`http://localhost:8092/api/submissions/${clientId}/candidates/${updatedCandidate.candidateId}/users/${user.userId}`, { headers });
       console.log(submission);
-      if (!(submission == "Submission not found")) {
+      if (submission.data !== "Submission not found") {
         let subId = submission.data.submissionId;
         let subData = submission.data;
         subData.status = status;
@@ -261,9 +364,27 @@ export default function Listofcandidate() {
           ...subData
         }, { headers });
         console.log(updatedSubmission.data);
-        fetchCandidates();
+        flag=true;
       }
-     
+      }
+      if(flag===false)
+      {
+        let token = localStorage.getItem("token");
+        let headers = { "Authorization": `Bearer ${token}`, 'Content-Type': 'application/json' };
+    
+        // Fetch candidate details and update status to "Pending"
+        let response = await axios.get(`http://localhost:8092/api/candidates/${id}`, { headers });
+        let updatedCandidate = response.data;
+        updatedCandidate.candidateStatus = "Pending";
+        await axios.put(`http://localhost:8092/api/candidates/${id}`, updatedCandidate, { headers });
+    
+        // Update the rows state with the "Pending" status
+        const updatedRows = rows.map(row => (row.id === id ? { ...row, status: "Pending" } : row));
+        setRows(updatedRows);
+    
+        alert("First add the candidate");
+      }
+        fetchCandidates();
       
     } catch (error) {
       
@@ -372,10 +493,16 @@ export default function Listofcandidate() {
         let data = updatedSubmission.data;
         console.log(remark);
         data.remark = remark;
+        data.status="Submitted";
         let update = await axios.put(`http://localhost:8092/api/submissions/${updatedSubmission.data.submissionId}`, {
-          status: newStatus,
+          // status: newStatus,
+          status : "Submitted",
           ...data
         }, { headers });
+        setTimeout(()=>{
+          window.location.reload();
+
+        },5000);
         toast.success("Candidate Added Successfully");
         let client_candidate = await axios.post(`http://localhost:8092/api/candidate-client/link?candidateId=${candidateToAdd.candidateId}&clientId=${clientData.clientId}`, {}, { headers });
         console.log("client_candidate", client_candidate);
@@ -399,32 +526,40 @@ export default function Listofcandidate() {
       let flag = 0;
 
       if (existingSubmission) {
-        let submission = await axios.get(`http://localhost:8092/api/submissions/${clientData.clientId}/candidates/${candidateToAdd.candidateId}/users/${user.userId}`, { headers });
-        console.log(submission);
-        let subData = submission.data;
-        let subObj = await axios.get(`http://localhost:8092/api/submissions/${subData.submissionId}`, { headers });
-        subObj = subObj.data;
-        console.log(subData);
-        subObj.status = newStatus;
-        subObj.remark = localStorage.getItem("remark");
-        console.log(subObj.remark);
-        let updatedSubmission = await axios.put(`http://localhost:8092/api/submissions/${subData.submissionId}`, {
-          status: newStatus,
-          submissionDate: subObj.submissionDate,
-          isDeleted: subObj.isDeleted,
-          remark: subObj.remark,
-          ...subObj
-        }, { headers });
-        console.log(updatedSubmission);
-        toast.success("Candidate submission updated successfully!");
-      }
+        let users_array=clientData.users;
+        console.log(users_array);
+        for (let user of users_array) {
+            let submission = await axios.get(`http://localhost:8092/api/submissions/${clientData.clientId}/candidates/${candidateToAdd.candidateId}/users/${user.userId}`, { headers });
+            console.log(submission);
+            if (submission.data && submission.data !== "Submission not found") {
+              let subData = submission.data;
+              let subObj = await axios.get(`http://localhost:8092/api/submissions/${subData.submissionId}`, { headers });
+              subObj = subObj.data;
+              console.log(subData);
+              subObj.status = newStatus;
+              subObj.remark = localStorage.getItem("remark");
+              console.log(subObj.remark);
+              let updatedSubmission = await axios.put(`http://localhost:8092/api/submissions/${subData.submissionId}`, {
+                status: newStatus,
+                submissionDate: subObj.submissionDate,
+                isDeleted: subObj.isDeleted,
+                remark: subObj.remark,
+                ...subObj
+              }, { headers });
+              console.log(updatedSubmission);
+              toast.success("Candidate submission updated successfully!");
+            }
+          }
+        }
+        
+            
 
       setSelectedRow(id);
 
 
     } catch (error) {
       console.error('Error adding candidate:', error);
-      toast.error('Error adding candidate');
+      toast.error('Error submitting candidate');
     }
   };
 
@@ -497,6 +632,9 @@ export default function Listofcandidate() {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
+    if(name==='IsEmployee'){
+      setIsEmployee(value);
+    }
     setNewCandidate((prev) => ({
       ...prev,
       [name]: value,
@@ -505,7 +643,7 @@ export default function Listofcandidate() {
   };
 
   const handleFormSubmit = async (e) => {
-    const requiredFields = ['name', 'email', 'experience', 'skill', 'IsEmployee'];
+    const requiredFields = ['name', 'email', 'experience', 'skill','IsEmployee'];
     const missingFields = requiredFields.filter(field => !newCandidate[field]);
 
     if (missingFields.length > 0) {
@@ -515,12 +653,14 @@ export default function Listofcandidate() {
     e.preventDefault();
     console.log(newCandidate.id);
     let skill_set = newCandidate.skill;
+    console.log(skill_set);
+    console.log(newCandidate.IsEmployee);
     const candidate = {
       candidateName: newCandidate.name,
       candidateEmail: newCandidate.email,
       candidateStatus: 'Pending' || newCandidate.status,
       last_working_day: newCandidate.daysToLWD,
-      isAccoliteEmployee: newCandidate.IsEmployee,
+      isAccoliteEmployee: newCandidate.IsEmployee || 'Yes',
       experience: newCandidate.experience,
       isDeleted: false,
       skills: newCandidate.skill
@@ -540,7 +680,9 @@ export default function Listofcandidate() {
         console.log(skills);
         let candidateSkill = await axios.post(`http://localhost:8092/api/candidates/${createCandidate.data.candidateId}/skills`, skills, { headers });
         console.log(candidateSkill);
+        console.log(candidate);
         console.log(skills);
+        toast.success("Candidate added successfully");
         setTimeout(() => {
           window.location.reload();
         }, 3000);
@@ -549,6 +691,7 @@ export default function Listofcandidate() {
 
     }
     catch (error) {
+      toast.error("");
       console.log(error);
     }
     setNewCandidate({});
@@ -564,24 +707,37 @@ export default function Listofcandidate() {
 
   const handleRemark =async () => {
     try{
-      let headers={"Authorization":`Bearer ${localStorage.getItem("token")}`}
-      let users=await axios.get(`http://localhost:8092/api/user/users`,{headers});
-      console.log(users);
-      let user=users.data.filter((user)=>user.userName===localStorage.getItem("username"));
-      console.log(user[0]);
-      let submission= await axios.get(`http://localhost:8092/api/submissions/${localStorage.getItem("clientId")}/candidates/${localStorage.getItem("rowNo")}/users/${user[0].userId}`,{headers})
-      submission.data.remark=localStorage.getItem("remark");
-      console.log(submission.data);
-      let postSubmission = await axios.put(`http://localhost:8092/api/submissions/${submission.data.submissionId}`,submission.data,{headers});
-      console.log(postSubmission);
-      // let postSubmission= await axios.put(`http://localhost:8092/api/submissions/clients/${localStorage.getItem("clientId")}/candidates/${localStorage.getItem("rowNo")}/submit/${user[0].userId}`,submission.data,{headers});
-      // console.log(postSubmission);
-      toast.success("Remark updated successfully", { autoClose: 2000 });
-       console.log(remark);
-       }
-          catch(error){
-             alert("First add the candidate");
-      }
+           
+                  let headers={"Authorization":`Bearer ${localStorage.getItem("token")}`}
+                  let users=await axios.get(`http://localhost:8092/api/user/users`,{headers});
+                  console.log(users);
+                  let user=users.data.filter((user)=>user.userName===localStorage.getItem("username"));
+                  console.log(user[0]);
+                  let client= await axios.get(`http://localhost:8092/api/admin/${localStorage.getItem("clientId")}`,{headers});
+                  let users_array=client.data.users;
+                  console.log(users_array);
+                  let flag=false;
+                  for(let user of users_array) {
+                  let submission= await axios.get(`http://localhost:8092/api/submissions/${localStorage.getItem("clientId")}/candidates/${localStorage.getItem("rowNo")}/users/${user.userId}`,{headers});
+                  console.log(submission);
+                      if(submission.data !== "Submission not found"){
+                      submission.data.remark=localStorage.getItem("remark");
+                      console.log(submission.data);
+                      let postSubmission = await axios.put(`http://localhost:8092/api/submissions/${submission.data.submissionId}`,submission.data,{headers});
+                      console.log(postSubmission);
+                      toast.success("Remark updated successfully", { autoClose: 2000 });
+                      console.log(remark);
+                      flag=true;
+                      }
+                  }
+                  if(flag ===false)
+                  {
+                    alert("First add the candidate");
+                  }
+                   }
+                      catch(error){
+                         alert("First add the candidate");
+                  }
   }
 
   const onHandleUpdate = async () => {
@@ -775,7 +931,7 @@ export default function Listofcandidate() {
           {uploadSuccess && <div style={{ color: 'green' }}>File uploaded successfully!</div>}
           {uploadError && <div style={{ color: 'red' }}>Error uploading file. Please try again later.</div>}
         </div>
-        <Button id='updateBtn' style={{float:"right",marginRight:"37px",marginBottom:"10px"}} onClick={handleOpenUpdateModal}>Update All</Button>
+        {/* <Button id='updateBtn' style={{float:"right",marginRight:"37px",marginBottom:"10px"}} onClick={handleOpenUpdateModal}>Update All</Button> */}
         <TableContainer component={Paper} style={{ maxWidth: "50vw !important", marginTop: "15px" }}>
           <Table sx={{ maxWidth: "10px" }} aria-label="simple table">
             <TableHead>
@@ -833,7 +989,7 @@ export default function Listofcandidate() {
                         <Button id="delbtn" onClick={() => handleDelete(row.id)}>Delete</Button>
                       ) : column.id === 'add' ? (
                         <Button
-                          disabled={selectedRow === row.id || row.status.toLowerCase() === 'selected'}
+                          disabled={selectedRow === row.id || row.status.toLowerCase() === 'selected' || sub.some((submission)=> submission.candidate.candidateId === row.id && submission.client.clientId == localStorage.getItem("clientId"))}
                           id="addbtn"
                           onClick={() => handleAdd(row.id, row.status)}
                         >
@@ -954,22 +1110,24 @@ export default function Listofcandidate() {
                     InputLabelProps={{
                       shrink: true, // Ensure the label is displayed correctly for date inputs
                     }}
+                    disabled={isEmployee === 'Yes'}
                   />
                 ) :
               column.id === 'IsEmployee' ? (
+                           
                             <TextField className='modalip'
-                              key={column.id}
-                              label={column.label}
-                              name={column.id}
-                              value={newCandidate[column.id] || 'No'} // Set default value to 'No'
-                              onChange={handleInputChange}
-                              fullWidth
-                              margin="normal"
-                              select
-                            >
-                              <MenuItem value="Yes">Yes</MenuItem>
-                              <MenuItem value="No">No</MenuItem>
-                            </TextField>
+                            key={column.id}
+                            label={column.label}
+                            name={column.id}
+                            value={newCandidate[column.id] || 'Yes'} // Set default value to 'Yes'
+                            onChange={handleInputChange}
+                            fullWidth
+                            margin="normal"
+                            select
+                          >
+                            <MenuItem value="Yes">Yes</MenuItem>
+                            <MenuItem value="No">No</MenuItem>
+                          </TextField>
                           ) :  (
                   <TextField className='modalip'
                     key={column.id}

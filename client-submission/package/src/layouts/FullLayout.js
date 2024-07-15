@@ -26,7 +26,7 @@ const FullLayout = ({ showSidebarAndHeader }) => {
       <div className="contentbar" style={{
         display: 'flex', flex: 1, overflow: 'hidden' }}>
         {showSidebarAndHeader && (
-          <Sidebar sidebarOpen={sidebarOpen} />
+          <Sidebar toggleSidebar={toggleSidebar} sidebarOpen={sidebarOpen} />
         )}
         <div className="content" style={{ flex: 1, overflow: 'auto' }}>
           <Container fluid>

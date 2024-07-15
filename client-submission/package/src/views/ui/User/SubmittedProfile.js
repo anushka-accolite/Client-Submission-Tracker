@@ -22,6 +22,8 @@ import DialogTitle from '@mui/material/DialogTitle';
 import Button from '@mui/material/Button';
 import CircularProgress from '@mui/material/CircularProgress';
 import '../../css/submittedprofile.css';
+import { Modal } from '@mui/material';
+import { Box, Typography } from '@material-ui/core';
 
 function createData(sid, cid, name, experience, status, clientname, remark, responseTime, lastWorkingDate, lastWorkingDaysLeft) {
   return { sid, cid, name, experience, status, clientname, remark, responseTime, lastWorkingDate, lastWorkingDaysLeft };
@@ -39,6 +41,7 @@ export default function MyComponent() {
   const [open, setOpen] = useState(false);
   const [selectedRemark, setSelectedRemark] = useState('');
   const [loading, setLoading] = useState(true);
+  const [open2, setOpen2] = useState(false);
   const navigate = useNavigate();
 
   const truncateRemark = (remark) => {
@@ -73,6 +76,8 @@ export default function MyComponent() {
           });
         });
         console.log(clientData);
+        let users_array=clientData.users;
+        console.log(users_array);
         if (!clientData) {
           console.error('No matching client found for the user');
           return;
@@ -82,8 +87,12 @@ export default function MyComponent() {
           console.log(item);
           let user_data = item.users;
           console.log(user_data);
-          if (user_data.userId === user.userId)
-            listofcandidates.push(item);
+          users_array.map((user_data_from_array)=>{
+            if(user_data.userId===user_data_from_array.userId)
+            {
+              listofcandidates.push(item);
+            }
+          })
         })
         let timestampDifference = 'N/A';
         let latestSubmissions = [];
@@ -113,6 +122,7 @@ export default function MyComponent() {
             console.log(latestSubmissions);
             //correct code
             const candidates = listofcandidates.map((item, index) => {
+              console.log(item);
               let clientname = item.client.clientName || 'N/A';
               const latestSubmission = latestSubmissions[index];
               let lastWorkingDaysLeft = 'N/A';
@@ -122,15 +132,10 @@ export default function MyComponent() {
                 const diffTime = lastWorkingDate - currentDate;
                 lastWorkingDaysLeft = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
               }
-              let responseTime = 'N/A';
-              if (latestSubmission) {
-                const submissionDate = new Date(latestSubmission[6]).setHours(0, 0, 0, 0); // Set submission time to start of day
-                const currentDate = new Date();
-                const today = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate()); // Get today's date without time
-                const diffTime = Math.abs(today - submissionDate);
-                const timestampDifference = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); // Difference in days
-                responseTime = timestampDifference === 0 ? item.client.clientResponseTimeinDays : timestampDifference;
-              }
+              console.log(item.client.clientResponseTimeinDays);
+              let responseTime="N/A";  
+              responseTime=item.client.clientResponseTimeinDays;
+              //console.log(responseTime);
               let lastWorkingDate = 'N/A';
               if (lastWorkingDaysLeft !== 'N/A') {
                 lastWorkingDate = item.candidate.last_working_day;
@@ -160,6 +165,22 @@ export default function MyComponent() {
     };
     fetchData();
   }, [navigate]);
+
+  const modalStyle2 = {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: 400,
+    bgcolor: 'background.paper',
+    border: '2px solid #000',
+    boxShadow: 24,
+    p: 4,
+  };
+
+  const handleOpen2 = () => setOpen2(true);
+  const handleClose2 = () => setOpen2(false);
+
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -258,6 +279,11 @@ export default function MyComponent() {
         </div>
       ) : (
         <>
+        <div style={{marginBottom:"30px",marginLeft:"10px"}}>
+        <Button variant="contained" color="primary" onClick={handleOpen2}>
+        Color Information
+       </Button>
+       </div>
           <FormControl sx={{ m: 1, minWidth: 120 }} style={{ marginTop: "0.2px" }}>
             <InputLabel id="column-label">Column</InputLabel>
             <Select
@@ -332,7 +358,8 @@ export default function MyComponent() {
                 {paginatedRows.map((row) => (
                   <TableRow
                     key={row.sid}
-                    sx={{ '&:last-child td, &:last-child th': { border: 0 }, backgroundColor: row.lessThanDaysLeft ? 'lightcoral' : row.lessThanResponseTime ? 'yellow' : 'inherit' }}
+                    // sx={{ '&:last-child td, &:last-child th': { border: 0 }, backgroundColor: row.lessThanDaysLeft ? 'lightcoral' : row.lessThanResponseTime ? 'yellow' : 'inherit' }}
+                      sx={{ '&:last-child td, &:last-child th': { border: 0 }, backgroundColor: row.lessThanDaysLeft && row.lessThanResponseTime?'red':row.lessThanDaysLeft?'orange':row.lessThanResponseTime?'greenyellow':'' }}
                   >
                     <TableCell align="right">{row.sid}</TableCell>
                     <TableCell component="th" scope="row">
@@ -378,6 +405,21 @@ export default function MyComponent() {
           </Dialog>
         </>
       )}
+       <Modal
+        open={open2}
+        onClose={handleClose2}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box sx={modalStyle2}>
+          <Typography id="modal-modal-title" variant="h6" component="h2">
+            Information
+          </Typography>
+          <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+            This is some important information displayed in the modal.
+          </Typography>
+        </Box>
+      </Modal>
     </div>
   );
 }
