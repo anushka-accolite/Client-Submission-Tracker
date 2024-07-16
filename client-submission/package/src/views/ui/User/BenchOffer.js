@@ -16,8 +16,8 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import TablePagination from '@mui/material/TablePagination';
 import '../../css/submittedprofile.css'
-function createData(sid, cid, name, experience, status, clientname, remark, responseTime, lastWorkingDate, lastWorkingDaysLeft) {
-  return { sid, cid, name, experience, status, clientname, remark, responseTime, lastWorkingDate, lastWorkingDaysLeft };
+function createData(sid, cid, name, experience,lastWorkingDate, lastWorkingDaysLeft) {
+  return { sid, cid, name, experience,lastWorkingDate, lastWorkingDaysLeft };
 }
 export default function MyComponent() {
   const [selectedColumn, setSelectedColumn] = React.useState('name');
@@ -121,10 +121,10 @@ export default function MyComponent() {
                 item.candidate.candidateId,
                 item.candidate.candidateName,
                 item.candidate.experience,
-                item.status,
-                clientname,
-                item.remark || 'N/A',
-                responseTime,
+                // item.status,
+                // clientname,
+                // item.remark || 'N/A',
+                // responseTime,
                 lastWorkingDate !== 'N/A' ? new Date(lastWorkingDate).toLocaleDateString() : 'N/A',
                 lastWorkingDaysLeft
               );
@@ -201,22 +201,24 @@ export default function MyComponent() {
         <Select
           labelId="column-label"
           id="column-select"
+          size='small'
           value={selectedColumn.charAt(0).toUpperCase() + selectedColumn.slice(1)}
           label="Select Column"
           onChange={handleColumnChange}
         >
           <MenuItem value="Name">Name</MenuItem>
           <MenuItem value="Experience">Experience</MenuItem>
-          <MenuItem value="Status">Status</MenuItem>
+          {/* <MenuItem value="Status">Status</MenuItem> */}
           <MenuItem value="ClientName">ClientName</MenuItem>
-          <MenuItem value="Remark">Remark</MenuItem>
-          <MenuItem value="ResponseTime">Response Time</MenuItem>
+          {/* <MenuItem value="Remark">Remark</MenuItem> */}
+          {/* <MenuItem value="ResponseTime">Response Time</MenuItem> */}
         </Select>
       </FormControl>
       <TextField
         id="search"
         label="Search"
         variant="outlined"
+        size='small'
         value={searchTerm}
         onChange={handleSearchTermChange}
       />
@@ -232,9 +234,9 @@ export default function MyComponent() {
               <TableCell><b>Candidate Id</b></TableCell>
               <TableCell align="right"><b>Name</b></TableCell>
               <TableCell align="right"><b>Experience</b></TableCell>
-              <TableCell align="right"><b>Status</b></TableCell>
-              <TableCell align="right"><b>ClientName</b></TableCell>
-              <TableCell align="right">
+              {/* <TableCell align="right"><b>Status</b></TableCell> */}
+              {/* <TableCell align="right"><b>ClientName</b></TableCell> */}
+              {/* <TableCell align="right">
                 <span
                   className={`th sortable-header ${sortOrder === 'asc' ? 'sort-asc' : 'sort-desc'}`}
                 >
@@ -243,8 +245,8 @@ export default function MyComponent() {
                     {sortOrder === 'asc' ? '🔼' : '🔽'}
                   </span>
                 </span>
-              </TableCell>
-              <TableCell align="right"><b>Remark</b></TableCell>
+              </TableCell> */}
+              {/* <TableCell align="right"><b>Remark</b></TableCell> */}
               <TableCell align='right'><b>Last Working Date</b></TableCell>
               <TableCell align='right'><b>Days Left</b></TableCell>
             </TableRow>
@@ -261,12 +263,12 @@ export default function MyComponent() {
                 </TableCell>
                 <TableCell align="right">{row.name}</TableCell>
                 <TableCell align="right">{row.experience}</TableCell>
-                <TableCell align="right">{row.status}</TableCell>
+                {/* <TableCell align="right">{row.status}</TableCell>
                 <TableCell align="right">{row.clientname}</TableCell>
                 <TableCell align="right">{row.responseTime}</TableCell>
-                <TableCell align="right">{row.remark}</TableCell>
+                <TableCell align="right">{row.remark}</TableCell> */}
                 <TableCell align='right'>{row.lastWorkingDate}</TableCell>
-                <TableCell>{row.lastWorkingDaysLeft <= 0 ? 'Consider for Bench Offer' : row.lastWorkingDaysLeft}</TableCell>
+                <TableCell style={{display:"flex",justifyContent:"right"}}>{row.lastWorkingDaysLeft <= 0 ? 'Consider for Bench Offer' : row.lastWorkingDaysLeft}</TableCell>
               </TableRow>
             ))}
           </TableBody>

@@ -64,7 +64,7 @@ const navigate=useNavigate();
     <ToastContainer/>
     <div id="main-container">
       <form className="form" onSubmit={handleSubmit} onReset={handleReset}>
-        <h2>Edit Profile</h2>
+        <h2 id='hd'>Edit Profile</h2>
         <div className="form-group">
           <label id='label' htmlFor="name">User Id :</label>
           <div className="relative">
@@ -92,7 +92,7 @@ const navigate=useNavigate();
               className="form-control"
               type="text"
               required
-              placeholder={username}
+              placeholder={username ? username : 'Enter Username'}
               value={username}
               onChange={(e) => setUsername(e.target.value)}
             />
@@ -106,7 +106,7 @@ const navigate=useNavigate();
               className="form-control"
               type="email"
               required
-              placeholder={email}
+              placeholder={email ? email : 'Enter Email'}
               pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$"
               value={email}
               onChange={(e) => setEmail(e.target.value)}

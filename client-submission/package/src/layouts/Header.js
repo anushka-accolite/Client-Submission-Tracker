@@ -1,3 +1,4 @@
+
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import '../views/css/header.css';
@@ -13,25 +14,16 @@ import {
   Button,
 } from "reactstrap";
 import user1 from "../assets/images/users/user4.png";
-import logo from '../assets/images/logos/logo.png'; 
-import Sidebar from './Sidebar.js';
-
+import logo from '../assets/images/logos/logo.png';
 const Header = ({ toggleSidebar, sidebarOpen }) => {
   const [isOpen, setIsOpen] = React.useState(false);
   const [dropdownOpen, setDropdownOpen] = React.useState(false);
   const navigate = useNavigate();
-
   const toggle = () => setDropdownOpen((prevState) => !prevState);
-   const Handletoggle = () => setIsOpen(!isOpen);
-
-
+  const Handletoggle = () => setIsOpen(!isOpen);
   let role = localStorage.getItem("userRole");
   role = role === 'admin' ? 'admin' : 'user';
-
   const path = localStorage.getItem('userRole') === 'admin' ? '/home' : '/listofclientuser';
-
-
-
   return (
     <Navbar className="navbar" dark expand="md">
       <Link to={path} className="navbar-brand">
@@ -43,23 +35,22 @@ const Header = ({ toggleSidebar, sidebarOpen }) => {
         className="toggle-sidebar-btn"
       >
         {sidebarOpen ? (
-          <i className="bi bi-x"></i>
+          <i className="bi bi-list"></i>
         ) : (
           <i className="bi bi-list"></i>
         )}
       </Button>
-      
       <Collapse navbar isOpen={isOpen}>
         <Nav className="me-auto" navbar>
           <NavItem>
-            <Link to={role === 'admin' ? '/home' : '/listofclientuser'} className="nav-link">
+            <Link to={role === 'admin' ? '/home' : '/listofclientuser'} className="nav-link" style={{color:"Black"}}>
               {role === 'admin' ? "ADMIN'S DASHBOARD" : "USER'S DASHBOARD"}
             </Link>
           </NavItem>
         </Nav>
         <Nav className="ms-auto" navbar>
         <Dropdown isOpen={dropdownOpen} toggle={toggle}>
-          <DropdownToggle className="icon">
+          <DropdownToggle className="icon" style={{border:"1px solid white"}}>
             <img
               src={user1}
               alt="profile"
@@ -82,5 +73,4 @@ const Header = ({ toggleSidebar, sidebarOpen }) => {
     </Navbar>
   );
 };
-
 export default Header;

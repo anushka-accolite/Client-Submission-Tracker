@@ -147,23 +147,28 @@ export default function Clients() {
       <h2 id='hd'>Client List</h2>
       <div id="container">
         <div>
-          <TextField className="dropdown"
+          <TextField 
+            className="search"
             select
             label="Select Column"
             value={selectedColumn}
             onChange={handleColumnChange}
+            variant="outlined"
+          size="small"
           >
             {columns.map((column) => (
-              column.label !== 'Client Requirement' && column.label !== 'Response Time' && column.label !== 'Client ID' && (
+              column.label !== 'Client Requirement' && column.label !== 'Response Time' &&  column.id!="addCandidate" && (
                 <MenuItem key={column.id} value={column.id}>
                   {column.label}
                 </MenuItem>
               )
             ))}
           </TextField>
-          <TextField className='searchbar'
+          <TextField 
+            className='searchbar'
             label="Search"
             variant="outlined"
+            size="small"
             value={searchTerm}
             onChange={handleSearchChange}
             style={{ marginLeft: "10px" }}

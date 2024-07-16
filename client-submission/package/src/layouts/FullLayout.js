@@ -23,6 +23,7 @@ const FullLayout = ({ showSidebarAndHeader }) => {
       overflow: 'hidden'
     }}>
       <Header toggleSidebar={toggleSidebar} sidebarOpen={sidebarOpen} />
+      
       <div className="contentbar" style={{
         display: 'flex', flex: 1, overflow: 'hidden' }}>
         {showSidebarAndHeader && (

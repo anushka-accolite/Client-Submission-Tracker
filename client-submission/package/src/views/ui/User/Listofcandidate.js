@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef } from 'react';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -35,7 +36,8 @@ const skillsOptions = [
   'Angular',
   'Azure',
   'Bitbucket',
-  'CI/CD',
+  'CI',
+  'CD',
   'C#',
   'Communication Skills',
   'Continuous Learning',
@@ -266,7 +268,7 @@ export default function Listofcandidate() {
 
   const handleUpload = async () => {
     try {
-      const requiredFields = ['name', 'email', 'experience', 'skill', 'IsEmployee'];
+      const requiredFields = ['name', 'email', 'experience', 'skill'];
     const missingFields = requiredFields.filter(field => !newCandidate[field]);
 
     // if (missingFields.length > 0) {
@@ -643,7 +645,7 @@ export default function Listofcandidate() {
   };
 
   const handleFormSubmit = async (e) => {
-    const requiredFields = ['name', 'email', 'experience', 'skill','IsEmployee'];
+    const requiredFields = ['name', 'email', 'experience', 'skill'];
     const missingFields = requiredFields.filter(field => !newCandidate[field]);
 
     if (missingFields.length > 0) {
@@ -868,10 +870,10 @@ export default function Listofcandidate() {
 
   return (
     <>
-    
-    <Button variant="contained" color="primary" onClick={handleOpenBBox}>
+    <div className='status-info'>
+    {/* <Button variant="contained" color="primary" onClick={handleOpenBBox}>
         Status Info
-      </Button>
+      </Button> */}
       <Dialog open={openBox} onClose={handleCloseBox}>
         <DialogTitle>Status Information</DialogTitle>
         <DialogContent dividers>
@@ -888,10 +890,12 @@ export default function Listofcandidate() {
           </Button>
         </DialogActions>
       </Dialog>
+      </div>
 
       <ToastContainer />
       <div id='uppercon'>
-        <h2 style={{ textAlign: "center", textShadow: "1px 1px 1px  ", fontFamily: "sans-serif" }}>Client- {localStorage.getItem("clientName")}</h2>
+        <h1 style={{ textAlign: "center", textShadow: "1px 1px 1px  ", fontFamily: "sans-serif", marginBottom: "20px", color: "#0f305c" }}>Client- {localStorage.getItem("clientName")}</h1>
+        <div className='search-box'>
         <TextField
           select className="search"
           label="Select Column"
@@ -902,7 +906,7 @@ export default function Listofcandidate() {
         >
           {columns.map((column) => (
             // Filter out specific fields
-            (column.label !== 'Days to LWD' && column.label !== 'Delete' && column.label !== 'Add') && (
+            (column.label !== 'Days to LWD' && column.label !== 'Delete' && column.label !== 'Add' && column.label!=='Email' && column.id!=="experience" && column.id!=='remark' ) && (
               <MenuItem key={column.id} value={column.id}>
                 {column.label}
               </MenuItem>
@@ -916,15 +920,18 @@ export default function Listofcandidate() {
           variant="outlined"
           size="small"
           className='searchip'
-          style={{ marginLeft: "20px" }}
+          style={{ marginLeft: "10px" }}
         />
         {searchTerm && (
           <button onClick={handleClearSearch} className="clear-search-btn">Clear</button>
         )}
- 
+        </div>
+      <div className='add-candidate'>
         <Button onClick={handleOpenModal} variant="contained" color="primary" style={{float:"right" ,marginRight:"10px"}}>
           Add Candidate
         </Button>
+        </div>
+      
         <div className='upload_data'>
           <input type="file" accept=".xlsx, .xls" onChange={handleFileChange} />
           <button className='upload_button' onClick={handleUpload}>Upload</button>

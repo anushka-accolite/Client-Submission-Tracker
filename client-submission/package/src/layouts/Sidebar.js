@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Nav, NavItem } from 'reactstrap';
 import { Link, useLocation } from 'react-router-dom';
-
 const adminNavigation = [
   { title: "Home", href: "/home", icon: "bi bi-house" },
   { title: "Create Client", href: "/createclient", icon: "bi bi-plus" },
@@ -10,18 +9,12 @@ const adminNavigation = [
   { title: "List of PM", href: "/listofpm", icon: "bi bi-list" },
   { title: "List of AM", href: "/listofam", icon: "bi bi-list" },
 ];
-
 const userNavigation = [
-  {
-    title: "List of Clients",
-    href: "/listofclientuser",
-    icon: "bi bi-list",
-  },
+  { title: "List of Clients",href: "/listofclientuser",icon: "bi bi-list"},
   { title: "List of Candidates", href: "/listofcandidates", icon: "bi bi-list" },
   { title: "Submitted Profiles", href: "/profile", icon: "bi bi-list" },
   { title: "Bench Offer", href: "/benchoffer", icon: "bi bi-list" },
-  { title: "Audit Log", href: "/audit", icon: "bi bi-activity" },
-
+  { title: "Audit Log", href: "/audit", icon: "bi bi-list" },
 ];
 
 
@@ -46,7 +39,7 @@ const Sidebar = ({sidebarOpen, toggleSidebar}) => {
   }, [sidebarOpen]);
 
   return (
-    <div style={{ width: sidebarOpen ? '250px' : '0', flexShrink: 0, display: sidebarOpen ? 'block' : 'none', backgroundColor: '#073763', transition: 'width 0.3s ease' }}>
+    <div style={{ width: sidebarOpen ? '250px' : '0', flexShrink: 0, display: sidebarOpen ? 'block' : 'none', backgroundColor: 'white', transition: 'width 0.3s ease' }}>
       <div style={{ paddingTop: '56px' }}>
         <Nav vertical>
           {navigation.map((navi, index) => (
@@ -55,8 +48,8 @@ const Sidebar = ({sidebarOpen, toggleSidebar}) => {
                 to={navi.href}
                 className={
                   location.pathname === navi.href
-                    ? 'text-primary bg-white nav-link py-3'
-                    : 'nav-link text-white py-3'
+                    ? 'text-white bg-primary nav-link py-3'
+                    : 'nav-link text-black py-3'
                 }
               >
                 <i className={navi.icon}></i>
@@ -69,6 +62,4 @@ const Sidebar = ({sidebarOpen, toggleSidebar}) => {
     </div>
   );
 };
-
 export default Sidebar;
-

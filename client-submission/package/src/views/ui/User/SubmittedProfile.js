@@ -289,22 +289,24 @@ export default function MyComponent() {
             <Select
               labelId="column-label"
               id="column-select"
+              size='small'
               value={selectedColumn.charAt(0).toUpperCase() + selectedColumn.slice(1)}
               label="Select Column"
               onChange={handleColumnChange}
             >
               <MenuItem value="Name">Name</MenuItem>
-              <MenuItem value="Experience">Experience</MenuItem>
+              {/* <MenuItem value="Experience">Experience</MenuItem> */}
               <MenuItem value="Status">Status</MenuItem>
               <MenuItem value="ClientName">ClientName</MenuItem>
-              <MenuItem value="Remark">Remark</MenuItem>
-              <MenuItem value="ResponseTime">Response Time</MenuItem>
+              {/* <MenuItem value="Remark">Remark</MenuItem> */}
+              {/* <MenuItem value="ResponseTime">Response Time</MenuItem> */}
             </Select>
           </FormControl>
           <TextField
             id="search"
             label="Search"
             variant="outlined"
+            size='small'
             value={searchTerm}
             onChange={handleSearchTermChange}
           />
@@ -315,6 +317,7 @@ export default function MyComponent() {
             id="daysLeft"
             label="Days Left for Last Working Day"
             variant="outlined"
+            size='small'
             type="number"
             value={daysLeft}
             onChange={handleDaysFilterChange}
@@ -324,6 +327,7 @@ export default function MyComponent() {
             id="responseTimeLimit"
             label="Response Time Limit"
             variant="outlined"
+            size='small'
             type="number"
             value={responseTimeLimit}
             onChange={handleResponseTimeChange}
@@ -413,10 +417,12 @@ export default function MyComponent() {
       >
         <Box sx={modalStyle2}>
           <Typography id="modal-modal-title" variant="h6" component="h2">
-            Information
+            <b>Information :</b>
           </Typography>
           <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-            This is some important information displayed in the modal.
+          <b style={{fontSize:"20px",color:"greenyellow"}}>Green Yellow</b> - This color represents that number of days left is less than the specified response time.<br></br>
+          <b style={{fontSize:"20px",color:"orange"}}>Orange</b> - This color represents that number of days left is less than the specified last working days left.<br></br>
+          <b style={{fontSize:"20px",color:"red"}}>Red</b> - This color represents that number of days left is less than both specified response time and last working days left.
           </Typography>
         </Box>
       </Modal>
