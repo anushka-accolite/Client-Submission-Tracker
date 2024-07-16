@@ -1,4 +1,3 @@
-
 package com.accolite.entities;
 import java.util.Date;
 import jakarta.persistence.*;

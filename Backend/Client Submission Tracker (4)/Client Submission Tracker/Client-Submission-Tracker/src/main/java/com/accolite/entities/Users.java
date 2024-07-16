@@ -40,7 +40,7 @@ public class Users {
 	@Column(name="user_role")
 	private UserRole userRole;
 	
-	@Column(name="user_email")
+	@Column(name="user_email",unique = true)
 	private String email;
 	
 	
@@ -58,13 +58,10 @@ public class Users {
 	@JsonIgnore
 	private List<SubmissionToClient> submissions;
 
-//	public List<SubmissionToClient> getSubmissions() {
-//		return submissions;
-//	}
-//
-//	public void setSubmissions(List<SubmissionToClient> submissions) {
-//		this.submissions = submissions;
-//	}
+	@OneToMany(mappedBy = "user")
+	@JsonIgnore
+	private List<ForgotPassword> forgotPassword;
+
 
 	public int getUserId() {
 		return userId;

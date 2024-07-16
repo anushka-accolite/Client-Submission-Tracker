@@ -5,6 +5,8 @@ public enum Status {
 	OnHold,
 	Selected,
 	Rejected,
-	InterviewScheduled
+	InterviewScheduled,
+
+	Submitted
 }
 

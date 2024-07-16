@@ -41,6 +41,7 @@ public class SubmissionController {
 		SubmissionToClient submission = submissionService.getSubmissionById(submissionId);
 		return new ResponseEntity<>(submission, HttpStatus.OK);
 	}
+
 	@PutMapping("/{submissionId}")
 	public ResponseEntity<SubmissionToClient> updateSubmissionStatus(@PathVariable Integer submissionId, @RequestBody SubmissionToClient submission) {
 		SubmissionToClient updatedSubmission = submissionService.updateSubmissionStatus(submissionId, submission,submission.getStatus());
@@ -81,8 +82,8 @@ public class SubmissionController {
 		return new ResponseEntity<>(submissionIds, HttpStatus.OK);
 	}
 	@PutMapping("/clients/{clientId}/candidates/{candidateId}/submit/{userId}")
-	public ResponseEntity<String> submitCandidateProfile(@PathVariable Integer clientId, @PathVariable Integer candidateId, @PathVariable Integer userId,@RequestBody SubmissionToClient details) {
-
+	public ResponseEntity<String> submitCandidateProfile(@PathVariable Integer clientId, @PathVariable Integer candidateId, @PathVariable Integer userId,
+														 @RequestBody SubmissionToClient submissionDetails) {
 		// Check if the user exists
 		Users user = userService.getUserById(userId);
 		if (user == null) {
@@ -110,8 +111,8 @@ public class SubmissionController {
 		submission.setUsers(user);
 		submission.setIsDeleted(false);
 		submission.setSubmissionDate(new Date());
-		submission.setRemark(details.getRemark());
-		submission.setStatus(details.getStatus());
+		submission.setRemark(submissionDetails.getRemark());
+		submission.setStatus(submissionDetails.getStatus());
 		submissionService.submitCandidateToClient(submission);
 		return ResponseEntity.ok("Candidate profile submitted successfully");
 	}
@@ -125,7 +126,7 @@ public class SubmissionController {
 		if (submission != null) {
 			return ResponseEntity.ok(submission);
 		} else {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Submission not found");
+			return ResponseEntity.ok("Submission not found");
 		}
 	}
 }

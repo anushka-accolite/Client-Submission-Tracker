@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.accolite.entities.CandidateSkill;
 import com.accolite.service.CandidateSkillService;
-
 @RestController
 @RequestMapping("/api/candidates/{candidateId}/skills")
 public class CandidateSkillController {
