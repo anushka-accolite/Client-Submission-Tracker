@@ -46,7 +46,7 @@ export default function Listofta() {
         const userResponse = await axios.get('http://localhost:8092/api/user/users', { headers });
         let userDetails = userResponse.data;
         console.log('Fetched Details:', userDetails);
-        const toBeSearched = 'TalentAcquistion'.replace(/\s+/g, '').toLowerCase();
+        const toBeSearched = 'TalentAcquisition'.replace(/\s+/g, '').toLowerCase();
         userDetails = userDetails.filter(item => item.userRole.replace(/\s+/g, '').toLowerCase() === toBeSearched);
         
         const clientsResponse = await axios.get('http://localhost:8092/api/admin/clients', { headers });

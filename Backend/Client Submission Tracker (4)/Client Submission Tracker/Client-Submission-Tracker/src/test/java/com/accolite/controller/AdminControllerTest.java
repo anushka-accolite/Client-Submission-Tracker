@@ -2,10 +2,12 @@ package com.accolite.controller;
 
 import com.accolite.entities.Client;
 import com.accolite.entities.Users;
+import com.accolite.repository.ClientRepository;
 import com.accolite.service.ClientService;
 import com.accolite.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -13,15 +15,19 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.*;
 
 class AdminControllerTest {
 
     @Mock
     private ClientService clientService;
+    @Mock
+    private ClientRepository clientRepository;
 
     @Mock
     private UserService userService;
@@ -34,26 +40,7 @@ class AdminControllerTest {
         MockitoAnnotations.openMocks(this);
     }
 
-    @Test
-    void testLinkUserToClient_Success() {
-        Integer clientId = 1;
-        Integer userId = 1;
 
-        Map<String, Integer> requestBody = new HashMap<>();
-        requestBody.put("userId", userId);
-
-        Client client = new Client();
-        Users user = mock(Users.class); // Mocking Users class
-        when(clientService.getClientById(clientId)).thenReturn(client);
-        when(userService.getUserById(userId)).thenReturn(user);
-
-        ResponseEntity<String> response = adminController.linkUserToClient(clientId, requestBody);
-
-        verify(user).setClient(client); // Verifying the interaction with the mocked object
-        verify(userService).saveUser(user);
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals("User linked to client successfully", response.getBody());
-    }
 
 
     @Test

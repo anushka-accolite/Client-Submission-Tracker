@@ -14,7 +14,7 @@ const App = () => {
 
     if (role) {
       role = role.toLowerCase().replace(/\s+/g, ' ').trim();
-      if (["accountmanager", "talentacquistion", "projectmanager"].includes(role)) {
+      if (["accountmanager", "talentacquisition", "projectmanager"].includes(role)) {
         role = "user";
       } else if (role === "admin") {
         role = "admin";

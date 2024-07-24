@@ -91,7 +91,7 @@ const CreateClient = () => {
         const users = response.data;
        
         // let taWithNoClients=[];
-        const ta=users.filter(user => user.userRole === 'TalentAcquistion');
+        const ta=users.filter(user => user.userRole === 'TalentAcquisition');
         ta.forEach(async (item) => {
           try {
             let response = await axios.get('http://localhost:8092/api/admin/clients', { headers });

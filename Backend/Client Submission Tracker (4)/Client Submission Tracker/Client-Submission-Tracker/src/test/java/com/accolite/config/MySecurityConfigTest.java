@@ -37,12 +37,13 @@ public class MySecurityConfigTest {
     }
 
     @Test
-    public void testUserDetailsService() {
+    void testUserDetailsService() {
         // Mock UserRepository response
         List<Users> usersList = new ArrayList<>();
         Users user1 = new Users();
         user1.setUserName("user1");
-        user1.setLoginUserPassword("password1");
+        // Simulate password hashing with BCrypt for the test
+        user1.setLoginUserPassword(new BCryptPasswordEncoder().encode("password1"));
         usersList.add(user1);
 
         when(userRepository.findAll()).thenReturn(usersList);
@@ -57,9 +58,9 @@ public class MySecurityConfigTest {
         UserDetails userDetails = userDetailsService.loadUserByUsername("user1");
         assertNotNull(userDetails);
         assertEquals("user1", userDetails.getUsername());
+        // Verify password using BCryptPasswordEncoder
         assertTrue(new BCryptPasswordEncoder().matches("password1", userDetails.getPassword()));
     }
-
     @Test
     public void testPasswordEncoder() {
         // Call passwordEncoder bean method
