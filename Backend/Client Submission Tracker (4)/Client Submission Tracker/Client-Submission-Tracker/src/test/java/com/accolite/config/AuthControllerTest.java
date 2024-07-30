@@ -1,5 +1,6 @@
 package com.accolite.config;
 
+import com.accolite.helper.Helper;
 import com.accolite.service.JwtRequest;
 import com.accolite.service.JwtResponse;
 import com.accolite.security.JwtHelper;
@@ -18,6 +19,7 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -41,6 +43,9 @@ class AuthControllerTest {
     @InjectMocks
     private AuthController authController;
 
+    @Mock
+    private BCryptPasswordEncoder bCryptPasswordEncoder; // Mock this dependency
+
     @Test
     void testLogin_Successful() {
         // Given
@@ -50,8 +55,11 @@ class AuthControllerTest {
         Collection<? extends GrantedAuthority> authorities = Arrays.asList(new SimpleGrantedAuthority("ROLE_USER"));
         UserDetails userDetails = new User(username, password, authorities);
         String token = "testToken";
+
+        // Mock behavior
         when(userDetailsService.loadUserByUsername(username)).thenReturn(userDetails);
         when(helper.generateToken(userDetails)).thenReturn(token);
+        when(bCryptPasswordEncoder.matches(password, userDetails.getPassword())).thenReturn(true); // Mock password match
 
         // When
         ResponseEntity<JwtResponse> responseEntity = authController.login(request);

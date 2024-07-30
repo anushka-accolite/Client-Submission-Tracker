@@ -12,7 +12,7 @@ import lombok.Setter;
 
 
 enum UserRole{
-	TalentAcquistion,
+	TalentAcquisition,
     AccountManager,
 	ProjectManager,
 	admin

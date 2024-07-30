@@ -13,15 +13,15 @@ public class UsersTest {
         // Set values
         user.setUserId(1);
         user.setUserName("Anushka");
-        user.setUserRole(UserRole.TalentAcquistion);
-        user.setEmail("anushka@gmail.com.com");
+        user.setUserRole(UserRole.TalentAcquisition);
+        user.setEmail("anushka@gmail.com");
         user.setLoginUserPassword("password123");
         user.setIsDeleted(false);
 
         // Check values
         assertEquals(1, user.getUserId());
         assertEquals("Anushka", user.getUserName());
-        assertEquals(UserRole.TalentAcquistion, user.getUserRole());
+        assertEquals(UserRole.TalentAcquisition, user.getUserRole());
         assertEquals("anushka@gmail.com", user.getEmail());
         assertEquals("password123", user.getLoginUserPassword());
         assertFalse(user.getIsDeleted());
