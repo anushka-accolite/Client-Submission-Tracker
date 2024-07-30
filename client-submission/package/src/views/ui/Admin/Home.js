@@ -43,7 +43,7 @@ const Starter = () => {
         const mappedData = adminClientsResponse.data
           .filter(client => !client.isDeleted)
           .map(client => {
-            const taUser = client.users ? client.users.find(user => user.userRole === 'TalentAcquistion') : null;
+            const taUser = client.users ? client.users.find(user => user.userRole === 'TalentAcquisition') : null;
             const pmUser = client.users ? client.users.find(user => user.userRole === 'ProjectManager') : null;
             const amUser = client.users ? client.users.find(user => user.userRole === 'AccountManager') : null;
             return {
