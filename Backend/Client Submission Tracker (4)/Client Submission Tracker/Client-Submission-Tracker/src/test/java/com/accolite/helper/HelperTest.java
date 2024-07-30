@@ -2,28 +2,43 @@ package com.accolite.helper;
 
 import com.accolite.entities.Candidate;
 import com.accolite.entities.CandidateSkill;
+import com.accolite.repository.CandidateRepository;
 import com.accolite.repository.CandidateSkillRepository;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellType;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.when;
 
-class HelperTest {
+@ExtendWith(MockitoExtension.class)
+public class HelperTest {
 
+    @Mock
     private CandidateSkillRepository candidateSkillRepository;
+
+    @Mock
+    private CandidateRepository candidateRepository;
 
     @BeforeEach
     void setUp() {
         candidateSkillRepository = Mockito.mock(CandidateSkillRepository.class);
+        candidateRepository = Mockito.mock(CandidateRepository.class);
     }
 
     // Test for checkExcelFormat
@@ -90,7 +105,7 @@ class HelperTest {
         javaSkill.setSkill("Java");
         when(candidateSkillRepository.existsBySkill("Java")).thenReturn(false);
 
-        List<Candidate> candidates = Helper.convertExcelToListOfProduct(in, candidateSkillRepository);
+        List<Candidate> candidates = Helper.convertExcelToListOfProduct(in, candidateSkillRepository,candidateRepository);
 
         assertNotNull(candidates);
         assertEquals(1, candidates.size());
@@ -148,7 +163,7 @@ class HelperTest {
         when(candidateSkillRepository.existsBySkill("Python")).thenReturn(true);
         when(candidateSkillRepository.findBySkills("Python")).thenReturn(pythonSkill);
 
-        List<Candidate> candidates = Helper.convertExcelToListOfProduct(in, candidateSkillRepository);
+        List<Candidate> candidates = Helper.convertExcelToListOfProduct(in, candidateSkillRepository,candidateRepository);
 
         // Verify results
         assertNotNull(candidates, "Candidates list should not be null");
